@@ -1,0 +1,85 @@
+buildscript {
+    ext {
+        springBootVersion = '2.6.3'
+        lombokVersion = '1.18.22'
+        h2DatabaseVersion = '2.1.210'
+        mariaJdbcVersion = '2.7.5'
+        springMybatisVersion = '2.2.1'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'war'
+apply plugin: 'org.springframework.boot'
+
+repositories {
+    mavenCentral()
+}
+dependencies {
+
+    //spring-boot(webmvc)
+    implementation("org.springframework.boot:spring-boot-starter:${springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-aop:${springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+    //implementation("org.springframework.boot:spring-boot-starter-webflux:${springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-validation:${springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}")
+
+
+    // https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot-starter
+    implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3")
+
+
+    implementation("org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}")
+
+    //mybatis
+    implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${springMybatisVersion}")
+    runtimeOnly 'mysql:mysql-connector-java:8.0.25'
+
+    //lombok
+    implementation "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    //jdbc(maria, h2)
+    implementation "com.h2database:h2:${h2DatabaseVersion}"
+    implementation "org.mariadb.jdbc:mariadb-java-client:${mariaJdbcVersion}"
+
+    //runtimeOnly "org.mariadb.jdbc:mariadb-java-client"
+    //implementation "mysql:mysql-connector-java:8.0.25"
+
+    implementation("commons-io:commons-io:2.8.0")
+
+    testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    testImplementation("org.springframework.boot:spring-boot-starter-test:${springMybatisVersion}")
+
+}
+
+
+bootJar { enabled = true }
+jar { enabled = true }
+
+//boot-jar
+bootJar {
+    archiveFileName = "api.${archiveExtension.get()}"
+}
+
+//boot-war
+bootWar {
+    archiveFileName = "api.${archiveExtension.get()}"
+}
+
+test {
+    useJUnitPlatform()
+}

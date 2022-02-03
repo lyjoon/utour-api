@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    hikari:
+      driver-class-name: org.h2.Driver
+      jdbc-url: jdbc:h2:mem:test
+      username: sa
+      password:
+      maximum-pool-size: 10
+      minimum-idle: 5
+  h2:
+    console:
+      enabled: true
+  sql:
+    init:
+      schema-locations: classpath:sql/schema-local.sql
+
+debug: true
+
+logging:
+  file:
+    path: ${user.home}\workSpace\logs
+  config: classpath:logback-local.xml
+  pattern:
+    console:
