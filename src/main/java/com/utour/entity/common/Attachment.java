@@ -1,5 +1,6 @@
 package com.utour.entity.common;
 
+import com.utour.common.CommonEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder(toBuilder = true)
-public class Attachment extends BaseAt {
+public abstract class Attachment extends CommonEntity {
 
     private String path;
     private String originName;

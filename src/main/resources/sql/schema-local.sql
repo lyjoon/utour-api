@@ -183,77 +183,67 @@ create table answer_attach (
      constraint fk_answer_attach foreign key (answer_id) references answer (answer_id)
 );
 
-create table tour (
-     tour_id bigint not null auto_increment comment '여행ID',
-     tour_type bigint not null auto_increment comment '여행상품유형',
-     nation_code char(2) comment '국가코드',
-     area_code varchar(5) comment '지역코드',
-     title varchar(50) comment '여행상품명',
-     content longtext comment '여행상품내용',
-     use_yn char(1) default 'Y' comment '사용유무',
-     pv int default 0 comment '페이지뷰',
-     create_at datetime default now() comment '작성일자',
-     update_at datetime comment '변경일자',
-     constraint pk_tour primary key (tour_id)
-) ;
+create table hotel (
+    hotel_id bigint not null auto_increment comment '호텔 ID',
+    nation_code char(2) comment '국가코드',
+    area_code varchar(5) comment '지역코드',
+    title varchar(50) comment '상품명',
+    writer varchar(50) not null comment '작성자',
+    content longtext comment '여행상품내용',
+    hotel_name varchar(100) not null comment '호텔명',
+    hotel_class varchar(10) not null comment '호텔유형(성급)',
+    hotel_url varchar(100) comment '웹사이트 URL',
+    hotel_contact varchar(30) comment '연락처',
+    hotel_address varchar(200) comment '주소',
+    use_yn char(1) default 'Y' comment '사용유무',
+    pv int default 0 comment '페이지뷰',
+    create_at datetime default now() comment '작성일자',
+    update_at datetime comment '변경일자',
+    constraint pk_hotel primary key (hotel_id)
+);
 
-create table tour_list (
-     tour_id bigint not null comment '여행ID',
-     tour_list_id int not null comment '여행목록ID',
-     display_type varchar(10) default 'list' comment '노출유형(케로셀, 목록)',
-     use_yn char(1) default 'Y' comment '사용유무',
-     title varchar(100) comment '노출상품명',
-     description varchar(100) comment '노출상품 설명',
-     ordr int default 0 comment '순서',
-     lg_img_src varchar(2000) comment 'pc_이미지',
-     sm_img_src varchar(2000) comment 'mobile_이미지',
-     create_at datetime default now() comment '작성일자',
-     update_at datetime comment '변경일자',
-     constraint pk_tour_list primary key (tour_id),
-     constraint fk_tour_list foreign key (tour_id) references tour (tour_id)
-) ;
+create table hotel_image (
+    hotel_id bigint not null comment '호텔 ID',
+    image_id int not null comment '이미지 ID',
+    src varchar(2000) not null comment '이미지src',
+    alt varchar(100) not null comment '이미지alt',
+    description varchar(4000) not null comment '이미지설명',
+    create_at datetime default now() comment '작성일자',
+    update_at datetime comment '변경일자',
+    constraint pk_tour_image primary key (hotel_id, image_id),
+    constraint fk_tour_image foreign key (hotel_id) references hotel (hotel_id)
+);
 
-create table tour_image (
-     tour_id bigint not null comment '여행ID',
-     tour_image_id int not null comment '이미지ID',
-     img_src varchar(2000) not null comment '이미지url',
-     img_alt varchar(100) not null comment '이미지alt',
-     description varchar(4000) not null comment '이미지설명',
-     create_at datetime default now() comment '작성일자',
-     update_at datetime comment '변경일자',
-     constraint pk_tour_image primary key (tour_id, tour_image_id),
-     constraint fk_tour_image foreign key (tour_id) references tour (tour_id)
-) ;
-
-create table tour_stay (
-     tour_id bigint not null comment '여행ID',
-     tour_stay_id int not null comment '호텔ID',
-     name varchar(100) not null comment '숙소명',
-     stay_type varchar(10) not null comment '숙박유형(호텔, 리조트, 빌라, 렌탈)',
-     url varchar(100) comment '웹사이트 URL',
-     contact varchar(30) comment '연락처',
-     address varchar(200) comment '주소',
-     create_at datetime default now() comment '작성일자',
-     update_at datetime comment '변경일자',
-     constraint pk_tour_accommodation primary key (tour_id, tour_stay_id),
-     constraint fk_tour_accommodation foreign key (tour_id) references tour (tour_id)
-) ;
+create table hotel_facility (
+    hotel_id bigint not null comment '여행ID',
+    facility_id int not null comment '여행숙소시설ID',
+    icon varchar(50) not null comment '아이콘',
+    description varchar(100) not null comment '설명',
+    use_yn char(1) default 'Y' comment '사용유무',
+    create_at datetime default now() comment '작성일자',
+    update_at datetime comment '변경일자',
+    constraint pk_tour_stay_facility primary key (hotel_id, facility_id),
+    constraint fk_tour_stay_facility foreign key (hotel_id) references hotel (hotel_id)
+);
 
 
-create table tour_stay_facility (
-     tour_id bigint not null comment '여행ID',
-     tour_stay_id int not null comment '여행숙소ID',
-     tour_stay_facility_id int not null comment '여행숙소시설ID',
-     icon varchar(50) not null comment '아이콘',
-     description varchar(100) not null comment '설명',
-     use_yn char(1) default 'Y' comment '사용유무',
-     create_at datetime default now() comment '작성일자',
-     update_at datetime comment '변경일자',
-     constraint pk_tour_stay_facility primary key (tour_id, tour_stay_id, tour_stay_facility_id),
-     constraint fk_tour_stay_facility foreign key (tour_id, tour_stay_id) references tour_stay (tour_id, tour_stay_id)
-) ;
+create table article (
+    article_id bigint not null comment '제품ID',
+    hotel_id bigint comment '호텔ID',
+    display_type varchar(10) default 'list' comment '노출유형(케로셀, 목록)',
+    use_yn char(1) default 'Y' comment '사용유무',
+    title varchar(100) comment '노출상품명',
+    description varchar(100) comment '노출상품 설명',
+    ordinal int default 0 comment '순서',
+    src varchar(2000) comment '이미지src',
+    create_at datetime default now() comment '작성일자',
+    update_at datetime comment '변경일자',
+    constraint pk_article primary key (article_id),
+    constraint fk_article foreign key (hotel_id) references hotel (hotel_id)
+);
 
 
+/*
 create table tour_stay_type (
      tour_id bigint not null comment '여행ID',
      tour_stay_id int not null comment '여행숙소ID',
@@ -318,6 +308,7 @@ create table tour_component_map (
      constraint pk_tour_component_map primary key (tour_id, tour_component_id),
      constraint fk_tour_component_map foreign key (tour_id, tour_component_id) references tour_component (tour_id, tour_component_id)
 ) ;
+*/
 
 /**
 create table tb_tour_component_vidio (

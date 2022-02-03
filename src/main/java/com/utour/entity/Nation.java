@@ -1,6 +1,6 @@
 package com.utour.entity;
 
-import com.utour.entity.common.BaseAt;
+import com.utour.common.CommonEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Nation extends BaseAt {
+public class Nation extends CommonEntity {
 
     private String nationCode;
     private String nationName;

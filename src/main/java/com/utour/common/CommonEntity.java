@@ -1,4 +1,4 @@
-package com.utour.entity.common;
+package com.utour.common;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder(toBuilder = true)
-public class BaseAt {
+public class CommonEntity {
 
     private LocalDateTime createAt;
     private LocalDateTime updateAt;

@@ -1,4 +1,4 @@
-package com.utour.entity.common;
+package com.utour.entity;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -7,15 +7,17 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Getter
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SuperBuilder(toBuilder = true)
-public abstract class Board extends BaseAt {
+public class Article {
 
+    private Long articleId;
+    private String hotelId;
+    private String displayType;
     private String title;
-    private String content;
-    private String writer;
-    private int pv;
-
-    abstract public Long getId();
+    private String description;
+    private int ordinal;
+    private String src;
+    private Character useYn;
 }

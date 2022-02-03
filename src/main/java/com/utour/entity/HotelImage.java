@@ -1,6 +1,5 @@
 package com.utour.entity;
 
-
 import com.utour.common.CommonEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,10 +11,11 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Code extends CommonEntity {
+public class HotelImage extends CommonEntity {
 
-    private String groupCode;
-    private String code;
-    private String codeName;
+    private Long hotelId;
+    private Integer imageId;
+    private String src;
+    private String alt;
     private String description;
 }

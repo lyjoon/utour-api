@@ -11,14 +11,21 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class QnA extends Content {
+public class Hotel extends Content {
 
-    private Long qnaId;
-    private Character privateYn;
-    private String password;
+    private Long hotelId;
+    private String nationCode;
+    private String areaCode;
+    private Character useYn;
+
+    private String hotelName;
+    private String hotelClass;
+    private String hotelUrl;
+    private String hotelContact;
+    private String hotelAddress;
 
     @Override
     public Long getId() {
-        return this.qnaId;
+        return this.getHotelId();
     }
 }

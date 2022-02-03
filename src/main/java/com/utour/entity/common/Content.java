@@ -1,5 +1,4 @@
-package com.utour.entity;
-
+package com.utour.entity.common;
 
 import com.utour.common.CommonEntity;
 import lombok.AccessLevel;
@@ -9,13 +8,15 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Getter
-@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Code extends CommonEntity {
+@SuperBuilder(toBuilder = true)
+public abstract class Content extends CommonEntity {
 
-    private String groupCode;
-    private String code;
-    private String codeName;
-    private String description;
+    private String title;
+    private String content;
+    private String writer;
+    private int pv;
+
+    abstract public Long getId();
 }
