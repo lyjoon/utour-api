@@ -9,12 +9,15 @@ server:
 
 spring:
   application:
-    name: utour
+    name: utour-api
   messages:
     basename: messages
   servlet:
     multipart:
-      max-file-size: 20MB
+      max-file-size: 33MB
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
 jasypt:
   encryptor:
     bean: jasyptStringEncryptor

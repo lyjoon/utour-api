@@ -1,8 +1,6 @@
-package com.utour.dto;
+package com.utour.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 
 /**
@@ -14,8 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class ResponseDto<T> {
+public class Response<T> extends Pagination {
 
     /**
      * 응답 메세지
@@ -25,6 +22,6 @@ public class ResponseDto<T> {
     /**
      * 결과 데이터
      */
-    private T result;
+    private T data;
 
 }

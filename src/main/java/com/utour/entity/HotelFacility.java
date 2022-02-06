@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class hotelFacility extends CommonEntity {
+public class HotelFacility extends CommonEntity {
 
     private Long hotelId;
     private Integer facilityId;

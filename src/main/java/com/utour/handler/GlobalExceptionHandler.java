@@ -1,7 +1,7 @@
 package com.utour.handler;
 
 import com.utour.common.CommonComponent;
-import com.utour.dto.ResponseDto;
+import com.utour.model.Response;
 import com.utour.exception.ValidException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class GlobalExceptionHandler extends CommonComponent {
      * @return
      */
     @ExceptionHandler(value = ValidException.class)
-    public ResponseEntity<ResponseDto> validExceptionHandler(ValidException throwable) {
+    public ResponseEntity<Response> validExceptionHandler(ValidException throwable) {
         String validErrorMessage = Optional.ofNullable(throwable.getBindingResult()).map(bindingResult -> {
             FieldError fieldError = bindingResult.getFieldError();
             return Optional.ofNullable(fieldError)
@@ -34,7 +34,7 @@ public class GlobalExceptionHandler extends CommonComponent {
         throwable.printStackTrace();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(ResponseDto.builder()
+                .body(Response.builder()
                         .message(validErrorMessage)
                         .build());
     }
