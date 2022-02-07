@@ -5,12 +5,6 @@ import java.util.List;
 public interface CommonMapper <T>{
 
     /**
-     * 신규저장
-     * @param t
-     */
-    void insert(T t);
-
-    /**
      * 삭제
      * @param t
      * @return
@@ -18,11 +12,11 @@ public interface CommonMapper <T>{
     Long delete(T t);
 
     /**
-     * 수정
+     * 저장
      * @param t
      * @return
      */
-    Long update(T t);
+    void save(T t);
 
     /**
      * 데이터 검색

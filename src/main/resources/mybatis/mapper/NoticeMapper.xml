@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.utour.mapper.NoticeMapper">
+
+    <resultMap id="resultMap" type="notice">
+        <result property="noticeId" javaType="java.lang.String" column="NOTICE_ID" />
+        <result property="title" javaType="java.lang.String" column="TITLE" />
+        <result property="content" javaType="java.lang.String" column="CONTENT" />
+        <result property="writer" javaType="java.lang.String" column="WRITER" />
+        <result property="noticeYn" javaType="java.lang.String" column="NOTICE_YN" />
+        <result property="pv" javaType="java.lang.String" column="PV" />
+        <result property="create_at" javaType="java.lang.String" column="CREATE_AT" />
+        <result property="update_at" javaType="java.lang.String" column="UPDATE_AT" />
+    </resultMap>
+
+    <select id="exists" resultType="java.lang.Boolean">
+        SELECT IF( (SELECT COUNT(*) AS CNT FROM NOTICE) > 0, 'true', 'false')
+    </select>
+
+    <select id="findById" >
+
+    </select>
+
+    <select id="findAll" resultMap="resultMap">
+
+    </select>
+
+    <insert id="save">
+        INSERT INTO NOTICE (
+          TITLE
+        , CONTENT
+        , WRITER
+        , NOTICE_YN
+        , PV
+        ) VALUES (
+          #{title}
+        , #{content}
+        , #{writer}
+        , #{noticeYn}
+        , #{pv}
+        ) ON DUPLICATE KEY UPDATE
+          UPDATE_AT = NOW()
+        , TITLE = VALUES(title)
+        , CONTENT = VALUES(content)
+        , WRITER = VALUES(writer)
+        , NOTICE_YN = VALUES(notice_yn)
+        , PV = VALUES(pv)
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM NOTICE
+        WHERE NOTICE_ID = #{noticeId}
+    </delete>
+
+</mapper>

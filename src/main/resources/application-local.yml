@@ -2,7 +2,7 @@ spring:
   datasource:
     hikari:
       driver-class-name: org.h2.Driver
-      jdbc-url: jdbc:h2:mem:test
+      jdbc-url: jdbc:h2:mem://localhost/testdb;mode=MySQL
       username: sa
       password:
       maximum-pool-size: 10
