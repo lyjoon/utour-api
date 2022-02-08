@@ -1,7 +1,7 @@
 package com.utour.entity;
 
 
-import com.utour.entity.common.CommonEntity;
+import com.utour.common.CommonEntity;
 import com.utour.common.Constants;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

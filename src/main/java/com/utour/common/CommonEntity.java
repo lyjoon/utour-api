@@ -1,4 +1,4 @@
-package com.utour.entity.common;
+package com.utour.common;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
