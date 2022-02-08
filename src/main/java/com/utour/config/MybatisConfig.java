@@ -1,6 +1,6 @@
 package com.utour.config;
 
-import com.utour.contrants.Constants;
+import com.utour.common.Constants;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
