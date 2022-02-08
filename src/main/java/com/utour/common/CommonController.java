@@ -1,6 +1,6 @@
 package com.utour.common;
 
-import com.utour.model.Response;
+import com.utour.transfer.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

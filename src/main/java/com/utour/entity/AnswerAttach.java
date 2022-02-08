@@ -15,4 +15,5 @@ public class AnswerAttach extends Attachment {
 
     private Long answerId;
     private Integer answerAttachId;
+
 }

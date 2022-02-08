@@ -1,7 +1,7 @@
 package com.utour.handler;
 
 import com.utour.common.CommonComponent;
-import com.utour.model.Response;
+import com.utour.transfer.Response;
 import com.utour.exception.ValidException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

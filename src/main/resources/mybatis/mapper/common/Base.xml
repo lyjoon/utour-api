@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="common.base">
 
-    <resultMap id="resultMap" type="com.utour.common.CommonEntity">
+    <resultMap id="resultMap" type="com.utour.entity.common.CommonEntity">
         <result javaType="java.time.LocalDateTime" property="createAt" column="CREATE_AT" />
         <result javaType="java.time.LocalDateTime" property="updateAt" column="UPDATE_AT" />
     </resultMap>

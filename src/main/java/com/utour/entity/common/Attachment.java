@@ -1,6 +1,5 @@
 package com.utour.entity.common;
 
-import com.utour.common.CommonEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,4 +15,5 @@ public abstract class Attachment extends CommonEntity {
     private String path;
     private String originName;
     private Long size;
+
 }

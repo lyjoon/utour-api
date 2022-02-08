@@ -1,7 +1,8 @@
 package com.utour.entity;
 
 
-import com.utour.common.CommonEntity;
+import com.utour.entity.common.CommonEntity;
+import com.utour.common.Constants;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 public class Member extends CommonEntity {
 
     private String userId;
-    private String useYn;
+    private Constants.YN useYn;
     private String password;
     private String name;
 }

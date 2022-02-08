@@ -1,11 +1,14 @@
 package com.utour.entity;
 
-import com.utour.common.CommonEntity;
+import com.utour.entity.common.CommonEntity;
+import com.utour.common.Constants;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.time.LocalDateTime;
 
 @Getter
 @SuperBuilder
@@ -18,6 +21,6 @@ public class Answer extends CommonEntity {
     private String title;
     private String writer;
     private String content;
-    private String emailReplyYn;
-    private String emailReplyAt;
+    private Constants.YN emailReplyYn;
+    private LocalDateTime emailReplyAt;
 }

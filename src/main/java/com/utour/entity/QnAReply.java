@@ -1,6 +1,7 @@
 package com.utour.entity;
 
-import com.utour.common.CommonEntity;
+import com.utour.entity.common.CommonEntity;
+import com.utour.common.Constants;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +19,6 @@ public class QnAReply extends CommonEntity {
     private String writer;
     private String content;
     private String password;
-    private Character privateYn;
-    private Character adminYn;
+    private Constants.YN privateYn;
+    private Constants.YN adminYn;
 }

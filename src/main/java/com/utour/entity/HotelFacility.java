@@ -1,6 +1,7 @@
 package com.utour.entity;
 
-import com.utour.common.CommonEntity;
+import com.utour.entity.common.CommonEntity;
+import com.utour.common.Constants;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,5 +18,5 @@ public class HotelFacility extends CommonEntity {
     private Integer facilityId;
     private String icon;
     private String description;
-    private Character useYn;
+    private Constants.YN useYn;
 }
