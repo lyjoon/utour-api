@@ -1,6 +1,6 @@
 package com.utour.mapper;
 
-import com.utour.common.CommonMapper;
+import com.utour.mapper.common.CommonMapper;
 import com.utour.entity.Notice;
 import org.apache.ibatis.annotations.Mapper;
 

@@ -1,4 +1,4 @@
-package com.utour.common;
+package com.utour.mapper.common;
 
 import java.util.List;
 
