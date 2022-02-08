@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="common.content">
+
+    <resultMap id="resultMap" type="com.utour.entity.common.Content" extends="common.base.resultMap">
+        <result javaType="java.lang.String" property="title" column="TITLE" />
+        <result javaType="java.lang.String" property="content" column="CONTENT" />
+        <result javaType="java.lang.String" property="writer" column="WRITER" />
+        <result javaType="int" property="pv" column="PV" />
+    </resultMap>
+
+    <sql id="column">
+          TITLE
+        , CONTENT
+        , WRITER
+        , PV
+    </sql>
+
+    <sql id="select">
+        <include refid="common.content.column" />
+        , CREATE_AT
+        , UPDATE_AT
+    </sql>
+
+    <sql id="value">
+          #{title}
+        , #{content}
+        , #{writer}
+        , #{pv}
+    </sql>
+
+    <sql id="duplicateUpdate">
+        <include refid="common.base.duplicateUpdate" />
+        , TITLE = VALUES(title)
+        , CONTENT = VALUES(content)
+        , WRITER = VALUES(writer)
+    </sql>
+
+</mapper>

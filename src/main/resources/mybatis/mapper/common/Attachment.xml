@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="common.attachment">
+
+    <resultMap id="resultMap" type="com.utour.entity.common.Attachment" extends="common.base.resultMap">
+        <result javaType="java.lang.String" property="path" column="PATH" />
+        <result javaType="java.lang.String" property="originName" column="ORIGIN_NAME" />
+        <result javaType="java.lang.Long" property="size" column="SIZE" />
+    </resultMap>
+
+    <sql id="column">
+          PATH
+        , ORIGIN_NAME
+        , SIZE
+    </sql>
+
+    <sql id="select">
+        <include refid="common.attachment.column" />
+        , CREATE_AT
+        , UPDATE_AT
+    </sql>
+
+    <sql id="value">
+          #{path}
+        , #{originName}
+        , #{size}
+    </sql>
+</mapper>

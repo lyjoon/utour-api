@@ -46,11 +46,16 @@
         </encoder>
     </appender>
 
-    <root level="debug">
+    <root level="INFO" >
         <appender-ref ref="STDOUT"/>
-        <!--
-        <appender-ref ref="INFO_ROLLING"/>
-        <appender-ref ref="ERROR_ROLLING"/>
-        -->
     </root>
+
+    <logger name="org.springframework" level="INFO" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="com.utour" level="INFO" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
 </configuration>

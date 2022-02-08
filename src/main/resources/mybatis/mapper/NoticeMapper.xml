@@ -4,70 +4,56 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.utour.mapper.NoticeMapper">
 
-    <resultMap id="resultMap" type="notice" extends="common.resultMap.content">
+    <resultMap id="resultMap" type="notice" extends="common.content.resultMap">
         <result property="noticeId" javaType="java.lang.Long" column="NOTICE_ID" />
         <result property="noticeYn" javaType="java.lang.Character" column="NOTICE_YN" />
     </resultMap>
 
-    <select id="exists" resultType="java.lang.Boolean">
-        <include refid="com.utour.mapper.common.sqlSyntax.existsPrefix" />
-        SELECT COUNT(*) AS CNT FROM NOTICE
+    <sql id="select">
+        SELECT
+        <include refid="common.content.select" />
+        , NOTICE_ID
+        , NOTICE_YN
+        FROM NOTICE T
+    </sql>
+
+    <sql id="where">
         <where>
             <if test="noticeId != null">AND NOTICE_ID = #{noticeId}</if>
             <if test="noticeYn != null">AND NOTICE_YN = #{noticeYn}</if>
         </where>
-        <include refid="com.utour.mapper.common.sqlSyntax.existsSuffix" />
-    </select>
-
-    <sql id="select">
-        SELECT
-          NOTICE_ID
-        , TITLE
-        , CONTENT
-        , WRITER
-        , NOTICE_YN
-        , PV
-        , CREATE_AT
-        , UPDATE_AT
-        FROM NOTICE T
     </sql>
 
-    <select id="findById" >
+    <select id="exists" resultType="java.lang.Boolean">
+        <include refid="common.base.existsPrefix" />
+        SELECT COUNT(*) AS CNT FROM NOTICE
+        <include refid="where" />
+        <include refid="common.base.existsSuffix" />
+    </select>
+
+    <select id="findById" resultMap="resultMap">
         <include refid="select" />
         WHERE NOTICE_ID = #{noticeId}
     </select>
 
     <select id="findAll" resultMap="resultMap">
         <include refid="select" />
-        <where>
-            <if test="noticeId != null">AND NOTICE_ID = #{noticeId}</if>
-            <if test="noticeYn != null">AND NOTICE_YN = #{noticeYn}</if>
-        </where>
-        <include refid="com.utour.mapper.common.sqlSyntax.pagination" />
+        <include refid="where" />
+        <include refid="common.base.pagination" />
     </select>
 
     <insert id="save">
         INSERT INTO NOTICE (
-          NOTICE_ID
-        , TITLE
-        , CONTENT
-        , WRITER
+        <include refid="common.content.column" />
+        , NOTICE_ID
         , NOTICE_YN
-        , PV
         ) VALUES (
-          #{noticeId}
-        , #{title}
-        , #{content}
-        , #{writer}
+        <include refid="common.content.value" />
+        , #{noticeId}
         , #{noticeYn}
-        , #{pv}
         )
-        <include refid="com.utour.mapper.common.sqlSyntax.duplicateUpdate" />
-        , TITLE = VALUES(title)
-        , CONTENT = VALUES(content)
-        , WRITER = VALUES(writer)
+        <include refid="common.content.duplicateUpdate" />
         , NOTICE_YN = VALUES(notice_yn)
-        , PV = VALUES(pv)
     </insert>
 
     <delete id="delete">
