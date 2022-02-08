@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 public class Notice extends Content {
 
     private Long noticeId;
-    private Long noticeYn;
+    private Character noticeYn;
 
     @Override
     public Long getId() {

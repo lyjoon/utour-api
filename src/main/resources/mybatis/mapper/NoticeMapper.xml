@@ -4,44 +4,65 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.utour.mapper.NoticeMapper">
 
-    <resultMap id="resultMap" type="notice">
-        <result property="noticeId" javaType="java.lang.String" column="NOTICE_ID" />
-        <result property="title" javaType="java.lang.String" column="TITLE" />
-        <result property="content" javaType="java.lang.String" column="CONTENT" />
-        <result property="writer" javaType="java.lang.String" column="WRITER" />
-        <result property="noticeYn" javaType="java.lang.String" column="NOTICE_YN" />
-        <result property="pv" javaType="java.lang.String" column="PV" />
-        <result property="create_at" javaType="java.lang.String" column="CREATE_AT" />
-        <result property="update_at" javaType="java.lang.String" column="UPDATE_AT" />
+    <resultMap id="resultMap" type="notice" extends="common.resultMap.content">
+        <result property="noticeId" javaType="java.lang.Long" column="NOTICE_ID" />
+        <result property="noticeYn" javaType="java.lang.Character" column="NOTICE_YN" />
     </resultMap>
 
     <select id="exists" resultType="java.lang.Boolean">
-        SELECT IF( (SELECT COUNT(*) AS CNT FROM NOTICE) > 0, 'true', 'false')
+        <include refid="com.utour.mapper.common.sqlSyntax.existsPrefix" />
+        SELECT COUNT(*) AS CNT FROM NOTICE
+        <where>
+            <if test="noticeId != null">AND NOTICE_ID = #{noticeId}</if>
+            <if test="noticeYn != null">AND NOTICE_YN = #{noticeYn}</if>
+        </where>
+        <include refid="com.utour.mapper.common.sqlSyntax.existsSuffix" />
     </select>
 
-    <select id="findById" >
+    <sql id="select">
+        SELECT
+          NOTICE_ID
+        , TITLE
+        , CONTENT
+        , WRITER
+        , NOTICE_YN
+        , PV
+        , CREATE_AT
+        , UPDATE_AT
+        FROM NOTICE T
+    </sql>
 
+    <select id="findById" >
+        <include refid="select" />
+        WHERE NOTICE_ID = #{noticeId}
     </select>
 
     <select id="findAll" resultMap="resultMap">
-
+        <include refid="select" />
+        <where>
+            <if test="noticeId != null">AND NOTICE_ID = #{noticeId}</if>
+            <if test="noticeYn != null">AND NOTICE_YN = #{noticeYn}</if>
+        </where>
+        <include refid="com.utour.mapper.common.sqlSyntax.pagination" />
     </select>
 
     <insert id="save">
         INSERT INTO NOTICE (
-          TITLE
+          NOTICE_ID
+        , TITLE
         , CONTENT
         , WRITER
         , NOTICE_YN
         , PV
         ) VALUES (
-          #{title}
+          #{noticeId}
+        , #{title}
         , #{content}
         , #{writer}
         , #{noticeYn}
         , #{pv}
-        ) ON DUPLICATE KEY UPDATE
-          UPDATE_AT = NOW()
+        )
+        <include refid="com.utour.mapper.common.sqlSyntax.duplicateUpdate" />
         , TITLE = VALUES(title)
         , CONTENT = VALUES(content)
         , WRITER = VALUES(writer)

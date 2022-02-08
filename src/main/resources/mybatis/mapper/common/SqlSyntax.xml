@@ -2,14 +2,22 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.utour.mapper.common.SqlSyntax">
+<mapper namespace="com.utour.mapper.common.sqlSyntax">
 
     <sql id="existsPrefix">
-
+        SELECT CASE WHEN (
     </sql>
 
     <sql id="existsSuffix">
-
+        ) &gt; 0 THEN 'TRUE' ELSE 'FALSE' END AS YN
     </sql>
 
+    <sql id="pagination">
+        <if test="offset != null and limit != null">LIMIT #{offset}, #{limit}</if>
+    </sql>
+
+    <sql id="duplicateUpdate">
+        ON DUPLICATE KEY UPDATE
+        UPDATE_AT = NOW()
+    </sql>
 </mapper>
