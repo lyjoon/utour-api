@@ -2,25 +2,27 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.utour.mapper.NoticeMapper">
+<mapper namespace="com.utour.mapper.QnAMapper">
 
-    <resultMap id="resultMap" type="com.utour.entity.Notice" extends="common.content.resultMap">
-        <result property="noticeId" javaType="java.lang.Long" column="NOTICE_ID" />
-        <result property="noticeYn" javaType="java.lang.Character" column="NOTICE_YN" />
+    <resultMap id="resultMap" type="com.utour.entity.QnA" extends="common.content.resultMap">
+        <result property="qnaId" javaType="java.lang.Long" column="QNA_ID" />
+        <result property="privateYn" javaType="java.lang.Character" column="PRIVATE_YN" />
+        <result property="password" javaType="java.lang.String" column="PASSWORD" />
     </resultMap>
 
     <sql id="select">
         SELECT
         <include refid="common.content.select" />
-        , NOTICE_ID
-        , NOTICE_YN
-        FROM NOTICE T
+        , QNA_ID
+        , PRIVATE_YN
+        , PASSWORD
+        FROM QNA T
     </sql>
 
     <sql id="where">
         <where>
-            <if test="noticeId != null">AND NOTICE_ID = #{noticeId}</if>
-            <if test="noticeYn != null">AND NOTICE_YN = #{noticeYn}</if>
+            <if test="qnaId != null">AND QNA_ID = #{qnaId}</if>
+            <if test="privateYn != null">AND PRIVATE_YN = #{privateYn}</if>
         </where>
     </sql>
 
@@ -33,7 +35,7 @@
 
     <select id="findById" resultMap="resultMap">
         <include refid="select" />
-        WHERE NOTICE_ID = #{noticeId}
+        WHERE QNA_ID = #{qnaId}
     </select>
 
     <select id="findAll" resultMap="resultMap">
@@ -43,22 +45,25 @@
     </select>
 
     <insert id="save">
-        INSERT INTO NOTICE (
+        INSERT INTO QNA (
         <include refid="common.content.column" />
-        , NOTICE_ID
-        , NOTICE_YN
+        , QNA_ID
+        , PRIVATE_YN
+        , PASSWORD
         ) VALUES (
         <include refid="common.content.value" />
-        , #{noticeId}
-        , #{noticeYn}
+        , #{qnaId}
+        , #{privateYn}
+        , #{password}
         )
         <include refid="common.content.duplicateUpdate" />
-        , NOTICE_YN = VALUES(NOTICE_YN)
+        , PRIVATE_YN = VALUES(PRIVATE_YN)
+        <if test="password != null">, PASSWORD = VALUES(PASSWORD)</if>
     </insert>
 
     <delete id="delete">
-        DELETE FROM NOTICE
-        WHERE NOTICE_ID = #{noticeId}
+        DELETE FROM QNA
+        WHERE QNA_ID = #{qnaId}
     </delete>
 
 </mapper>

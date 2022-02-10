@@ -1,7 +1,6 @@
 package com.utour.entity;
 
 import com.utour.common.CommonEntity;
-import com.utour.common.Constants;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,5 +15,5 @@ public class Nation extends CommonEntity {
 
     private String nationCode;
     private String nationName;
-    private Constants.YN useYn;
+    private Character useYn;
 }

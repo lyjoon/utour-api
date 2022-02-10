@@ -20,5 +20,5 @@ public class Inquiry extends CommonEntity {
     private String email;
     private String nationCode;
     private String areaCode;
-    private String tourId;
+    private Long hotelId;
 }

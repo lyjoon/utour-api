@@ -1,6 +1,5 @@
 package com.utour.entity;
 
-import com.utour.common.Constants;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,5 +19,5 @@ public class Article {
     private String description;
     private int ordinal;
     private String src;
-    private Constants.YN useYn;
+    private Character useYn;
 }

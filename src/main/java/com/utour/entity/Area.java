@@ -1,7 +1,6 @@
 package com.utour.entity;
 
 import com.utour.common.CommonEntity;
-import com.utour.common.Constants;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,5 +16,5 @@ public class Area extends CommonEntity {
     private String nationCode;
     private String areaCode;
     private String areaName;
-    private Constants.YN useYn;
+    private Character useYn;
 }

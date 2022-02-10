@@ -5,11 +5,11 @@
 <mapper namespace="common.base">
 
     <sql id="existsPrefix">
-        SELECT CASE WHEN (
+        SELECT CASE WHEN (SELECT COUNT(*) AS CNT FROM (
     </sql>
 
     <sql id="existsSuffix">
-        ) &gt; 0 THEN 'TRUE' ELSE 'FALSE' END AS YN
+        )) &gt; 0 THEN 'TRUE' ELSE 'FALSE' END AS YN
     </sql>
 
     <sql id="pagination">

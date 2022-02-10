@@ -6,7 +6,5 @@ public interface Constants {
 
     int DEFAULT_PAGING_COUNT = 20;
 
-    enum YN {
-        Y,N
-    }
+    Character Y = 'Y', N = 'N';
 }

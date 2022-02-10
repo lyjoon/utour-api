@@ -1,6 +1,5 @@
 package com.utour.entity;
 
-import com.utour.common.Constants;
 import com.utour.entity.common.Content;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 public class Notice extends Content {
 
     private Long noticeId;
-    private Constants.YN noticeYn;
+    private Character noticeYn;
 
     @Override
     public Long getId() {
