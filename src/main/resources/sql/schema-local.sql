@@ -44,6 +44,7 @@ create table member (
 create table code_group (
      group_code varchar(20) not null comment '그룹코드',
      group_name varchar(50) comment '그룹코드이름',
+     use_yn    char(1) default 'Y' comment '사용유무',
      create_at datetime default now() comment '작성일자',
      update_at datetime comment '변경일자',
      constraint pk_code_group primary key (group_code)

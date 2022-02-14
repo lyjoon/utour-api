@@ -15,6 +15,6 @@ public class CodeGroup extends CommonEntity {
 
     private String groupCode;
     private String groupName;
-    private String codeName;
+    private Character useYn;
     private String description;
 }

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.utour.mapper.CodeMapper">
+
+    <resultMap id="resultMap" type="com.utour.entity.Code">
+        <result javaType="java.lang.String" property="groupCode" column="GROUP_CODE" />
+        <result javaType="java.lang.String" property="code" column="CODE" />
+        <result javaType="java.lang.String" property="codeName" column="CODE_NAME" />
+        <result javaType="java.lang.String" property="description" column="DESCRIPTION" />
+    </resultMap>
+
+    <sql id="select">
+        SELECT
+          GROUP_CODE
+        , CODE
+        , CODE_NAME
+        , DESCRIPTION
+        FROM CODE T
+    </sql>
+
+    <sql id="where">
+        <where>
+            <if test="groupCode != null">AND GROUP_CODE = #{groupCode}</if>
+            <if test="code != null">AND CODE = #{code}</if>
+        </where>
+    </sql>
+
+    <select id="exists" resultType="java.lang.Boolean">
+        <include refid="common.base.existsPrefix" />
+        <include refid="select" />
+        <include refid="where" />
+        <include refid="common.base.existsSuffix" />
+    </select>
+
+    <select id="findById" resultMap="resultMap">
+        <include refid="select" />
+        WHERE GROUP_CODE = #{groupCode}
+        AND CODE = #{code}
+    </select>
+
+    <select id="findAll" resultMap="resultMap">
+        <include refid="select" />
+        <include refid="where" />
+        <include refid="common.base.pagination" />
+    </select>
+
+    <insert id="save">
+        INSERT INTO CODE (
+          GROUP_CODE
+        , CODE
+        , CODE_NAME
+        , DESCRIPTION
+        ) VALUES (
+          #{groupCode }
+        , #{code }
+        , #{codeName }
+        , #{description }
+        )
+        <include refid="common.base.duplicateUpdate" />
+        , CODE_NAME = VALUES(CODE_NAME)
+        , DESCRIPTION = VALUES(DESCRIPTION)
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM CODE
+        WHERE GROUP_CODE = #{groupCode}
+          AND CODE = #{code}
+    </delete>
+
+</mapper>

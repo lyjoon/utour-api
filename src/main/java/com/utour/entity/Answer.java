@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Answer extends CommonEntity {
 
+    private Long answerId;
     private Long inquiryId;
-    private Integer inquiryAnswerId;
     private String title;
     private String writer;
     private String content;

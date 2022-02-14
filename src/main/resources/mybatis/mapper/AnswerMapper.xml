@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.utour.mapper.InquiryMapper">
+
+    <resultMap id="resultMap" type="com.utour.entity.Answer">
+        <result javaType="java.lang.Long" property="answerId" column="ANSWER_ID"  />
+        <result javaType="java.lang.Long" property="inquiryId" column="INQUIRY_ID"  />
+        <result javaType="java.lang.String" property="title" column="TITLE"  />
+        <result javaType="java.lang.String" property="writer" column="WRITER"  />
+        <result javaType="java.lang.String" property="content" column="CONTENT"  />
+        <result javaType="java.lang.Character" property="emailReplyYn" column="EMAIL_REPLY_YN"  />
+        <result javaType="java.time.LocalDateTime" property="emailReplyAt" column="EMAIL_REPLY_AT"  />
+        <result javaType="java.time.LocalDateTime" property="createAt" column="CREATE_AT" />
+        <result javaType="java.time.LocalDateTime" property="updateAt" column="UPDATE_AT" />
+    </resultMap>
+
+    <sql id="select">
+        SELECT
+          ANSWER_ID
+        , INQUIRY_ID
+        , TITLE
+        , WRITER
+        , CONTENT
+        , EMAIL_REPLY_YN
+        , EMAIL_REPLY_AT
+        , CREATE_AT
+        , UPDATE_AT
+        FROM ANSWER T
+    </sql>
+
+    <sql id="where">
+        <where>
+            <if test="answerId != null">AND ANSWER_ID = #{answerId}</if>
+            <if test="inquiryId != null">AND INQUIRY_ID = #{inquiryId}</if>
+            <if test="title != null">AND TITLE LIKE CONCAT(#{title}, '%')</if>
+            <if test="writer != null">AND WRITER LIKE CONCAT(#{writer}, '%')</if>
+            <if test="content != null">AND CONTENT LIKE CONCAT(#{content}, '%')</if>
+        </where>
+    </sql>
+
+    <select id="exists" resultType="java.lang.Boolean">
+        <include refid="common.base.existsPrefix" />
+        <include refid="select" />
+        <include refid="where" />
+        <include refid="common.base.existsSuffix" />
+    </select>
+
+    <select id="findById" resultMap="resultMap">
+        <include refid="select" />
+        WHERE ANSWER_ID = #{answerId}
+    </select>
+
+    <select id="findAll" resultMap="resultMap">
+        <include refid="select" />
+        <include refid="where" />
+        <include refid="common.base.pagination" />
+    </select>
+
+    <insert id="save">
+        INSERT INTO ANSWER (
+          ANSWER_ID
+        , INQUIRY_ID
+        , TITLE
+        , WRITER
+        , CONTENT
+        , EMAIL_REPLY_YN
+        , EMAIL_REPLY_AT
+        ) VALUES (
+          #{answerId }
+        , #{inquiryId }
+        , #{title }
+        , #{writer }
+        , #{content }
+        , #{emailReplyYn }
+        , #{emailReplyAt }
+        )
+        <include refid="common.base.duplicateUpdate" />
+        , WRITER = VALUES(WRITER)
+        , CONTENT = VALUES(CONTENT)
+        , TITLE = VALUES(TITLE)
+        , EMAIL_REPLY_YN = VALUES(EMAIL_REPLY_YN)
+        , EMAIL_REPLY_AT = VALUES(EMAIL_REPLY_AT)
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM INQUIRY
+        WHERE ANSWER_ID = #{answerId}
+    </delete>
+
+</mapper>

@@ -1,5 +1,6 @@
 package com.utour.entity;
 
+import com.utour.annotation.EncryptValue;
 import com.utour.entity.common.Content;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ public class QnA extends Content {
 
     private Long qnaId;
     private Character privateYn;
-    private String password;
+    @EncryptValue(length = 20) private String password;
 
     @Override
     public Long getId() {
