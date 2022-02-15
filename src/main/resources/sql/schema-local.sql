@@ -228,8 +228,8 @@ create table hotel_facility (
 );
 
 
-create table article (
-    article_id bigint not null comment '제품ID',
+create table deal (
+    deal_id bigint not null comment '딜ID',
     hotel_id bigint comment '호텔ID',
     display_type varchar(10) default 'list' comment '노출유형(케로셀, 목록)',
     use_yn char(1) default 'Y' comment '사용유무',
@@ -239,7 +239,7 @@ create table article (
     src varchar(2000) comment '이미지src',
     create_at datetime default now() comment '작성일자',
     update_at datetime comment '변경일자',
-    constraint pk_article primary key (article_id),
+    constraint pk_article primary key (deal_id),
     constraint fk_article foreign key (hotel_id) references hotel (hotel_id)
 );
 

@@ -1,5 +1,6 @@
 package com.utour.entity;
 
+import com.utour.common.CommonEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Article {
+public class Deal extends CommonEntity {
 
     private Long articleId;
     private String hotelId;

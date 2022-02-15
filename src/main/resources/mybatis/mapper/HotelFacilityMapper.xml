@@ -2,31 +2,33 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.utour.mapper.CodeGroupMapper">
+<mapper namespace="com.utour.mapper.HotelFacilityMapper">
 
-    <resultMap id="resultMap" type="com.utour.entity.CodeGroup">
-        <result javaType="java.lang.String" property="groupCode" column="GROUP_CODE" />
-        <result javaType="java.lang.String" property="groupName" column="GROUP_NAME" />
-        <result javaType="java.lang.Character" property="useYn" column="USE_YN" />
+    <resultMap id="resultMap" type="com.utour.entity.HotelFacility">
+        <result javaType="java.lang.Long" property="hotelId" column="HOTEL_ID" />
+        <result javaType="java.lang.Integer" property="facilityId" column="FACILITY_ID" />
+        <result javaType="java.lang.String" property="icon" column="ICON" />
         <result javaType="java.lang.String" property="description" column="DESCRIPTION" />
+        <result javaType="java.lang.Character" property="useYn" column="USE_YN" />
         <result javaType="java.time.LocalDateTime" property="createAt" column="CREATE_AT" />
         <result javaType="java.time.LocalDateTime" property="updateAt" column="UPDATE_AT" />
     </resultMap>
 
     <sql id="select">
         SELECT
-          GROUP_CODE
-        , GROUP_NAME
-        , USE_YN
+          HOTEL_ID
+        , FACILITY_ID
+        , ICON
         , DESCRIPTION
+        , USE_YN
         , CREATE_AT
         , UPDATE_AT
-        FROM CODE T
+        FROM HOTEL_FACILITY T
     </sql>
 
     <sql id="where">
         <where>
-            <if test="groupCode != null">AND GROUP_CODE = #{groupCode}</if>
+            <if test="hotelId != null">AND HOTEL_ID = #{hotelId}</if>
             <if test="useYn != null">AND USE_YN = #{useYn}</if>
         </where>
     </sql>
@@ -40,7 +42,8 @@
 
     <select id="findById" resultMap="resultMap">
         <include refid="select" />
-        WHERE GROUP_CODE = #{groupCode}
+        WHERE HOTEL_ID = #{hotelId}
+        AND FACILITY_ID = #{facilityId}
     </select>
 
     <select id="findAll" resultMap="resultMap">
@@ -50,26 +53,28 @@
     </select>
 
     <insert id="save">
-        INSERT INTO CODE (
-          GROUP_CODE
-        , GROUP_NAME
-        , USE_YN
+        INSERT INTO HOTEL_FACILITY (
+          HOTEL_ID
+        , FACILITY_ID
+        , ICON
         , DESCRIPTION
+        , USE_YN
         ) VALUES (
-          #{groupCode }
-        , #{groupName }
-        , #{useYn}
+          #{hotelId }
+        , #{facilityId }
+        , #{icon }
         , #{description }
+        , #{useYn }
         )
         <include refid="common.base.duplicateUpdate" />
-        , GROUP_NAME = VALUES(GROUP_NAME)
-        , USE_YN = VALUES(USE_YN)
         , DESCRIPTION = VALUES(DESCRIPTION)
+        , USE_YN = VALUES(USE_YN)
     </insert>
 
     <delete id="delete">
-        DELETE FROM CODE
-        WHERE GROUP_CODE = #{groupCode}
+        DELETE FROM HOTEL_FACILITY
+        WHERE HOTEL_ID = #{hotelId}
+          AND FACILITY_ID = #{facilityId}
     </delete>
 
 </mapper>

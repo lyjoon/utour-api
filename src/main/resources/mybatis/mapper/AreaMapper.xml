@@ -2,32 +2,32 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.utour.mapper.CodeGroupMapper">
+<mapper namespace="com.utour.mapper.AreaMapper">
 
-    <resultMap id="resultMap" type="com.utour.entity.CodeGroup">
-        <result javaType="java.lang.String" property="groupCode" column="GROUP_CODE" />
-        <result javaType="java.lang.String" property="groupName" column="GROUP_NAME" />
+    <resultMap id="resultMap" type="com.utour.entity.Area">
+        <result javaType="java.lang.String" property="nationCode" column="NATION_CODE" />
+        <result javaType="java.lang.String" property="areaCode" column="AREA_CODE" />
+        <result javaType="java.lang.String" property="areaName" column="AREA_NAME" />
         <result javaType="java.lang.Character" property="useYn" column="USE_YN" />
-        <result javaType="java.lang.String" property="description" column="DESCRIPTION" />
         <result javaType="java.time.LocalDateTime" property="createAt" column="CREATE_AT" />
         <result javaType="java.time.LocalDateTime" property="updateAt" column="UPDATE_AT" />
     </resultMap>
 
     <sql id="select">
         SELECT
-          GROUP_CODE
-        , GROUP_NAME
+          NATION_CODE
+        , AREA_CODE
+        , AREA_NAME
         , USE_YN
-        , DESCRIPTION
         , CREATE_AT
         , UPDATE_AT
-        FROM CODE T
+        FROM AREA T
     </sql>
 
     <sql id="where">
         <where>
-            <if test="groupCode != null">AND GROUP_CODE = #{groupCode}</if>
-            <if test="useYn != null">AND USE_YN = #{useYn}</if>
+            <if test="nationCode != null">AND NATION_CODE = #{nationCode}</if>
+            <if test="areaCode != null">AND AREA_CODE = #{areaCode}</if>
         </where>
     </sql>
 
@@ -40,7 +40,8 @@
 
     <select id="findById" resultMap="resultMap">
         <include refid="select" />
-        WHERE GROUP_CODE = #{groupCode}
+        WHERE NATION_CODE = #{nationCode}
+        AND AREA_CODE = #{areaCode}
     </select>
 
     <select id="findAll" resultMap="resultMap">
@@ -50,26 +51,26 @@
     </select>
 
     <insert id="save">
-        INSERT INTO CODE (
-          GROUP_CODE
-        , GROUP_NAME
+        INSERT INTO AREA (
+          NATION_CODE
+        , AREA_CODE
+        , AREA_NAME
         , USE_YN
-        , DESCRIPTION
         ) VALUES (
-          #{groupCode }
-        , #{groupName }
-        , #{useYn}
-        , #{description }
+          #{nationCode }
+        , #{areaCode }
+        , #{areaName }
+        , #{useYn }
         )
         <include refid="common.base.duplicateUpdate" />
-        , GROUP_NAME = VALUES(GROUP_NAME)
+        , AREA_NAME = VALUES(AREA_NAME)
         , USE_YN = VALUES(USE_YN)
-        , DESCRIPTION = VALUES(DESCRIPTION)
     </insert>
 
     <delete id="delete">
-        DELETE FROM CODE
-        WHERE GROUP_CODE = #{groupCode}
+        DELETE FROM AREA
+        WHERE NATION_CODE = #{nationCode}
+          AND AREA_CODE = #{areaCode}
     </delete>
 
 </mapper>

@@ -9,6 +9,8 @@
         <result javaType="java.lang.String" property="code" column="CODE" />
         <result javaType="java.lang.String" property="codeName" column="CODE_NAME" />
         <result javaType="java.lang.String" property="description" column="DESCRIPTION" />
+        <result javaType="java.time.LocalDateTime" property="createAt" column="CREATE_AT" />
+        <result javaType="java.time.LocalDateTime" property="updateAt" column="UPDATE_AT" />
     </resultMap>
 
     <sql id="select">
@@ -17,6 +19,8 @@
         , CODE
         , CODE_NAME
         , DESCRIPTION
+        , CREATE_AT
+        , UPDATE_AT
         FROM CODE T
     </sql>
 

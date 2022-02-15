@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.utour.mapper.InquiryMapper">
+<mapper namespace="com.utour.mapper.AnswerMapper">
 
     <resultMap id="resultMap" type="com.utour.entity.Answer">
         <result javaType="java.lang.Long" property="answerId" column="ANSWER_ID"  />
