@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.utour.mapper.InquiryMapper">
 
-    <resultMap id="resultMap" type="com.utour.entity.Inquiry">
+    <resultMap id="resultMap" type="com.utour.entity.Inquiry" extends="common.base.resultMap">
         <result javaType="java.lang.Long" property="inquiryId" column="INQUIRY_ID" />
         <result javaType="java.lang.String" property="writer" column="WRITER" />
         <result javaType="java.lang.String" property="content" column="CONTENT" />
@@ -13,8 +13,6 @@
         <result javaType="java.lang.String" property="nationCode" column="NATION_CODE" />
         <result javaType="java.lang.String" property="areaCode" column="AREA_CODE" />
         <result javaType="java.lang.Long" property="hotelId" column="HOTEL_ID" />
-        <result javaType="java.time.LocalDateTime" property="createAt" column="CREATE_AT" />
-        <result javaType="java.time.LocalDateTime" property="updateAt" column="UPDATE_AT" />
     </resultMap>
 
     <sql id="select">
@@ -27,8 +25,7 @@
         , NATION_CODE
         , AREA_CODE
         , HOTEL_ID
-        , CREATE_AT
-        , UPDATE_AT
+        <include refid="common.base.column" />
         FROM INQUIRY T
     </sql>
 

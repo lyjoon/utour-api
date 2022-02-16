@@ -22,8 +22,7 @@
 
     <sql id="select">
         <include refid="common.content.column" />
-        , CREATE_AT
-        , UPDATE_AT
+        <include refid="common.base.column" />
     </sql>
 
     <sql id="value">
@@ -35,9 +34,9 @@
 
     <sql id="duplicateUpdate">
         <include refid="common.base.duplicateUpdate" />
-        , TITLE = VALUES(title)
-        , CONTENT = VALUES(content)
-        , WRITER = VALUES(writer)
+        , TITLE = VALUES(TITLE)
+        , CONTENT = VALUES(CONTENT)
+        , WRITER = VALUES(WRITER)
     </sql>
 
 </mapper>

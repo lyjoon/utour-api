@@ -13,6 +13,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 public abstract class Attachment extends CommonEntity {
 
+    private Integer attachmentId;
     private String path;
     private String originName;
     private Long size;

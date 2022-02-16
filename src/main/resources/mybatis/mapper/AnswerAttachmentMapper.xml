@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.utour.mapper.AnswerAttachmentMapper">
+
+    <resultMap id="resultMap" type="com.utour.entity.AnswerAttachment" extends="common.attachment.resultMap">
+        <result javaType="java.lang.Long" property="answerId" column="ANSWER_ID"  />
+    </resultMap>
+
+    <sql id="select">
+        SELECT
+        <include refid="common.attachment.select" />
+        ,  ANSWER_ID
+        FROM ANSWER_ATTACHMENT T
+    </sql>
+
+    <sql id="where">
+        <where>
+            <if test="answerId != null">AND ANSWER_ID = #{answerId}</if>
+        </where>
+    </sql>
+
+    <select id="exists" resultType="java.lang.Boolean">
+        <include refid="common.base.existsPrefix" />
+        <include refid="select" />
+        <include refid="where" />
+        <include refid="common.base.existsSuffix" />
+    </select>
+
+    <select id="findById" resultMap="resultMap">
+        <include refid="select" />
+        WHERE ANSWER_ID = #{answerId}
+          AND ATTACHMENT_ID = #{attachmentId}
+    </select>
+
+    <select id="findAll" resultMap="resultMap">
+        <include refid="select" />
+        <include refid="where" />
+        <include refid="common.base.pagination" />
+    </select>
+
+    <insert id="save">
+        INSERT INTO ANSWER_ATTACHMENT (
+        <include refid="common.attachment.column" />
+        , ANSWER_ID
+        ) VALUES (
+        <include refid="common.attachment.value" />
+        , #{answerId }
+        )
+        <include refid="common.attachment.duplicateUpdate" />
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM ANSWER_ATTACHMENT
+        WHERE ANSWER_ID = #{answerId}
+          AND ATTACHMENT_ID = #{attachmentId}
+    </delete>
+
+</mapper>

@@ -6,14 +6,14 @@ drop table if exists code_group cascade;
 drop table if exists area;
 drop table if exists nation;
 
-drop table if exists notice_attach cascade;
+drop table if exists notice_attachment cascade;
 drop table if exists notice cascade;
 drop table if exists qna_reply cascade;
 drop table if exists qna cascade;
 
-drop table if exists inquiry_attach cascade;
+drop table if exists inquiry_attachment cascade;
 drop table if exists inquiry cascade;
-drop table if exists answer_attach cascade;
+drop table if exists answer_attachment cascade;
 drop table if exists answer cascade;
 
 drop table if exists tour_stay_type_facility cascade;
@@ -93,16 +93,16 @@ create table notice (
      constraint pk_notice primary key (notice_id)
 );
 
-create table notice_attach (
+create table notice_attachment (
      notice_id bigint not null comment '게시글ID',
-     notice_attach_id int not null comment '파일ID',
+     attachment_id int not null comment '파일ID',
      path varchar(2000) comment '파일저장경로',
      size bigint comment '파일크기',
      origin_name varchar(100) comment '파일본래이름',
      create_at datetime default now() comment '작성일자',
      update_at datetime comment '변경일자',
-     constraint pk_notice_attach primary key (notice_id, notice_attach_id),
-     constraint fk_notice_attach foreign key (notice_id) references notice (notice_id)
+     constraint pk_notice_attachment primary key (notice_id, attachment_id),
+     constraint fk_notice_attachment foreign key (notice_id) references notice (notice_id)
 );
 
 create table qna (
@@ -146,16 +146,16 @@ create table inquiry (
      constraint pk_inquiry primary key (inquiry_id)
 );
 
-create table inquiry_attach (
+create table inquiry_attachment (
      inquiry_id bigint not null comment '여행문의ID',
-     inquiry_attach_id int not null comment '파일ID',
+     attachment_id int not null comment '파일ID',
      path varchar(2000) comment '파일저장경로',
      size bigint comment '파일크기',
      origin_name varchar(100) comment '파일본래이름',
      create_at datetime default now() comment '작성일자',
      update_at datetime comment '변경일자',
-     constraint pk_inquiry_attach primary key (inquiry_id, inquiry_attach_id),
-     constraint fk_inquiry_attach foreign key (inquiry_id) references inquiry (inquiry_id)
+     constraint pk_inquiry_attachment primary key (inquiry_id, attachment_id),
+     constraint fk_inquiry_attachment foreign key (inquiry_id) references inquiry (inquiry_id)
 );
 
 create table answer (
@@ -172,16 +172,16 @@ create table answer (
      constraint fk_answer foreign key (inquiry_id) references inquiry (inquiry_id)
 );
 
-create table answer_attach (
+create table answer_attachment (
      answer_id bigint not null comment '답변ID',
-     answer_attach_id int not null comment '답변파일ID',
+     attachment_id int not null comment '답변파일ID',
      path varchar(2000) comment '파일저장경로',
      size bigint comment '파일크기',
      origin_name varchar(100) comment '파일본래이름',
      create_at datetime default now() comment '작성일자',
      update_at datetime comment '변경일자',
-     constraint pk_answer_attach primary key (answer_id, answer_attach_id),
-     constraint fk_answer_attach foreign key (answer_id) references answer (answer_id)
+     constraint pk_answer_attachment primary key (answer_id, attachment_id),
+     constraint fk_answer_attachment foreign key (answer_id) references answer (answer_id)
 );
 
 create table hotel (

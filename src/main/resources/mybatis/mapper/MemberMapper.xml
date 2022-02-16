@@ -2,29 +2,29 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.utour.mapper.AreaMapper">
+<mapper namespace="com.utour.mapper.MemberMapper">
 
-    <resultMap id="resultMap" type="com.utour.entity.Area" extends="common.base.resultMap">
-        <result javaType="java.lang.String" property="nationCode" column="NATION_CODE" />
-        <result javaType="java.lang.String" property="areaCode" column="AREA_CODE" />
-        <result javaType="java.lang.String" property="areaName" column="AREA_NAME" />
+    <resultMap id="resultMap" type="com.utour.entity.Member" extends="common.base.resultMap">
+        <result javaType="java.lang.String" property="userId" column="USER_ID" />
         <result javaType="java.lang.Character" property="useYn" column="USE_YN" />
+        <result javaType="java.lang.String" property="password" column="PASSWORD" />
+        <result javaType="java.lang.String" property="name" column="NAME" />
     </resultMap>
 
     <sql id="select">
         SELECT
-          NATION_CODE
-        , AREA_CODE
-        , AREA_NAME
+          USER_ID
         , USE_YN
+        , PASSWORD
+        , NAME
         <include refid="common.base.column" />
-        FROM AREA T
+        FROM MEMBER T
     </sql>
 
     <sql id="where">
         <where>
-            <if test="nationCode != null">AND NATION_CODE = #{nationCode}</if>
-            <if test="areaCode != null">AND AREA_CODE = #{areaCode}</if>
+            <if test="userId != null">AND USER_ID = #{userId}</if>
+            <if test="password != null">AND PASSWORD = #{password}</if>
         </where>
     </sql>
 
@@ -37,8 +37,7 @@
 
     <select id="findById" resultMap="resultMap">
         <include refid="select" />
-        WHERE NATION_CODE = #{nationCode}
-        AND AREA_CODE = #{areaCode}
+        WHERE USER_ID = #{userId}
     </select>
 
     <select id="findAll" resultMap="resultMap">
@@ -48,26 +47,26 @@
     </select>
 
     <insert id="save">
-        INSERT INTO AREA (
-          NATION_CODE
-        , AREA_CODE
-        , AREA_NAME
+        INSERT INTO MEMBER (
+          USER_ID
         , USE_YN
+        , PASSWORD
+        , NAME
         ) VALUES (
-          #{nationCode }
-        , #{areaCode }
-        , #{areaName }
-        , #{useYn }
+          #{userId}
+        , #{useYn}
+        , #{password}
+        , #{name}
         )
         <include refid="common.base.duplicateUpdate" />
-        , AREA_NAME = VALUES(AREA_NAME)
         , USE_YN = VALUES(USE_YN)
+        , PASSWORD = VALUES(PASSWORD)
+        , NAME = VALUES(NAME)
     </insert>
 
     <delete id="delete">
-        DELETE FROM AREA
-        WHERE NATION_CODE = #{nationCode}
-          AND AREA_CODE = #{areaCode}
+        DELETE FROM MEMBER
+        WHERE USER_ID = #{userId}
     </delete>
 
 </mapper>

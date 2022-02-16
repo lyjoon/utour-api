@@ -5,6 +5,7 @@
 <mapper namespace="common.attachment">
 
     <resultMap id="resultMap" type="com.utour.entity.common.Attachment">
+        <result javaType="java.lang.Integer" property="attachmentId" column="ATTACHMENT_ID" />
         <result javaType="java.lang.String" property="path" column="PATH" />
         <result javaType="java.lang.String" property="originName" column="ORIGIN_NAME" />
         <result javaType="java.lang.Long" property="size" column="SIZE" />
@@ -13,20 +14,29 @@
     </resultMap>
 
     <sql id="column">
-          PATH
+          ATTACHMENT_ID
+        , PATH
         , ORIGIN_NAME
         , SIZE
     </sql>
 
     <sql id="select">
         <include refid="common.attachment.column" />
-        , CREATE_AT
-        , UPDATE_AT
+        <include refid="common.base.column" />
     </sql>
 
     <sql id="value">
-          #{path}
+          #{attachmentId}
+        , #{path}
         , #{originName}
         , #{size}
     </sql>
+
+    <sql id="duplicateUpdate">
+        <include refid="common.base.duplicateUpdate" />
+        , PATH = VALUES(PATH)
+        , ORIGIN_NAME = VALUES(ORIGIN_NAME)
+        , SIZE = VALUES(SIZE)
+    </sql>
+
 </mapper>

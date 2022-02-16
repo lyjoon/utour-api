@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.utour.mapper.AnswerMapper">
 
-    <resultMap id="resultMap" type="com.utour.entity.Answer">
+    <resultMap id="resultMap" type="com.utour.entity.Answer" extends="common.base.resultMap">
         <result javaType="java.lang.Long" property="answerId" column="ANSWER_ID"  />
         <result javaType="java.lang.Long" property="inquiryId" column="INQUIRY_ID"  />
         <result javaType="java.lang.String" property="title" column="TITLE"  />
@@ -12,8 +12,6 @@
         <result javaType="java.lang.String" property="content" column="CONTENT"  />
         <result javaType="java.lang.Character" property="emailReplyYn" column="EMAIL_REPLY_YN"  />
         <result javaType="java.time.LocalDateTime" property="emailReplyAt" column="EMAIL_REPLY_AT"  />
-        <result javaType="java.time.LocalDateTime" property="createAt" column="CREATE_AT" />
-        <result javaType="java.time.LocalDateTime" property="updateAt" column="UPDATE_AT" />
     </resultMap>
 
     <sql id="select">
@@ -25,8 +23,7 @@
         , CONTENT
         , EMAIL_REPLY_YN
         , EMAIL_REPLY_AT
-        , CREATE_AT
-        , UPDATE_AT
+        <include refid="common.base.column" />
         FROM ANSWER T
     </sql>
 
@@ -85,7 +82,7 @@
     </insert>
 
     <delete id="delete">
-        DELETE FROM INQUIRY
+        DELETE FROM ANSWER
         WHERE ANSWER_ID = #{answerId}
     </delete>
 

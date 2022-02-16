@@ -4,14 +4,12 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.utour.mapper.HotelFacilityMapper">
 
-    <resultMap id="resultMap" type="com.utour.entity.HotelFacility">
+    <resultMap id="resultMap" type="com.utour.entity.HotelFacility" extends="common.base.resultMap">
         <result javaType="java.lang.Long" property="hotelId" column="HOTEL_ID" />
         <result javaType="java.lang.Integer" property="facilityId" column="FACILITY_ID" />
         <result javaType="java.lang.String" property="icon" column="ICON" />
         <result javaType="java.lang.String" property="description" column="DESCRIPTION" />
         <result javaType="java.lang.Character" property="useYn" column="USE_YN" />
-        <result javaType="java.time.LocalDateTime" property="createAt" column="CREATE_AT" />
-        <result javaType="java.time.LocalDateTime" property="updateAt" column="UPDATE_AT" />
     </resultMap>
 
     <sql id="select">
@@ -21,8 +19,7 @@
         , ICON
         , DESCRIPTION
         , USE_YN
-        , CREATE_AT
-        , UPDATE_AT
+        <include refid="common.base.column" />
         FROM HOTEL_FACILITY T
     </sql>
 

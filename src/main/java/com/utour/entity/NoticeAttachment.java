@@ -11,8 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class InquiryAttach extends Attachment {
+public class NoticeAttachment extends Attachment {
 
-    private Long inquiryId;
-    private Integer inquiryAttachId;
+    private Long noticeId;
 }

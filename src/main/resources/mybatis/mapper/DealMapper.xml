@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.utour.mapper.DealMapper">
 
-    <resultMap id="resultMap" type="com.utour.entity.Deal">
+    <resultMap id="resultMap" type="com.utour.entity.Deal" extends="common.base.resultMap">
         <result javaType="java.lang.Long" property="dealId" column="DEAL_ID" />
         <result javaType="java.lang.String" property="hotelId" column="HOTEL_ID" />
         <result javaType="java.lang.String" property="displayType" column="DISPLAY_TYPE" />
@@ -13,8 +13,6 @@
         <result javaType="java.lang.Integer" property="ordinal" column="ORDINAL" />
         <result javaType="java.lang.String" property="src" column="SRC" />
         <result javaType="java.lang.Character" property="useYn" column="USE_YN" />
-        <result javaType="java.time.LocalDateTime" property="createAt" column="CREATE_AT" />
-        <result javaType="java.time.LocalDateTime" property="updateAt" column="UPDATE_AT" />
     </resultMap>
 
     <sql id="select">
@@ -27,8 +25,7 @@
         , ORDINAL
         , SRC
         , USE_YN
-        , CREATE_AT
-        , UPDATE_AT
+        <include refid="common.base.column" />
         FROM DEAL T
     </sql>
 

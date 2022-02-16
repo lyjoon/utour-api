@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.utour.mapper.QnAReplyMapper">
+
+    <resultMap id="resultMap" type="com.utour.entity.QnAReply" extends="common.base.resultMap">
+        <result javaType="java.lang.Long" property="qnaId" column="QNA_ID" />
+        <result javaType="java.lang.Integer" property="qnaReplyId" column="QNA_REPLY_ID" />
+        <result javaType="java.lang.String" property="writer" column="WRITER" />
+        <result javaType="java.lang.String" property="content" column="CONTENT" />
+        <result javaType="java.lang.String" property="password" column="PASSWORD" />
+        <result javaType="java.lang.Character" property="privateYn" column="PRIVATE_YN" />
+        <result javaType="java.lang.Character" property="adminYn" column="ADMIN_YN" />
+    </resultMap>
+
+    <sql id="select">
+        SELECT
+          QNA_ID
+        , QNA_REPLY_ID
+        , WRITER
+        , CONTENT
+        , PASSWORD
+        , PRIVATE_YN
+        , ADMIN_YN
+        <include refid="common.base.column" />
+        FROM QNA_REPLY T
+    </sql>
+
+    <sql id="where">
+        <where>
+            <if test="qnaId != null">AND QNA_ID = #{qnaId}</if>
+            <if test="qnaReplyId != null">AND QNA_REPLY_ID = #{qnaReplyId}</if>
+        </where>
+    </sql>
+
+    <select id="exists" resultType="java.lang.Boolean">
+        <include refid="common.base.existsPrefix" />
+        <include refid="select" />
+        <include refid="where" />
+        <include refid="common.base.existsSuffix" />
+    </select>
+
+    <select id="findById" resultMap="resultMap">
+        <include refid="select" />
+        WHERE QNA_ID = #{qnaId}
+          AND QNA_REPLY_ID = #{qnaReplyId}
+    </select>
+
+    <select id="findAll" resultMap="resultMap">
+        <include refid="select" />
+        <include refid="where" />
+        <include refid="common.base.pagination" />
+    </select>
+
+    <insert id="save">
+        INSERT INTO QNA_REPLY (
+          QNA_ID
+        , QNA_REPLY_ID
+        , WRITER
+        , CONTENT
+        , PASSWORD
+        , PRIVATE_YN
+        , ADMIN_YN
+        ) VALUES (
+          #{qnaId }
+        , #{qnaReplyId }
+        , #{writer }
+        , #{content }
+        , #{password }
+        , #{privateYn }
+        , #{adminYn }
+        )
+        <include refid="common.base.duplicateUpdate" />
+        , PRIVATE_YN = VALUES(PRIVATE_YN)
+        , ADMIN_YN = VALUES(ADMIN_YN)
+        , PASSWORD = VALUES(PASSWORD)
+        , WRITER = VALUES(WRITER)
+        , CONTENT = VALUES(CONTENT)
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM QNA_REPLY
+        WHERE QNA_ID = #{qnaId}
+          AND QNA_REPLY_ID = #{qnaReplyId}
+    </delete>
+
+</mapper>

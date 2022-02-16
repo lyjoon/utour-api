@@ -4,13 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.utour.mapper.CodeGroupMapper">
 
-    <resultMap id="resultMap" type="com.utour.entity.CodeGroup">
+    <resultMap id="resultMap" type="com.utour.entity.CodeGroup" extends="common.base.resultMap">
         <result javaType="java.lang.String" property="groupCode" column="GROUP_CODE" />
         <result javaType="java.lang.String" property="groupName" column="GROUP_NAME" />
         <result javaType="java.lang.Character" property="useYn" column="USE_YN" />
         <result javaType="java.lang.String" property="description" column="DESCRIPTION" />
-        <result javaType="java.time.LocalDateTime" property="createAt" column="CREATE_AT" />
-        <result javaType="java.time.LocalDateTime" property="updateAt" column="UPDATE_AT" />
     </resultMap>
 
     <sql id="select">
@@ -19,8 +17,7 @@
         , GROUP_NAME
         , USE_YN
         , DESCRIPTION
-        , CREATE_AT
-        , UPDATE_AT
+        <include refid="common.base.column" />
         FROM CODE T
     </sql>
 
