@@ -36,6 +36,8 @@ public class TestQnAMapper extends TestMapper {
     @Test
     @Override
     public void findAll() {
+        this.save();
+        this.save();
         List<QnA> list = this.qnAMapper.findAll(null);
         log.info("list-size : {}", Optional.ofNullable(list).map(List::size).orElse(0));
         Assertions.assertNotNull(list);
