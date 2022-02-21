@@ -1,6 +1,7 @@
 package com.utour.service;
 
 import com.utour.common.CommonService;
+import com.utour.dto.RequestPagingDto;
 import com.utour.dto.product.ProductDto;
 import com.utour.entity.Product;
 import com.utour.mapper.ProductMapper;
@@ -23,7 +24,7 @@ public class ProductService extends CommonService {
         this.productMapper.delete(this.convert(productDto, Product.class));
     }
 
-    public List<Product> pageList(SearchProductDto searchProductDto) {
-        return this.productMapper.search(searchProductDto);
+    public List<Product> pageList(RequestPagingDto requestPagingDto) {
+        return this.productMapper.findPage(requestPagingDto);
     }
 }

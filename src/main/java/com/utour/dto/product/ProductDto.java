@@ -1,14 +1,14 @@
 package com.utour.dto.product;
 
-import com.utour.domain.Pagination;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductDto extends Pagination {
+public class ProductDto {
 
     private Long productId;
     private String hotelId;
