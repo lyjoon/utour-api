@@ -1,6 +1,6 @@
 package com.utour.common;
 
-import com.utour.transfer.Response;
+import com.utour.dto.ResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,16 +27,16 @@ public class CommonController extends CommonComponent {
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
 	}
 
-	protected ResponseEntity<Response> ok(String message){
-		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(Response.builder().message(message).build());
+	protected ResponseEntity<ResponseDto> ok(String message){
+		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(ResponseDto.builder().message(message).build());
 	}
 
 	protected ResponseEntity<Void> response(HttpStatus httpStatus){
 		return ResponseEntity.status(httpStatus).contentType(MediaType.APPLICATION_JSON).build();
 	}
 
-	protected ResponseEntity<Response> response(HttpStatus httpStatus, String message){
-		return ResponseEntity.status(httpStatus).contentType(MediaType.APPLICATION_JSON).body(Response.builder().message(message).build());
+	protected ResponseEntity<ResponseDto> response(HttpStatus httpStatus, String message){
+		return ResponseEntity.status(httpStatus).contentType(MediaType.APPLICATION_JSON).body(ResponseDto.builder().message(message).build());
 	}
 
 }

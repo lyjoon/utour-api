@@ -36,8 +36,9 @@ public class TestHotelMapper extends TestMapper {
         this.hotelMapper.save(Hotel.builder().hotelId(1L).hotelUrl("www.naver.com").hotelClass("C").writer("홍").hotelName("성도").areaCode("SR").content("asdasd").nationCode("kr").build());
     }
 
+    @Test
     @Override
     public void delete() {
-
+        this.hotelMapper.delete(Hotel.builder().hotelId(1L).build());
     }
 }

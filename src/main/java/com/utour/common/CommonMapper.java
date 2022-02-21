@@ -26,13 +26,6 @@ public interface CommonMapper <T>{
     T findById(T t);
 
     /**
-     * 데이터 목록조회
-     * @param t
-     * @return
-     */
-    List<T> findAll(T t);
-
-    /**
      * 데이터 유무 검색
      * @param t
      * @return

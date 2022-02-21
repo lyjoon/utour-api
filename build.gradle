@@ -36,6 +36,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}")
     implementation("org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}")
 
+    implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.9'
 
     // https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot-starter
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3")

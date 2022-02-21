@@ -56,7 +56,6 @@
     <select id="findAll" resultMap="resultMap">
         <include refid="select" />
         <include refid="where" />
-        <include refid="common.base.pagination" />
     </select>
 
     <insert id="save">

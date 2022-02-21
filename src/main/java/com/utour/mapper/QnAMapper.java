@@ -6,6 +6,8 @@ import com.utour.common.CommonMapper;
 import com.utour.entity.QnA;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface QnAMapper extends CommonMapper<QnA> {
 
@@ -16,4 +18,6 @@ public interface QnAMapper extends CommonMapper<QnA> {
     @Decrypt
     @Override
     QnA findById(QnA qnA);
+
+    List<QnA> findAll(QnA qnA);
 }

@@ -11,10 +11,10 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Deal extends CommonEntity {
+public class Product extends CommonEntity {
 
-    private Long articleId;
-    private String hotelId;
+    private Long productId;
+    private Long hotelId;
     private String displayType;
     private String title;
     private String description;

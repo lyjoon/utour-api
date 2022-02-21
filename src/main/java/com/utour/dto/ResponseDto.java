@@ -1,4 +1,4 @@
-package com.utour.transfer;
+package com.utour.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Response<T> {
+public class ResponseDto<T> {
 
     /**
      * 응답 메세지
