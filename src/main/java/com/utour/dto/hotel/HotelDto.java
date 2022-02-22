@@ -1,17 +1,20 @@
 package com.utour.dto.hotel;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 public class HotelDto {
 
     private Long hotelId;
     private String nationCode;
+    private String nationName;
     private String areaCode;
+    private String areaName;
     private Character useYn;
 
     private String hotelName;

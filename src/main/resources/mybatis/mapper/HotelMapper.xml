@@ -58,7 +58,16 @@
         <include refid="where" />
     </select>
 
+    <select id="findPage" resultMap="resultMap">
+        <include refid="select" />
+        <include refid="where" />
+        <include refid="common.base.pagination" />
+    </select>
+
     <insert id="save">
+        <selectKey keyProperty="hotelId" resultType="java.lang.Long" order="BEFORE" keyColumn="hotelId">
+            SELECT IFNULL(#{hotelId }, (SELECT IFNULL((SELECT MAX(HOTEL_ID) AS MX_ID FROM HOTEL), 0) + 1)) AS HOTEL_ID
+        </selectKey>
         INSERT INTO HOTEL (
         <include refid="common.content.column" />
         , HOTEL_ID

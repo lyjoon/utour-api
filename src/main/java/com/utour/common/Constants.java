@@ -7,4 +7,5 @@ public interface Constants {
     int DEFAULT_PAGING_COUNT = 20;
 
     Character Y = 'Y', N = 'N';
+
 }

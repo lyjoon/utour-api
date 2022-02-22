@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 public class Product extends CommonEntity {
 
     private Long productId;
-    private Long hotelId;
+    private String productType;
     private String displayType;
     private String title;
     private String description;

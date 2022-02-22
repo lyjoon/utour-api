@@ -3,6 +3,7 @@ package com.utour.service;
 import com.utour.common.CommonService;
 import com.utour.dto.RequestPagingDto;
 import com.utour.dto.hotel.HotelDto;
+import com.utour.dto.hotel.HotelFacilityDto;
 import com.utour.dto.hotel.HotelImageDto;
 import com.utour.dto.hotel.HotelDetailDto;
 import com.utour.entity.Hotel;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +40,7 @@ public class HotelService extends CommonService {
         if(exists_1) {
             this.hotelFacilityMapper.delete(_hotelFacility);
         }
+
         Optional.ofNullable(hotelDetailDto.getHotelFacilities())
                 .ifPresent(hotelFacilities -> hotelFacilities.forEach(hotelFacilityDto -> {
                     hotelFacilityDto.setHotelId(hotel.getHotelId());
@@ -83,7 +86,22 @@ public class HotelService extends CommonService {
         this.hotelMapper.delete(hotel);
     }
 
-    public List<HotelDto> paging(RequestPagingDto requestPagingDto) {
-        return this.hotelMapper.findPage(requestPagingDto);
+    public List<HotelDetailDto> paging(RequestPagingDto requestPagingDto) {
+        return this.hotelMapper.findPage(requestPagingDto)
+                .stream()
+                .map(vo -> HotelDetailDto.builder()
+                        .hotelDto(this.convert(vo, HotelDto.class))
+                        .hotelImages(this.hotelImageMapper.findAll(HotelImage.builder().hotelId(vo.getHotelId()).build())
+                                .stream()
+                                .map(vo1 -> this.convert(vo1, HotelImageDto.class))
+                                .collect(Collectors.toList())
+                        )
+                        .hotelFacilities(this.hotelFacilityMapper.findAll(HotelFacility.builder().hotelId(vo.getHotelId()).build())
+                                .stream()
+                                .map(vo2 -> this.convert(vo2, HotelFacilityDto.class))
+                                .collect(Collectors.toList())
+                        )
+                        .build())
+                .collect(Collectors.toList());
     }
 }

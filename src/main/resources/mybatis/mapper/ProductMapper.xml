@@ -6,6 +6,7 @@
 
     <resultMap id="resultMap" type="com.utour.entity.Product" extends="common.base.resultMap">
         <result javaType="java.lang.Long" property="productId" column="PRODUCT_ID" />
+        <result javaType="java.lang.String" property="productType" column="PRODUCT_TYPE" />
         <result javaType="java.lang.Long" property="hotelId" column="HOTEL_ID" />
         <result javaType="java.lang.String" property="displayType" column="DISPLAY_TYPE" />
         <result javaType="java.lang.String" property="title" column="TITLE" />
@@ -18,6 +19,7 @@
     <sql id="select">
         SELECT
           PRODUCT_ID
+        , PRODUCT_TYPE
         , HOTEL_ID
         , DISPLAY_TYPE
         , TITLE
@@ -31,6 +33,7 @@
 
     <sql id="where">
         <where>
+            <if test="productType != null">AND PRODUCT_TYPE = #{productType}</if>
             <if test="productId != null">AND PRODUCT_ID = #{productId}</if>
             <if test="useYn != null">AND USE_YN = #{useYn}</if>
             <if test="displayType != null">AND DISPLAY_TYPE = #{displayType}</if>
@@ -48,6 +51,7 @@
     <select id="findById" resultMap="resultMap">
         <include refid="select" />
         WHERE PRODUCT_ID = #{productId}
+          AND PRODUCT_TYPE = #{productType}
     </select>
 
     <select id="findAll" resultMap="resultMap">
@@ -56,9 +60,17 @@
         ORDER BY T.ORDINAL DESC
     </select>
 
+    <select id="findPage" resultMap="resultMap">
+        <include refid="select" />
+        <include refid="where" />
+        ORDER BY T.ORDINAL DESC
+        <include refid="common.base.pagination" />
+    </select>
+
     <insert id="save">
         INSERT INTO PRODUCT (
-          PRODUCT_ID
+          PRODUCT_TYPE
+        , PRODUCT_ID
         , HOTEL_ID
         , DISPLAY_TYPE
         , TITLE
@@ -67,7 +79,8 @@
         , SRC
         , USE_YN
         ) VALUES (
-          #{productId }
+          #{productType }
+        , #{productId }
         , #{hotelId }
         , #{displayType }
         , #{title }
@@ -88,6 +101,7 @@
     <delete id="delete">
         DELETE FROM PRODUCT
         WHERE PRODUCT_ID = #{productId}
+          AND PRODUCT_TYPE = #{productType}
     </delete>
 
 </mapper>

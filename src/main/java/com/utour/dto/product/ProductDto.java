@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 public class ProductDto {
 
     private Long productId;
-    private String hotelId;
+    private String productType;
     private String displayType;
     private String title;
     private String description;

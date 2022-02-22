@@ -49,6 +49,11 @@
     </select>
 
     <insert id="save">
+        <selectKey keyColumn="facilityId" order="BEFORE" resultType="java.lang.Integer" keyProperty="facilityId">
+            SELECT IFNULL(#{facilityId }, (
+                SELECT IFNULL((SELECT MAX(FACILITY_ID) AS MX_ID FROM HOTEL_FACILITY WHERE HOTEL_ID = #{hotelId}), 0) + 1)
+                ) AS HOTEL_ID
+        </selectKey>
         INSERT INTO HOTEL_FACILITY (
           HOTEL_ID
         , FACILITY_ID

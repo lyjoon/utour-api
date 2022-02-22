@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +25,10 @@ public class ProductService extends CommonService {
         this.productMapper.delete(this.convert(productDto, Product.class));
     }
 
-    public List<Product> pageList(RequestPagingDto requestPagingDto) {
-        return this.productMapper.findPage(requestPagingDto);
+    public List<ProductDto> pageList(RequestPagingDto requestPagingDto) {
+        return this.productMapper.findPage(requestPagingDto)
+                .stream()
+                .map(vo -> this.convert(vo, ProductDto.class))
+                .collect(Collectors.toList());
     }
 }

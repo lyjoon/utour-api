@@ -33,7 +33,9 @@ public class TestHotelMapper extends TestMapper {
     @Test
     @Override
     public void save() {
-        this.hotelMapper.save(Hotel.builder().hotelId(1L).hotelUrl("www.naver.com").hotelClass("C").writer("홍").hotelName("성도").areaCode("SR").content("asdasd").nationCode("kr").build());
+        Hotel hotel = Hotel.builder().hotelId(1L).hotelUrl("www.naver.com").hotelClass("C").writer("홍").hotelName("성도").areaCode("SR").content("asdasd").nationCode("kr").build();
+        this.hotelMapper.save(hotel);
+        log.info("save:{}", hotel.toString());
     }
 
     @Test
