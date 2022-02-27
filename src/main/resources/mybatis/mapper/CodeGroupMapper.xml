@@ -8,7 +8,7 @@
         <result javaType="java.lang.String" property="groupCode" column="GROUP_CODE" />
         <result javaType="java.lang.String" property="groupName" column="GROUP_NAME" />
         <result javaType="java.lang.Character" property="useYn" column="USE_YN" />
-        <result javaType="java.lang.String" property="description" column="DESCRIPTION" />
+        <collection property="codeList" javaType="java.util.ArrayList" column="{groupCode=GROUP_CODE}" select="com.utour.mapper.CodeMapper.findAll" />
     </resultMap>
 
     <sql id="select">
@@ -16,9 +16,8 @@
           GROUP_CODE
         , GROUP_NAME
         , USE_YN
-        , DESCRIPTION
         <include refid="common.base.column" />
-        FROM CODE T
+        FROM CODE_GROUP T
     </sql>
 
     <sql id="where">
@@ -46,25 +45,22 @@
     </select>
 
     <insert id="save">
-        INSERT INTO CODE (
+        INSERT INTO CODE_GROUP (
           GROUP_CODE
         , GROUP_NAME
         , USE_YN
-        , DESCRIPTION
         ) VALUES (
           #{groupCode }
         , #{groupName }
         , #{useYn}
-        , #{description }
         )
         <include refid="common.base.duplicateUpdate" />
         , GROUP_NAME = VALUES(GROUP_NAME)
         , USE_YN = VALUES(USE_YN)
-        , DESCRIPTION = VALUES(DESCRIPTION)
     </insert>
 
     <delete id="delete">
-        DELETE FROM CODE
+        DELETE FROM CODE_GROUP
         WHERE GROUP_CODE = #{groupCode}
     </delete>
 

@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Getter
 @SuperBuilder
 @AllArgsConstructor
@@ -17,4 +19,6 @@ public class CodeGroup extends CommonEntity {
     private String groupName;
     private Character useYn;
     private String description;
+
+    private List<Code> codeList;
 }

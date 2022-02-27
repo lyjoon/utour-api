@@ -19,7 +19,10 @@ spring:
     property-naming-strategy: SNAKE_CASE
     date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
     default-property-inclusion: non_null
-
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
 jasypt:
   encryptor:
     bean: jasyptStringEncryptor
+

@@ -16,7 +16,7 @@ public class TestTransferConvert extends TestLocalApplication {
     @Test
     public void testConvert() {
         Product product =Product.builder()
-                .hotelId(1L)
+                .productType("sr")
                 .productId(1L)
                 .description("테스트")
                 .title("제목")

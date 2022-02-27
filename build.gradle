@@ -35,12 +35,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}")
     implementation("org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}")
     implementation("org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-cache:${springBootVersion}")
 
     implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.9'
 
     // https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot-starter
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3")
-
 
     implementation("org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}")
@@ -63,7 +63,10 @@ dependencies {
     implementation("commons-io:commons-io:2.8.0")
 
     testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-    testImplementation("org.springframework.boot:spring-boot-starter-test:${springMybatisVersion}")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+
+    implementation "org.ehcache:ehcache:3.9.9"
+    implementation "javax.cache:cache-api:1.1.1"
 
 }
 
