@@ -2,6 +2,7 @@ package com.utour.entity;
 
 
 import com.utour.common.CommonEntity;
+import com.utour.common.Constants;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -12,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @ToString(callSuper = true)
 public class Code extends CommonEntity {
 
-    private String groupCode;
+    private Constants.GroupCode groupCode;
     private String code;
     private String codeName;
     private String description;

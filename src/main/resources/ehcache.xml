@@ -18,14 +18,14 @@
         <heap>20</heap>
     </cache-template>
 
-    <cache alias="codeGroup" >
+    <cache alias="groupCode">
         <key-type>java.lang.String</key-type>
         <value-type>com.utour.entity.CodeGroup</value-type>
         <expiry>
             <ttl>600</ttl>
         </expiry>
         <resources>
-            <heap unit="entries">5000</heap>
+            <heap>5000</heap>
         </resources>
     </cache>
 

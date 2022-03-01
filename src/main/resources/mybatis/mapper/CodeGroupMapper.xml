@@ -5,7 +5,7 @@
 <mapper namespace="com.utour.mapper.CodeGroupMapper">
 
     <resultMap id="resultMap" type="com.utour.entity.CodeGroup" extends="common.base.resultMap">
-        <result javaType="java.lang.String" property="groupCode" column="GROUP_CODE" />
+        <result javaType="com.utour.common.Constants$GroupCode" property="groupCode" column="GROUP_CODE" />
         <result javaType="java.lang.String" property="groupName" column="GROUP_NAME" />
         <result javaType="java.lang.Character" property="useYn" column="USE_YN" />
         <collection property="codeList" javaType="java.util.ArrayList" column="{groupCode=GROUP_CODE}" select="com.utour.mapper.CodeMapper.findAll" />
