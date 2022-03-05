@@ -22,7 +22,8 @@ public class ProductController extends CommonController {
     private final ProductService productService;
 
     @GetMapping(value = "/page/list")
-    public List<ProductDto> getPageList(@RequestBody RequestPagingDto requestPagingDto) {
-        return this.productService.getPageList(requestPagingDto);
+    public List<ProductDto> getPageList() {
+        ProductDto productDto = new ProductDto();
+        return this.productService.getPageList(productDto);
     }
 }

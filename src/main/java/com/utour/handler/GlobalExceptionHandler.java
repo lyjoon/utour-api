@@ -1,6 +1,7 @@
 package com.utour.handler;
 
 import com.utour.common.CommonComponent;
+import com.utour.dto.ErrorResponseDto;
 import com.utour.dto.ResponseDto;
 import com.utour.exception.ValidException;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class GlobalExceptionHandler extends CommonComponent {
      * @return
      */
     @ExceptionHandler(value = ValidException.class)
-    public ResponseEntity<ResponseDto> validExceptionHandler(ValidException throwable) {
+    public ErrorResponseDto validExceptionHandler(ValidException throwable) {
         String validErrorMessage = Optional.ofNullable(throwable.getBindingResult()).map(bindingResult -> {
             FieldError fieldError = bindingResult.getFieldError();
             return Optional.ofNullable(fieldError)
@@ -31,11 +32,18 @@ public class GlobalExceptionHandler extends CommonComponent {
                     .orElse(messageSourceAccessor.getMessage("error.valid.message"));
         }).orElse(messageSourceAccessor.getMessage("error.valid.message"));
 
-        throwable.printStackTrace();
+        if(log.isDebugEnabled()) throwable.printStackTrace();
+
+        /*
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(ResponseDto.builder()
                         .message(validErrorMessage)
-                        .build());
+                        .build());*/
+
+        return ErrorResponseDto.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message(validErrorMessage)
+                .build();
     }
 }

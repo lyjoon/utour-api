@@ -6,6 +6,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 public class CommonService extends CommonComponent {
 
 
@@ -17,5 +20,9 @@ public class CommonService extends CommonComponent {
 
     protected <T> T convert(Object argument, Class<T> type) {
         return new ModelMapper().map(argument, type);
+    }
+
+    protected Map<String, Object> asMap(Object argument) {
+        return new ModelMapper().map(argument, TreeMap.class);
     }
 }
