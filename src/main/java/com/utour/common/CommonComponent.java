@@ -1,6 +1,6 @@
 package com.utour.common;
 
-import com.utour.util.StringUtil;
+import com.utour.util.StringUtils;
 import org.jasypt.encryption.StringEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class CommonComponent {
     }
 
     protected String encrypt(String message){
-        return jasyptStringEncryptor.encrypt(StringUtil.defaultString(message, ""));
+        return jasyptStringEncryptor.encrypt(StringUtils.defaultString(message, ""));
     }
 
     protected String decrypt(String encryptMessage){

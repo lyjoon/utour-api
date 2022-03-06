@@ -18,14 +18,35 @@
         <heap>20</heap>
     </cache-template>
 
-    <cache alias="groupCode">
+    <cache alias="commonCode">
         <key-type>java.lang.String</key-type>
-        <value-type>com.utour.entity.CodeGroup</value-type>
+        <value-type>com.utour.dto.code.CodeDto</value-type>
         <expiry>
             <ttl>600</ttl>
         </expiry>
         <resources>
             <heap>5000</heap>
+        </resources>
+    </cache>
+
+    <cache alias="nationList">
+        <value-type>com.utour.dto.code.NationDto</value-type>
+        <expiry>
+            <ttl>600</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">255</heap>
+        </resources>
+    </cache>
+
+    <cache alias="areaList">
+        <key-type>java.lang.String</key-type>
+        <value-type>com.utour.dto.code.AreaDto</value-type>
+        <expiry>
+            <ttl>600</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">500</heap>
         </resources>
     </cache>
 

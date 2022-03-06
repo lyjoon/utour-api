@@ -86,7 +86,7 @@ public class HotelService extends CommonService {
         this.hotelMapper.delete(hotel);
     }
 
-    public List<HotelDetailDto> paging(PagingDto pagingDto) {
+    public List<HotelDetailDto> getList(PagingDto pagingDto) {
         return this.hotelMapper.findPage(pagingDto)
                 .stream()
                 .map(vo -> HotelDetailDto.builder()

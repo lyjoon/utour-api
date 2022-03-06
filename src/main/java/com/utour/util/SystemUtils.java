@@ -2,7 +2,7 @@ package com.utour.util;
 
 import java.util.Optional;
 
-public class SystemUtil {
+public class SystemUtils {
 
     public static String getEnv(String envName){
         return getEnv(envName, null);
@@ -15,6 +15,5 @@ public class SystemUtil {
     public static String getProperty(String propName, String defaultString){
         return System.getProperty(propName, defaultString);
     }
-
 
 }

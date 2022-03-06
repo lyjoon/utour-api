@@ -2,7 +2,7 @@ package com.utour.util;
 
 import com.utour.common.Constants;
 
-public class ExceptionUtil {
+public class ErrorUtils {
 
     public static String throwableInfo(Throwable throwable) {
         StringBuilder stringBuilder = new StringBuilder("["+ throwable.getClass().getSimpleName() +"] " + throwable.getMessage());

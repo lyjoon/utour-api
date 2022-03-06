@@ -1,13 +1,11 @@
 package com.utour.aspect;
 
-import com.utour.Application;
 import com.utour.annotation.EncryptValue;
 import com.utour.common.CommonComponent;
 import com.utour.common.Constants;
-import com.utour.util.ExceptionUtil;
+import com.utour.util.ErrorUtils;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -45,7 +42,7 @@ public class EncryptAspect extends CommonComponent {
                                 field.set(argument, encryptString);
                             }
                         } catch (Throwable throwable) {
-                            log.error(ExceptionUtil.throwableInfo(throwable));
+                            log.error(ErrorUtils.throwableInfo(throwable));
                         } finally {
                             if(!isAccessible) field.setAccessible(false);
                         }
@@ -75,7 +72,7 @@ public class EncryptAspect extends CommonComponent {
                             field.set(returnValue, decryptString);
                         }
                     } catch (Throwable throwable) {
-                        log.error(ExceptionUtil.throwableInfo(throwable));
+                        log.error(ErrorUtils.throwableInfo(throwable));
                     } finally {
                         if(!isAccessible) field.setAccessible(false);
                     }

@@ -9,6 +9,6 @@ import org.springframework.stereotype.Service;
 public class MemberService extends CommonService {
 
     public void save() {}
-    public void paging() {}
+    public void getList() {}
     public void delete() {}
 }

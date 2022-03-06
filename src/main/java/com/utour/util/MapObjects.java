@@ -10,7 +10,7 @@ import java.util.Optional;
 /**
  * @param <T>
  */
-public final class MapObject <T extends java.util.Map> {
+public final class MapObjects<T extends java.util.Map> {
 
 	@Getter
 	private final T value;
@@ -19,7 +19,7 @@ public final class MapObject <T extends java.util.Map> {
 	 * construct
 	 * @param value
 	 */
-	private MapObject(T value){ this.value = value;}
+	private MapObjects(T value){ this.value = value;}
 
 	/**
 	 * create Map
@@ -39,8 +39,8 @@ public final class MapObject <T extends java.util.Map> {
 	 * @param <T>
 	 * @return
 	 */
-	public static <T extends java.util.Map> MapObject of(T value){
-		return new MapObject(value);
+	public static <T extends java.util.Map> MapObjects of(T value){
+		return new MapObjects(value);
 	}
 
 	/**
@@ -51,8 +51,8 @@ public final class MapObject <T extends java.util.Map> {
 	 * @param <V>
 	 * @return
 	 */
-	public static <T extends java.util.Map, K, V> MapObject createOf(K key, V value){
-		return new MapObject(of(key, value));
+	public static <T extends java.util.Map, K, V> MapObjects createOf(K key, V value){
+		return new MapObjects(of(key, value));
 	}
 
 	/**
@@ -63,7 +63,7 @@ public final class MapObject <T extends java.util.Map> {
 	 * @param <V>
 	 * @return
 	 */
-	public <K, V> MapObject put(K key, V value){
+	public <K, V> MapObjects put(K key, V value){
 		this.value.put(key, value);
 		return this;
 	}

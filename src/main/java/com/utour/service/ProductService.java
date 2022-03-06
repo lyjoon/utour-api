@@ -25,7 +25,7 @@ public class ProductService extends CommonService {
         this.productMapper.delete(this.convert(productDto, Product.class));
     }
 
-    public List<ProductDto> getPageList(ProductPagingDto productPagingDto) {
+    public List<ProductDto> getList(ProductPagingDto productPagingDto) {
         return this.productMapper.findPage(productPagingDto)
                 .stream()
                 .map(vo -> this.convert(vo, ProductDto.class))
