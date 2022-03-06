@@ -1,7 +1,7 @@
 package com.utour.service;
 
 import com.utour.common.CommonService;
-import com.utour.dto.RequestPagingDto;
+import com.utour.dto.PagingDto;
 import com.utour.dto.hotel.HotelDto;
 import com.utour.dto.hotel.HotelFacilityDto;
 import com.utour.dto.hotel.HotelImageDto;
@@ -86,8 +86,8 @@ public class HotelService extends CommonService {
         this.hotelMapper.delete(hotel);
     }
 
-    public List<HotelDetailDto> paging(RequestPagingDto requestPagingDto) {
-        return this.hotelMapper.findPage(requestPagingDto)
+    public List<HotelDetailDto> paging(PagingDto pagingDto) {
+        return this.hotelMapper.findPage(pagingDto)
                 .stream()
                 .map(vo -> HotelDetailDto.builder()
                         .hotelDto(this.convert(vo, HotelDto.class))

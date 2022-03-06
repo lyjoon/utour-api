@@ -21,6 +21,6 @@ public class Pagination {
     private Integer limit;
 
     public Integer getOffset() {
-        return page * Optional.ofNullable(limit).orElse(Constants.DEFAULT_PAGING_COUNT);
+        return Optional.ofNullable(page).map(i -> i * Optional.ofNullable(limit).orElse(Constants.DEFAULT_PAGING_COUNT)).orElse(null);
     }
 }

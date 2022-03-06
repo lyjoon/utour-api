@@ -1,8 +1,8 @@
 package com.utour.service;
 
 import com.utour.common.CommonService;
-import com.utour.dto.RequestPagingDto;
 import com.utour.dto.product.ProductDto;
+import com.utour.dto.product.ProductPagingDto;
 import com.utour.entity.Product;
 import com.utour.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +25,8 @@ public class ProductService extends CommonService {
         this.productMapper.delete(this.convert(productDto, Product.class));
     }
 
-    public List<ProductDto> getPageList(ProductDto productDto) {
-        return this.productMapper.findPage(productDto)
+    public List<ProductDto> getPageList(ProductPagingDto productPagingDto) {
+        return this.productMapper.findPage(productPagingDto)
                 .stream()
                 .map(vo -> this.convert(vo, ProductDto.class))
                 .collect(Collectors.toList());

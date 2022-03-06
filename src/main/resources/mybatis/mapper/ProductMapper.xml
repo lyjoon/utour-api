@@ -7,7 +7,6 @@
     <resultMap id="resultMap" type="com.utour.entity.Product" extends="common.base.resultMap">
         <result javaType="java.lang.Long" property="productId" column="PRODUCT_ID" />
         <result javaType="java.lang.String" property="productType" column="PRODUCT_TYPE" />
-        <result javaType="java.lang.Long" property="hotelId" column="HOTEL_ID" />
         <result javaType="java.lang.String" property="displayType" column="DISPLAY_TYPE" />
         <result javaType="java.lang.String" property="title" column="TITLE" />
         <result javaType="java.lang.String" property="description" column="DESCRIPTION" />
@@ -20,7 +19,6 @@
         SELECT
           PRODUCT_ID
         , PRODUCT_TYPE
-        , HOTEL_ID
         , DISPLAY_TYPE
         , TITLE
         , DESCRIPTION
@@ -34,7 +32,6 @@
     <sql id="where">
         <where>
             <if test="productType != null">AND PRODUCT_TYPE = #{productType}</if>
-            <if test="productId != null">AND PRODUCT_ID = #{productId}</if>
             <if test="useYn != null">AND USE_YN = #{useYn}</if>
             <if test="displayType != null">AND DISPLAY_TYPE = #{displayType}</if>
             <if test="title != null">AND TITLE LIKE CONCAT(#{title}, '%')</if>
@@ -62,7 +59,10 @@
 
     <select id="findPage" resultMap="resultMap">
         <include refid="select" />
-        <include refid="where" />
+        WHERE DISPLAY_TYPE = #{displayType}
+        <if test="productType != null">AND PRODUCT_TYPE = #{productType}</if>
+        <if test="useYn != null">AND USE_YN = #{useYn}</if>
+        <if test="query != null">AND TITLE LIKE CONCAT(#{query}, '%')</if>
         ORDER BY T.ORDINAL DESC
         <include refid="common.base.pagination" />
     </select>
@@ -71,7 +71,6 @@
         INSERT INTO PRODUCT (
           PRODUCT_TYPE
         , PRODUCT_ID
-        , HOTEL_ID
         , DISPLAY_TYPE
         , TITLE
         , DESCRIPTION
@@ -81,7 +80,6 @@
         ) VALUES (
           #{productType }
         , #{productId }
-        , #{hotelId }
         , #{displayType }
         , #{title }
         , #{description }
@@ -90,7 +88,6 @@
         , #{useYn }
         )
         <include refid="common.base.duplicateUpdate" />
-        , HOTEL_ID = VALUES(HOTEL_ID)
         , TITLE = VALUES(TITLE)
         , DESCRIPTION = VALUES(DESCRIPTION)
         , ORDINAL = VALUES(ORDINAL)
