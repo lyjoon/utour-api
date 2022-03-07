@@ -32,7 +32,7 @@ public class CodeController extends CommonController {
     }
 
     @GetMapping(value = "/common/{groupCode}")
-    public List<CodeDto> getCodeList(@PathVariable Constants.GroupCode groupCode) {
+    public List<CodeDto> getCodeList(@PathVariable String groupCode) {
         return this.codeService.getCodeList(groupCode);
     }
 

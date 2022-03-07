@@ -28,7 +28,7 @@ public class CodeService extends CommonService {
     private final AreaMapper areaMapper;
 
     @Cacheable(value = "commonCode", key = "#groupCode")
-    public List<CodeDto> getCodeList(Constants.GroupCode groupCode) {
+    public List<CodeDto> getCodeList(String groupCode) {
         return Optional.ofNullable(this.codeGroupMapper.findById(CodeGroup.builder().groupCode(groupCode).build()))
                 .map(CodeGroup::getCodeList)
                 .map(list -> list.stream().map(v -> this.convert(v, CodeDto.class)).collect(Collectors.toList()))

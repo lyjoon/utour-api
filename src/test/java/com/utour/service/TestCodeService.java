@@ -16,10 +16,15 @@ public class TestCodeService extends TestLocalApplication {
 
     @Test
     public void testGetCodeGroup(){
-        List<CodeDto> codeGroup1 = this.codeService.getCodeList(Constants.GroupCode.PRODUCT_TYPE);
-        List<CodeDto> codeGroup2 = this.codeService.getCodeList(Constants.GroupCode.PRODUCT_TYPE);
+        List<CodeDto> codeGroup1 = this.codeService.getCodeList(Constants.GroupCode.PRODUCT_TYPE.name());
+        List<CodeDto> codeGroup2 = this.codeService.getCodeList(Constants.GroupCode.PRODUCT_TYPE.name());
 
         log.info("{} / {}", codeGroup1.hashCode(), codeGroup2.hashCode());
+    }
+
+    @Test
+    public void testEnumValueOf(){
+        log.info("{}", Constants.GroupCode.valueOf("productType"));
     }
 
 }

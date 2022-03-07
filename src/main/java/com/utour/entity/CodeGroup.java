@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CodeGroup extends CommonEntity {
 
-    private Constants.GroupCode groupCode;
+    private String groupCode;
     private String groupName;
     private Character useYn;
     private String description;

@@ -20,7 +20,7 @@
 
     <cache alias="commonCode">
         <key-type>java.lang.String</key-type>
-        <value-type>com.utour.dto.code.CodeDto</value-type>
+        <value-type>java.util.ArrayList</value-type>
         <expiry>
             <ttl>600</ttl>
         </expiry>
@@ -30,7 +30,7 @@
     </cache>
 
     <cache alias="nationList">
-        <value-type>com.utour.dto.code.NationDto</value-type>
+        <value-type>java.util.ArrayList</value-type>
         <expiry>
             <ttl>600</ttl>
         </expiry>
@@ -40,7 +40,7 @@
     </cache>
 
     <cache alias="areaList">
-        <key-type>java.lang.String</key-type>
+        <key-type>java.util.ArrayList</key-type>
         <value-type>com.utour.dto.code.AreaDto</value-type>
         <expiry>
             <ttl>600</ttl>
