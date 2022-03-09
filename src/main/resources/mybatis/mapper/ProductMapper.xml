@@ -41,7 +41,8 @@
     <select id="exists" resultType="java.lang.Boolean">
         <include refid="common.base.existsPrefix" />
         <include refid="select" />
-        <include refid="where" />
+        WHERE PRODUCT_ID = #{productId}
+          AND PRODUCT_TYPE = #{productType}
         <include refid="common.base.existsSuffix" />
     </select>
 

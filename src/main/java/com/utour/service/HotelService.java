@@ -1,6 +1,7 @@
 package com.utour.service;
 
 import com.utour.common.CommonService;
+import com.utour.common.Constants;
 import com.utour.dto.PagingDto;
 import com.utour.dto.hotel.HotelDto;
 import com.utour.dto.hotel.HotelFacilityDto;
@@ -9,9 +10,11 @@ import com.utour.dto.hotel.HotelDetailDto;
 import com.utour.entity.Hotel;
 import com.utour.entity.HotelFacility;
 import com.utour.entity.HotelImage;
+import com.utour.entity.Product;
 import com.utour.mapper.HotelFacilityMapper;
 import com.utour.mapper.HotelImageMapper;
 import com.utour.mapper.HotelMapper;
+import com.utour.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -28,6 +31,8 @@ public class HotelService extends CommonService {
     private final HotelMapper hotelMapper;
     private final HotelImageMapper hotelImageMapper;
     private final HotelFacilityMapper hotelFacilityMapper;
+
+    private final ProductMapper productMapper;
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void save(HotelDetailDto hotelDetailDto) {
@@ -68,15 +73,21 @@ public class HotelService extends CommonService {
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void delete(HotelDto hotelDto) {
+        // children(product)
+        Product product = Product.builder().productId(hotelDto.getHotelId()).productType(Constants.CODE_PRODUCT_HOTEL).build();
+        boolean exists = this.productMapper.exists(product);
+        if(exists) this.productMapper.delete(product);
 
         Hotel hotel = this.convert(hotelDto, Hotel.class);
 
+        // children(hotelFacility)
         HotelFacility _hotelFacility = HotelFacility.builder().hotelId(hotel.getHotelId()).build();
         Boolean exists_1 = this.hotelFacilityMapper.exists(_hotelFacility);
         if(exists_1) {
             this.hotelFacilityMapper.delete(_hotelFacility);
         }
 
+        // children(hotelImage)
         HotelImage _hotelImage = HotelImage.builder().hotelId(hotel.getHotelId()).build();
         Boolean exists_2 = this.hotelImageMapper.exists(_hotelImage);
         if(exists_2) {
