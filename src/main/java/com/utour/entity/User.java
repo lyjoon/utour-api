@@ -1,6 +1,7 @@
 package com.utour.entity;
 
-import com.utour.entity.common.Attachment;
+
+import com.utour.common.CommonEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +12,10 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class NoticeAttachment extends Attachment {
+public class User extends CommonEntity {
 
-    private Long noticeId;
+    private String userId;
+    private Character useYn;
+    private String password;
+    private String name;
 }

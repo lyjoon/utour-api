@@ -15,10 +15,11 @@ public class Product extends CommonEntity {
 
     private Long productId;
     private String productType;
-    private String displayType;
+    private String nationCode;
+    private String areaCode;
     private String title;
+    private String writer;
     private String description;
-    private int ordinal;
-    private String src;
+    private String repImageSrc;
     private Character useYn;
 }

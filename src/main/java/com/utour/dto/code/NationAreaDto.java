@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AreaDto {
+public class NationAreaDto {
 
     private String nationCode;
     private String areaCode;

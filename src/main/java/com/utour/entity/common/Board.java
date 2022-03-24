@@ -7,13 +7,14 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SuperBuilder(toBuilder = true)
 @ToString(callSuper = true)
-public abstract class Attachment extends CommonEntity {
+@SuperBuilder(toBuilder = true)
+public abstract class Board extends CommonEntity {
 
-    private Integer attachmentId;
-    private String path;
-    private String originName;
-    private Long size;
+    private String title;
+    private String content;
+    private String writer;
+    private int pv;
 
+    abstract public Long getId();
 }

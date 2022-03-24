@@ -1,6 +1,6 @@
 
-drop table if exists user cascade;
-create table user (
+drop table if exists `user` cascade;
+create table `user` (
      user_id   varchar(50) not null comment '사용자(로그인)ID',
      use_yn    char(1) default 'Y' comment '사용유무',
      password  varchar(500) comment '로그인 비밀번호',
@@ -68,17 +68,17 @@ create table notice (
      constraint pk_notice primary key (notice_id)
 );
 
-drop table if exists notice_attachment cascade;
-create table notice_attachment (
-     notice_attachment_id bigint not null comment '공지사항 첨부파일 ID',
+drop table if exists notice_attach cascade;
+create table notice_attach (
+     attach_id bigint not null comment '첨부파일 ID',
      notice_id bigint not null comment '공지사항 ID',
      path varchar(2000) comment '파일저장경로',
      size bigint comment '파일크기',
      origin_name varchar(100) comment '파일원본명',
      create_at datetime default now() comment '작성일자',
      update_at datetime comment '변경일자',
-     constraint pk_notice_attachment primary key (notice_attachment_id),
-     constraint fk_notice_attachment foreign key (notice_id) references notice (notice_id)
+     constraint pk_notice_attach primary key (attach_id),
+     constraint fk_notice_attach foreign key (notice_id) references notice (notice_id)
 );
 
 

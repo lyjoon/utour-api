@@ -1,6 +1,6 @@
 package com.utour.entity;
 
-import com.utour.entity.common.Content;
+import com.utour.entity.common.Board;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Notice extends Content {
+public class Notice extends Board {
 
     private Long noticeId;
     private Character noticeYn;

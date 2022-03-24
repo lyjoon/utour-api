@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="common.attachment">
 
-    <resultMap id="resultMap" type="com.utour.entity.common.Attachment">
+    <resultMap id="resultMap" type="com.utour.entity.common.Attach">
         <result javaType="java.lang.Integer" property="attachmentId" column="ATTACHMENT_ID" />
         <result javaType="java.lang.String" property="path" column="PATH" />
         <result javaType="java.lang.String" property="originName" column="ORIGIN_NAME" />

@@ -3,21 +3,21 @@ package com.utour.mapper;
 import com.utour.annotation.Decrypt;
 import com.utour.annotation.Encrypt;
 import com.utour.common.CommonMapper;
-import com.utour.entity.QnA;
+import com.utour.entity.Qna;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
 @Mapper
-public interface QnAMapper extends CommonMapper<QnA> {
+public interface QnaMapper extends CommonMapper<Qna> {
 
     @Encrypt
     @Override
-    void save(QnA qnA);
+    void save(Qna qnA);
 
     @Decrypt
     @Override
-    QnA findById(QnA qnA);
+    Qna findById(Qna qnA);
 
-    List<QnA> findAll(QnA qnA);
+    List<Qna> findAll(Qna qnA);
 }

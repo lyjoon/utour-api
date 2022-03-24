@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.utour.mapper.AreaMapper">
+<mapper namespace="com.utour.mapper.NationAreaMapper">
 
-    <resultMap id="resultMap" type="com.utour.entity.Area" extends="common.base.resultMap">
+    <resultMap id="resultMap" type="com.utour.entity.NationArea" extends="common.base.resultMap">
         <result javaType="java.lang.String" property="nationCode" column="NATION_CODE" />
         <result javaType="java.lang.String" property="areaCode" column="AREA_CODE" />
         <result javaType="java.lang.String" property="areaName" column="AREA_NAME" />

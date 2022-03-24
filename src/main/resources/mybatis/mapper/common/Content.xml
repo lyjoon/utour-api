@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="common.content">
 
-    <resultMap id="resultMap" type="com.utour.entity.common.Content">
+    <resultMap id="resultMap" type="com.utour.entity.common.Board">
         <result javaType="java.lang.String" property="title" column="TITLE" />
         <result javaType="java.lang.String" property="content" column="CONTENT" />
         <result javaType="java.lang.String" property="writer" column="WRITER" />

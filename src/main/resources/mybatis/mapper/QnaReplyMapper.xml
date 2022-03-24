@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.utour.mapper.QnAReplyMapper">
+<mapper namespace="com.utour.mapper.QnaReplyMapper">
 
-    <resultMap id="resultMap" type="com.utour.entity.QnAReply" extends="common.base.resultMap">
+    <resultMap id="resultMap" type="com.utour.entity.QnaReply" extends="common.base.resultMap">
         <result javaType="java.lang.Long" property="qnaId" column="QNA_ID" />
         <result javaType="java.lang.Integer" property="qnaReplyId" column="QNA_REPLY_ID" />
         <result javaType="java.lang.String" property="writer" column="WRITER" />

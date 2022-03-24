@@ -11,16 +11,9 @@
         <jsr107:defaults enable-management="true" enable-statistics="false"/>
     </service>
 
-    <cache-template name="default-template">
-        <expiry>
-            <ttl>600</ttl>
-        </expiry>
-        <heap>20</heap>
-    </cache-template>
-
-    <cache alias="commonCode">
+    <cache alias="code">
         <key-type>java.lang.String</key-type>
-        <value-type>java.util.ArrayList</value-type>
+        <value-type>com.utour.dto.code.CodeDto</value-type>
         <expiry>
             <ttl>600</ttl>
         </expiry>
@@ -39,9 +32,9 @@
         </resources>
     </cache>
 
-    <cache alias="areaList">
+    <cache alias="nation">
         <key-type>java.util.ArrayList</key-type>
-        <value-type>com.utour.dto.code.AreaDto</value-type>
+        <value-type>com.utour.dto.code.NationDto</value-type>
         <expiry>
             <ttl>600</ttl>
         </expiry>

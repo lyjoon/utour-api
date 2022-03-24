@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.utour.mapper.NoticeAttachmentMapper">
+<mapper namespace="com.utour.mapper.NoticeAttachMapper">
 
-    <resultMap id="resultMap" type="com.utour.entity.NoticeAttachment" extends="common.attachment.resultMap">
+    <resultMap id="resultMap" type="com.utour.entity.NoticeAttach" extends="common.attachment.resultMap">
         <result javaType="java.lang.Long" property="noticeId" column="NOTICE_ID"  />
     </resultMap>
 

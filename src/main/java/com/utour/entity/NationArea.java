@@ -1,6 +1,6 @@
 package com.utour.entity;
 
-import com.utour.entity.common.Attachment;
+import com.utour.common.CommonEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,10 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AnswerAttachment extends Attachment {
+public class NationArea extends CommonEntity {
 
-    private Long answerId;
+    private String nationCode;
+    private String areaCode;
+    private String areaName;
+    private Character useYn;
 }

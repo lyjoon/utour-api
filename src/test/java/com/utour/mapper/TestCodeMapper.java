@@ -4,7 +4,6 @@ import com.utour.TestMapper;
 import com.utour.common.Constants;
 import com.utour.entity.Code;
 import com.utour.entity.CodeGroup;
-import com.utour.entity.Hotel;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
