@@ -20,6 +20,4 @@ public class CodeGroup extends CommonEntity {
     private String groupName;
     private Character useYn;
     private String description;
-
-    private List<Code> codeList;
 }

@@ -18,7 +18,7 @@ public class TestCodeMapper extends TestMapper {
     @Test
     @Override
     public void exists() {
-        boolean exists = this.codeMapper.exists(Code.builder().groupCode(Constants.GroupCode.PRODUCT_TYPE).build());
+        boolean exists = this.codeMapper.exists(Code.builder().groupCode(Constants.GroupCode.PRODUCT_TYPE.name()).build());
         log.info("exists : {}", exists);
     }
 
@@ -26,14 +26,14 @@ public class TestCodeMapper extends TestMapper {
     @Override
     public void findById() {
         //this.save();
-        CodeGroup codeGroup = this.codeGroupMapper.findById(CodeGroup.builder().groupCode(Constants.GroupCode.PRODUCT_TYPE).build());
+        CodeGroup codeGroup = this.codeGroupMapper.findById(CodeGroup.builder().groupCode(Constants.GroupCode.PRODUCT_TYPE.name()).build());
         log.info("findById : {}", codeGroup.toString());
     }
 
     @Test
     @Override
     public void findAll() {
-        this.codeMapper.findAll(Code.builder().groupCode(Constants.GroupCode.PRODUCT_TYPE).build()).forEach(code ->
+        this.codeMapper.findAll(Code.builder().groupCode(Constants.GroupCode.PRODUCT_TYPE.name()).build()).forEach(code ->
                 log.info(":{}", code.toString()));
     }
 

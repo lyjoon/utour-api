@@ -1,8 +1,7 @@
 package com.utour.controller;
 
 import com.utour.common.CommonController;
-import com.utour.dto.code.NationAreaDto;
-import com.utour.dto.code.CodeDto;
+import com.utour.dto.code.CodeGroupDto;
 import com.utour.dto.code.NationDto;
 import com.utour.service.CodeService;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +30,8 @@ public class CodeController extends CommonController {
     }
 
     @GetMapping(value = "/common/{groupCode}")
-    public CodeDto getCode(@PathVariable String groupCode) {
-        return this.codeService.getCode(groupCode);
+    public CodeGroupDto getCode(@PathVariable String groupCode) {
+        return this.codeService.getCodeGroup(groupCode);
     }
 
 }

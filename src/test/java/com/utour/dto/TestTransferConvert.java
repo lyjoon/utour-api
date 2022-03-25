@@ -20,8 +20,6 @@ public class TestTransferConvert extends TestLocalApplication {
                 .productId(1L)
                 .description("테스트")
                 .title("제목")
-                .displayType("LIST")
-                .ordinal(100)
                 .build();
 
         // ProductDto productDto = this.objectMapper.convertValue(product, ProductDto.class);

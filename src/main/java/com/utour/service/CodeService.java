@@ -3,10 +3,12 @@ package com.utour.service;
 import com.utour.common.CommonService;
 import com.utour.common.Constants;
 import com.utour.dto.code.CodeDto;
+import com.utour.dto.code.CodeGroupDto;
 import com.utour.dto.code.NationDto;
+import com.utour.entity.Code;
 import com.utour.entity.CodeGroup;
 import com.utour.entity.Nation;
-import com.utour.mapper.NationAreaMapper;
+import com.utour.mapper.CodeMapper;
 import com.utour.mapper.CodeGroupMapper;
 import com.utour.mapper.NationMapper;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +23,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CodeService extends CommonService {
 
+    private final CodeMapper codeMapper;
     private final CodeGroupMapper codeGroupMapper;
     private final NationMapper nationMapper;
 
     @Cacheable(value = "code", key = "#groupCode")
-    public CodeDto getCode(String groupCode) {
+    public CodeGroupDto getCodeGroup(String groupCode) {
         return Optional.ofNullable(this.codeGroupMapper.findById(CodeGroup.builder().groupCode(groupCode).build()))
-                .map(v -> this.convert(v, CodeDto.class))
+                .map(v -> {
+                    CodeGroupDto codeGroupDto = this.convert(v, CodeGroupDto.class);
+                    codeGroupDto.setCodeList(this.codeMapper.findAll(Code.builder().groupCode(codeGroupDto.getGroupCode()).build()).stream().map(code -> this.convert(code , CodeDto.class)).collect(Collectors.toList()));
+                    return codeGroupDto;
+                })
                 .orElse(null);
     }
 
