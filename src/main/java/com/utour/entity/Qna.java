@@ -14,7 +14,8 @@ public class Qna extends Board {
 
     private Long qnaId;
     private Character privateYn;
-    @EncryptValue(length = 20) private String password;
+    @EncryptValue(length = 20)
+    private String password;
 
     @Override
     public Long getId() {

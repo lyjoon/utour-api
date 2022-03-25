@@ -4,14 +4,14 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.utour.mapper.NoticeMapper">
 
-    <resultMap id="resultMap" type="com.utour.entity.Notice" extends="common.content.resultMap">
+    <resultMap id="resultMap" type="com.utour.entity.Notice" extends="common.board.resultMap">
         <result property="noticeId" javaType="java.lang.Long" column="NOTICE_ID" />
         <result property="noticeYn" javaType="java.lang.Character" column="NOTICE_YN" />
     </resultMap>
 
     <sql id="select">
         SELECT
-        <include refid="common.content.select" />
+        <include refid="common.board.select" />
         , NOTICE_ID
         , NOTICE_YN
         FROM NOTICE T
@@ -43,15 +43,15 @@
 
     <insert id="save">
         INSERT INTO NOTICE (
-        <include refid="common.content.column" />
+        <include refid="common.board.column" />
         , NOTICE_ID
         , NOTICE_YN
         ) VALUES (
-        <include refid="common.content.value" />
+        <include refid="common.board.value" />
         , #{noticeId}
         , #{noticeYn}
         )
-        <include refid="common.content.duplicateUpdate" />
+        <include refid="common.board.duplicateUpdate" />
         , NOTICE_YN = VALUES(NOTICE_YN)
     </insert>
 

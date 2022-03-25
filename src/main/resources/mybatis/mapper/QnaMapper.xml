@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.utour.mapper.QnaMapper">
 
-    <resultMap id="resultMap" type="com.utour.entity.Qna" extends="common.content.resultMap">
+    <resultMap id="resultMap" type="com.utour.entity.Qna" extends="common.board.resultMap">
         <result property="qnaId" javaType="java.lang.Long" column="QNA_ID" />
         <result property="privateYn" javaType="java.lang.Character" column="PRIVATE_YN" />
         <result property="password" javaType="java.lang.String" column="PASSWORD" />
@@ -12,7 +12,7 @@
 
     <sql id="select">
         SELECT
-        <include refid="common.content.select" />
+        <include refid="common.board.select" />
         , QNA_ID
         , PRIVATE_YN
         , PASSWORD
@@ -45,17 +45,17 @@
 
     <insert id="save">
         INSERT INTO QNA (
-        <include refid="common.content.column" />
+        <include refid="common.board.column" />
         , QNA_ID
         , PRIVATE_YN
         , PASSWORD
         ) VALUES (
-        <include refid="common.content.value" />
+        <include refid="common.board.value" />
         , #{qnaId}
         , #{privateYn}
         , #{password}
         )
-        <include refid="common.content.duplicateUpdate" />
+        <include refid="common.board.duplicateUpdate" />
         , PRIVATE_YN = VALUES(PRIVATE_YN)
         <if test="password != null">, PASSWORD = VALUES(PASSWORD)</if>
     </insert>

@@ -14,7 +14,7 @@ public abstract class Board extends CommonEntity {
     private String title;
     private String content;
     private String writer;
-    private int pv;
+    private Integer pv;
 
     abstract public Long getId();
 }
