@@ -169,40 +169,66 @@ create table product_image (
     constraint fk_product_image foreign key (product_image_group_id) references product_image_group (product_image_group_id)
 );
 
-drop table if exists product_component;
-create table product_component (
-    product_component_id bigint not null auto_increment comment '상품 컴포넌트 ID',
-    product_id bigint not null comment '상품 ID',
-    component_type varchar(10) not null comment '컴포넌트 유형',
+drop table if exists view_component;
+create table view_component (
+    view_component_id bigint not null auto_increment comment '화면요소 ID',
+    view_component_type varchar(10) not null comment '화면요소 유형',
+    product_id bigint comment '상품 ID',
     ordinal int comment '순서',
     use_yn char(1) default 'Y' comment '사용유무',
     create_at datetime default now() comment '작성일자',
     update_at datetime comment '변경일자',
-    constraint pk_product_component primary key (product_component_id),
-    constraint fk_product_component foreign key (product_id) references product(product_id)
+    constraint pk_view_component primary key (view_component_id),
+    constraint fk_view_component foreign key (product_id) references product(product_id)
 );
 
-drop table if exists product_component_facility;
-create table product_component_facility (
-    product_component_facility_id bigint auto_increment not null comment '상품 컴포넌트 시설 ID',
-    product_component_id bigint not null comment '상품 컴포넌트 ID',
-    icon_type varchar(50) not null comment '아이콘 유형',
-    description varchar(100) not null comment '설명',
+drop table if exists view_component_facility;
+create table view_component_facility (
+    facility_component_id bigint auto_increment not null comment '시설 ID',
+    view_component_id bigint not null comment '화면요소 ID',
+    icon_type varchar(50) not null comment '유형(icon)',
+    title varchar(50) comment '제목',
+    description varchar(500) comment '설명(비고)',
     create_at datetime default now() comment '작성일자',
     update_at datetime comment '변경일자',
-    constraint pk_product_component_facility primary key (product_component_facility_id),
-    constraint fk_product_component_facility foreign key (product_component_id) references product_component (product_component_id)
+    constraint pk_view_component_facility primary key (facility_component_id),
+    constraint fk_view_component_facility foreign key (view_component_id) references view_component (view_component_id)
 );
 
-drop table if exists product_component_text;
-create table product_component_text (
-    product_component_text_id bigint auto_increment not null comment '상품 컴포넌트 텍스트 ID',
-    product_component_id bigint not null comment '상품 컴포넌트 ID',
-    title varchar(50) not null comment '제목',
+drop table if exists view_component_text;
+create table view_component_text (
+    text_component_id bigint auto_increment not null comment '텍스트 구성요소 ID',
+    view_component_id bigint not null comment '화면요소 ID',
     content longtext not null comment '내용',
-    description longtext not null comment '요약',
+    title varchar(50) comment '제목',
+    description varchar(500) comment '설명(비고)',
     create_at datetime default now() comment '작성일자',
     update_at datetime comment '변경일자',
-    constraint pk_product_component_text primary key (product_component_text_id),
-    constraint fk_product_component_text foreign key (product_component_id) references product_component (product_component_id)
+    constraint pk_view_component_text primary key (text_component_id),
+    constraint fk_view_component_text foreign key (view_component_id) references view_component (view_component_id)
+);
+
+drop table if exists view_component_image;
+create table view_component_image (
+    image_component_id bigint auto_increment not null comment '이미지 구성요소 ID',
+    view_component_id bigint not null comment '화면요소 ID',
+    display_type varchar(10) comment '노출유형(케로셀, 목록)',
+    title varchar(50) comment '제목',
+    description varchar(500) comment '설명(비고)',
+    create_at datetime default now() comment '작성일자',
+    update_at datetime comment '변경일자',
+    constraint pk_view_component_image primary key (image_component_id),
+    constraint fk_view_component_image foreign key (view_component_id) references view_component (view_component_id)
+);
+
+create table view_component_image_set (
+    image_component_id bigint not null comment '이미지 구성요소 ID',
+    image_component_seq int not null comment '이미지 구성요소 순번',
+    image_src varchar(4000) not null comment '이미지 경로',
+    title varchar(50) comment '제목',
+    description varchar(500) comment '설명(비고)',
+    create_at datetime default now() comment '작성일자',
+    update_at datetime comment '변경일자',
+    constraint pk_view_component_image_set primary key (image_component_id, image_component_seq),
+    constraint fk_view_component_image_set foreign key (image_component_id) references view_component_image (image_component_id)
 );

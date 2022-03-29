@@ -8,11 +8,11 @@ import lombok.experimental.SuperBuilder;
 @ToString(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProductComponentText {
+public class ViewComponentImageSet {
 
-    private Long productComponentTextId;
-    private Long productComponentId;
+    private Long imageComponentId;
+    private Integer imageComponentSeq;
+    private String imageSrc;
     private String title;
-    private String content;
     private String description;
 }

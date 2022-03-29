@@ -8,10 +8,12 @@ import lombok.experimental.SuperBuilder;
 @ToString(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProductComponentFacility {
+public class ViewComponentImage {
 
-    private Long productComponentFacilityId;
-    private Long productComponentId;
-    private String iconType;
+    private Long imageComponentId;
+    private Long viewComponentId;
+    private String displayType;
+    private String content;
+    private String title;
     private String description;
 }
