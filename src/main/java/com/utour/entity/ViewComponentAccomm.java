@@ -9,9 +9,12 @@ import lombok.experimental.SuperBuilder;
 @ToString(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ViewComponentImage extends VwComponent {
+public class ViewComponentAccomm extends VwComponent {
 
-    private Long viewComponentImageId;
+    private Long viewComponentAccommId;
     private Long viewComponentId;
-    private String displayType;
+    private String contact;
+    private String url;
+    private String address;
+    private String fax;
 }

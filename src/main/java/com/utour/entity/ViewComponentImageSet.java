@@ -1,5 +1,6 @@
 package com.utour.entity;
 
+import com.utour.entity.common.VwComponent;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -8,11 +9,9 @@ import lombok.experimental.SuperBuilder;
 @ToString(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ViewComponentImageSet {
+public class ViewComponentImageSet extends VwComponent {
 
-    private Long imageComponentId;
-    private Integer imageComponentSeq;
+    private Long viewComponentImageId;
+    private Integer viewComponentImageSeq;
     private String imageSrc;
-    private String title;
-    private String description;
 }
