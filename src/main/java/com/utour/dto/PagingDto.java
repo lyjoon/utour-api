@@ -16,8 +16,6 @@ import java.time.LocalDate;
 public class PagingDto extends Pagination {
 
     private String query;
-    private String nationCode;
-    private String areaCode;
     private LocalDate startAt, endAt;
     private Character useYn;
 }
