@@ -25,7 +25,7 @@ create table code (
      group_code   varchar(20) not null comment '그룹코드',
      code   varchar(20) not null comment '공통코드',
      code_name varchar(50) not null comment '공통코드값',
-     description varchar(50) comment '비고',
+     description varchar(500) comment '비고',
      create_at datetime default now() comment '작성일자',
      update_at datetime comment '변경일자',
      constraint pk_code primary key (group_code, code),
@@ -60,7 +60,7 @@ create table notice (
      notice_id bigint auto_increment not null comment '공지사항 ID',
      title varchar(50) not null comment '제목',
      content longtext comment '내용',
-     writer varchar(50) comment '작성자',
+     writer varchar(20) comment '작성자',
      notice_yn char(1) default 'N' comment '공지등록여부',
      pv int default 0 comment '페이지뷰',
      create_at datetime default now() comment '작성일자',
@@ -87,7 +87,7 @@ create table qna (
      qna_id bigint auto_increment not null comment '질문과 답변 ID',
      title varchar(50) not null comment '제목',
      content longtext comment '내용',
-     writer varchar(50) comment '작성자',
+     writer varchar(20) comment '작성자',
      password varchar(500) comment '비밀번호',
      private_yn char(1) default 'N' comment '비공개유무',
      pv int default 0 comment '페이지뷰',
@@ -100,7 +100,7 @@ drop table if exists qna_reply cascade;
 create table qna_reply (
      qna_reply_id bigint auto_increment not null comment '질문과 답변 댓글 ID',
      qna_id bigint not null comment '질문과 답변 ID',
-     writer varchar(50) comment '작성자',
+     writer varchar(20) comment '작성자',
      content varchar(4000) comment '내용',
      password varchar(500) comment '비밀번호',
      private_yn char(1) default 'N'  comment '비공개유무',
@@ -115,13 +115,12 @@ create table qna_reply (
 drop table if exists inquiry cascade;
 create table inquiry (
      inquiry_id bigint not null auto_increment comment '문의ID',
-     writer varchar(50) comment '작성자',
+     writer varchar(20) comment '작성자',
+     title varchar(50) not null comment '제목',
      content longtext comment '내용',
+     status varchar(10) comment '문의상태',
      contact varchar(500) comment '연락처(encrypt)',
      email varchar(100) comment '이메일',
-     nation_code char(2) comment '국가코드',
-     area_code varchar(5) comment '지역코드',
-     product_id bigint comment '상품ID',
      create_at datetime default now() comment '작성일자',
      update_at datetime comment '변경일자',
      constraint pk_inquiry primary key (inquiry_id)
@@ -130,12 +129,12 @@ create table inquiry (
 drop table if exists product cascade;
 create table product (
     product_id bigint not null auto_increment comment '상품ID',
-    product_type varchar(10) comment '상품유형',
+    product_type varchar(10) not null comment '상품유형',
     nation_code char(2) comment '국가코드',
     area_code varchar(5) comment '지역코드',
-    title varchar(100) comment '상품명',
-    description longtext comment '상품설명',
-    writer varchar(50) not null comment '작성자',
+    title varchar(50) comment '상품명',
+    content longtext comment '상품설명',
+    writer varchar(20) not null comment '작성자',
     rep_image_src varchar(2000) comment '대표이미지경로',
     use_yn char(1) default 'Y' comment '사용유무',
     create_at datetime default now() comment '작성일자',
@@ -160,13 +159,15 @@ create table product_image_group (
 drop table if exists product_image;
 create table product_image (
     product_image_id bigint not null auto_increment comment '상품 이미지 ID',
-    product_image_group_id bigint not null comment '상품 이미지그룹 ID',
+    product_id bigint not null comment '상품 ID',
+    product_image_group_id bigint comment '상품 이미지그룹 ID',
     image_src varchar(2000) comment '이미지경로',
-    image_description varchar(500) comment '이미지설명',
+    description varchar(500) comment '설명(비고)',
     create_at datetime default now() comment '작성일자',
     update_at datetime comment '변경일자',
     constraint pk_product_image primary key (product_image_id),
-    constraint fk_product_image foreign key (product_image_group_id) references product_image_group (product_image_group_id)
+    constraint fk_product_image_0 foreign key (product_id) references product (product_id),
+    constraint fk_product_image_1 foreign key (product_image_group_id) references product_image_group (product_image_group_id)
 );
 
 drop table if exists view_component;
@@ -174,6 +175,8 @@ create table view_component (
     view_component_id bigint not null auto_increment comment '화면요소 ID',
     view_component_type varchar(10) not null comment '화면요소 유형',
     product_id bigint comment '상품 ID',
+    title varchar(50) comment '제목',
+    description varchar(500) comment '설명(비고)',
     ordinal int comment '순서',
     use_yn char(1) default 'Y' comment '사용유무',
     create_at datetime default now() comment '작성일자',
@@ -182,71 +185,61 @@ create table view_component (
     constraint fk_view_component foreign key (product_id) references product(product_id)
 );
 
-drop table if exists view_component_facility;
-create table view_component_facility (
-    view_component_facility_id bigint auto_increment not null comment '시설 ID',
-    view_component_id bigint not null comment '화면요소 ID',
-    icon_type varchar(50) not null comment '유형(icon)',
-    title varchar(50) comment '제목',
-    description varchar(500) comment '설명(비고)',
-    create_at datetime default now() comment '작성일자',
-    update_at datetime comment '변경일자',
-    constraint pk_view_component_facility primary key (view_component_facility_id),
-    constraint fk_view_component_facility foreign key (view_component_id) references view_component (view_component_id)
-);
-
 drop table if exists view_component_text;
-create table view_component_text (
-    view_component_text_id bigint auto_increment not null comment '텍스트 구성요소 ID',
+create table view_text_component (
     view_component_id bigint not null comment '화면요소 ID',
     content longtext not null comment '내용',
-    title varchar(50) comment '제목',
-    description varchar(500) comment '설명(비고)',
     create_at datetime default now() comment '작성일자',
     update_at datetime comment '변경일자',
-    constraint pk_view_component_text primary key (view_component_text_id),
+    constraint pk_view_component_text primary key (view_component_id),
     constraint fk_view_component_text foreign key (view_component_id) references view_component (view_component_id)
-);
-
-drop table if exists view_component_accomm;
-create table view_component_accomm (
-    view_component_accomm_id bigint auto_increment not null comment '숙소 ID',
-    view_component_id bigint not null comment '화면요소 ID',
-    url varchar(500) comment 'url',
-    address varchar(1000) comment '주소',
-    contact varchar(20) comment '연락처',
-    fax varchar(20) comment 'FAX',
-    title varchar(50) comment '제목',
-    description varchar(500) comment '설명(비고)',
-    create_at datetime default now() comment '작성일자',
-    update_at datetime comment '변경일자',
-    constraint pk_view_component_accomm primary key (view_component_accomm_id),
-    constraint fk_view_component_accomm foreign key (view_component_id) references view_component (view_component_id)
 );
 
 drop table if exists view_component_image;
 create table view_component_image (
-    view_component_image_id bigint auto_increment not null comment '이미지 구성요소 ID',
     view_component_id bigint not null comment '화면요소 ID',
     display_type varchar(10) comment '노출유형(케로셀, 목록)',
-    title varchar(50) comment '제목',
-    description varchar(500) comment '설명(비고)',
     create_at datetime default now() comment '작성일자',
     update_at datetime comment '변경일자',
-    constraint pk_view_component_image primary key (view_component_image_id),
+    constraint pk_view_component_image primary key (view_component_id),
     constraint fk_view_component_image foreign key (view_component_id) references view_component (view_component_id)
 );
 
-drop table if exists view_component_image_set;
-create table view_component_image_set (
-    view_component_image_id bigint not null comment '이미지 구성요소 ID',
-    view_component_image_seq int not null comment '이미지 구성요소 순번',
+drop table if exists view_component_images;
+create table view_component_images (
+    view_component_id bigint not null comment '화면요소 ID',
+    seq int not null comment '이미지 구성요소 순번',
     image_src varchar(4000) not null comment '이미지 경로',
     title varchar(50) comment '제목',
     description varchar(500) comment '설명(비고)',
     create_at datetime default now() comment '작성일자',
     update_at datetime comment '변경일자',
-    constraint pk_view_component_image_set primary key (view_component_image_id, view_component_image_seq),
-    constraint fk_view_component_image_set foreign key (view_component_image_id) references view_component_image (view_component_image_id)
+    constraint pk_view_component_images primary key (view_component_id, seq),
+    constraint fk_view_component_images foreign key (view_component_id) references view_component_image (view_component_id)
 );
 
+drop table if exists view_component_accommodation;
+create table view_component_accommodation (
+    view_component_id bigint not null comment '화면요소 ID',
+    url varchar(500) comment 'url',
+    address varchar(1000) comment '주소',
+    contact varchar(20) comment '연락처',
+    fax varchar(20) comment 'FAX',
+    create_at datetime default now() comment '작성일자',
+    update_at datetime comment '변경일자',
+    constraint pk_view_component_accommodation primary key (view_component_id),
+    constraint fk_view_component_accommodation foreign key (view_component_id) references view_component (view_component_id)
+);
+
+drop table if exists view_component_facilities;
+create table view_component_facilities (
+    view_component_id bigint not null comment '화면요소 ID',
+    seq bigint not null comment '숙박시설 순번',
+    icon_type varchar(50) not null comment '유형(icon)',
+    title varchar(50) comment '제목',
+    description varchar(500) comment '설명(비고)',
+    create_at datetime default now() comment '작성일자',
+    update_at datetime comment '변경일자',
+    constraint pk_view_component_facility primary key (view_component_id, seq),
+    constraint fk_view_component_facility foreign key (view_component_id) references view_component_accommodation (view_component_id)
+);

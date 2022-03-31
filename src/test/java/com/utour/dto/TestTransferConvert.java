@@ -18,7 +18,7 @@ public class TestTransferConvert extends TestLocalApplication {
         Product product =Product.builder()
                 .productType("sr")
                 .productId(1L)
-                .description("테스트")
+                .content("테스트")
                 .title("제목")
                 .build();
 

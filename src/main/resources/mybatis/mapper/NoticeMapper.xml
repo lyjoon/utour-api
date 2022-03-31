@@ -4,16 +4,18 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.utour.mapper.NoticeMapper">
 
-    <resultMap id="resultMap" type="com.utour.entity.Notice" extends="common.board.resultMap">
+    <resultMap id="resultMap" type="com.utour.entity.Notice" extends="common.content.resultMap">
         <result property="noticeId" javaType="java.lang.Long" column="NOTICE_ID" />
         <result property="noticeYn" javaType="java.lang.Character" column="NOTICE_YN" />
+        <result javaType="java.lang.Integer" property="pv" column="PV" />
     </resultMap>
 
     <sql id="select">
         SELECT
-        <include refid="common.board.select" />
-        , NOTICE_ID
+          NOTICE_ID
         , NOTICE_YN
+        , PV
+        <include refid="common.content.select" />
         FROM NOTICE T
     </sql>
 
@@ -41,18 +43,28 @@
         <include refid="where" />
     </select>
 
+    <select id="findPage" resultMap="resultMap">
+        <include refid="select" />
+        <include refid="where" />
+        ORDER BY NOTICE_ID DESC
+        <include refid="common.base.pagination" />
+    </select>
+
     <insert id="save">
         INSERT INTO NOTICE (
-        <include refid="common.board.column" />
-        , NOTICE_ID
+          NOTICE_ID
         , NOTICE_YN
+        , PV
+        <include refid="common.content.column" />
         ) VALUES (
-        <include refid="common.board.value" />
-        , #{noticeId}
+          #{noticeId}
         , #{noticeYn}
+        , #{pv}
+        <include refid="common.content.value" />
         )
-        <include refid="common.board.duplicateUpdate" />
+        <include refid="common.content.duplicateUpdate" />
         , NOTICE_YN = VALUES(NOTICE_YN)
+        , PV = VALUES(PV)
     </insert>
 
     <delete id="delete">

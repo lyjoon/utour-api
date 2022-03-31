@@ -10,8 +10,8 @@
 
     <sql id="select">
         SELECT
+        NOTICE_ID
         <include refid="common.attachment.select" />
-        ,  NOTICE_ID
         FROM NOTICE_ATTACHMENT T
     </sql>
 
@@ -30,8 +30,7 @@
 
     <select id="findById" resultMap="resultMap">
         <include refid="select" />
-        WHERE NOTICE_ID = #{noticeId}
-          AND ATTACHMENT_ID = #{attachmentId}
+        WHERE ATTACHMENT_ID = #{attachmentId}
     </select>
 
     <select id="findAll" resultMap="resultMap">
@@ -41,19 +40,18 @@
 
     <insert id="save">
         INSERT INTO NOTICE_ATTACHMENT (
+        NOTICE_ID
         <include refid="common.attachment.column" />
-        , NOTICE_ID
         ) VALUES (
+        #{noticeId}
         <include refid="common.attachment.value" />
-        , #{noticeId}
         )
         <include refid="common.attachment.duplicateUpdate" />
     </insert>
 
     <delete id="delete">
         DELETE FROM NOTICE_ATTACHMENT
-        WHERE NOTICE_ID = #{noticeId}
-          AND ATTACHMENT_ID = #{attachmentId}
+        WHERE ATTACHMENT_ID = #{attachmentId}
     </delete>
 
 </mapper>

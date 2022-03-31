@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="common.component">
+
+    <resultMap id="resultMap" type="com.utour.entity.common.Component" extends="common.content.resultMap">
+        <result javaType="java.lang.Long" property="viewComponentId" column="VIEW_COMPONENT_ID" />
+        <result javaType="java.lang.String" property="title" column="TITLE" />
+        <result javaType="java.lang.String" property="description" column="DESCRIPTION" />
+    </resultMap>
+
+    <sql id="column">
+        , VIEW_COMPONENT_ID
+        , TITLE
+        , DESCRIPTION
+    </sql>
+
+    <sql id="select">
+        <include refid="common.component.column" />
+        <include refid="common.base.column" />
+    </sql>
+
+    <sql id="value">
+        , #{viewComponentId}
+        , #{title}
+        , #{description}
+    </sql>
+
+    <sql id="duplicateUpdate">
+        <include refid="common.base.duplicateUpdate" />
+        , VIEW_COMPONENT_ID = VALUES(VIEW_COMPONENT_ID)
+        , TITLE = VALUES(TITLE)
+        , DESCRIPTION = VALUES(DESCRIPTION)
+    </sql>
+
+</mapper>

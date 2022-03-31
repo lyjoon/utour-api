@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.utour.mapper.ViewComponentImagesMapper">
+
+    <resultMap id="resultMap" type="com.utour.entity.ViewComponentImages" extends="common.component.resultMap">
+        <result javaType="java.lang.Integer" property="seq" column="SEQ" />
+        <result javaType="java.lang.String" property="imageSrc" column="IMAGE_SRC" />
+    </resultMap>
+
+    <sql id="select">
+        SELECT
+          SEQ
+        , IMAGE_SRC
+        <include refid="common.component.column" />
+        FROM VIEW_COMPONENT_IMAGES T
+    </sql>
+
+    <sql id="where">
+        WHERE VIEW_COMPONENT_ID = #{viewComponentId}
+        <if test="seq != null">AND SEQ = #{seq}</if>
+    </sql>
+
+    <select id="exists" resultType="java.lang.Boolean">
+        /* com.utour.mapper.ViewComponentImagesMapper.exists */
+        <include refid="common.base.existsPrefix" />
+        <include refid="select" />
+        <include refid="where" />
+        <include refid="common.base.existsSuffix" />
+    </select>
+
+    <select id="findById" resultMap="resultMap">
+        /* com.utour.mapper.ViewComponentImagesMapper.findById */
+        <include refid="select" />
+        <include refid="where" />
+    </select>
+
+    <select id="findAll" resultMap="resultMap">
+        /* com.utour.mapper.ViewComponentImagesMapper.findAll */
+        <include refid="select" />
+        <include refid="where" />
+    </select>
+
+    <insert id="save">
+        /* com.utour.mapper.ViewComponentImagesMapper.save */
+        INSERT INTO VIEW_COMPONENT_IMAGES (
+          SEQ
+        , IMAGE_SRC
+        <include refid="common.component.column" />
+        ) VALUES (
+          #{seq}
+        , #{imageSrc}
+        <include refid="common.component.value" />
+        )
+        <include refid="common.component.duplicateUpdate" />
+        , IMAGE_SRC = VALUES(IMAGE_SRC)
+    </insert>
+
+    <delete id="delete">
+        /* com.utour.mapper.ViewComponentImagesMapper.delete */
+        DELETE FROM VIEW_COMPONENT_IMAGES
+        WHERE VIEW_COMPONENT_ID = #{viewComponentId}
+        AND SEQ = #{seq}
+    </delete>
+
+</mapper>

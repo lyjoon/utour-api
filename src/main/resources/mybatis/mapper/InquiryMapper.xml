@@ -4,39 +4,27 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.utour.mapper.InquiryMapper">
 
-    <resultMap id="resultMap" type="com.utour.entity.Inquiry" extends="common.base.resultMap">
+    <resultMap id="resultMap" type="com.utour.entity.Inquiry" extends="common.content.resultMap">
         <result javaType="java.lang.Long" property="inquiryId" column="INQUIRY_ID" />
-        <result javaType="java.lang.String" property="writer" column="WRITER" />
-        <result javaType="java.lang.String" property="content" column="CONTENT" />
         <result javaType="java.lang.String" property="contact" column="CONTACT" />
         <result javaType="java.lang.String" property="email" column="EMAIL" />
-        <result javaType="java.lang.String" property="nationCode" column="NATION_CODE" />
-        <result javaType="java.lang.String" property="areaCode" column="AREA_CODE" />
-        <result javaType="java.lang.Long" property="hotelId" column="HOTEL_ID" />
+        <result javaType="java.lang.String" property="status" column="STATUS" />
     </resultMap>
 
     <sql id="select">
         SELECT
           INQUIRY_ID
-        , WRITER
-        , CONTENT
         , CONTACT
         , EMAIL
-        , NATION_CODE
-        , AREA_CODE
-        , HOTEL_ID
-        <include refid="common.base.column" />
+        , STATUS
+        <include refid="common.content.column" />
         FROM INQUIRY T
     </sql>
 
     <sql id="where">
         <where>
             <if test="inquiryId != null">AND INQUIRY_ID = #{inquiryId}</if>
-            <if test="writer != null">AND WRITER LIKE CONCAT(#{writer}, '%')</if>
-            <if test="content != null">AND CONTENT LIKE CONCAT(#{content}, '%')</if>
-            <if test="nationCode != null">AND NATION_CODE = #{nationCode}</if>
-            <if test="areaCode != null">AND AREA_CODE = #{areaCode}</if>
-            <if test="hotelId != null">AND HOTEL_ID = #{hotelId}</if>
+            <if test="status != null">AND STATUS = #{status}</if>
         </where>
     </sql>
 
@@ -60,28 +48,21 @@
     <insert id="save">
         INSERT INTO INQUIRY (
           INQUIRY_ID
-        , WRITER
-        , CONTENT
         , CONTACT
         , EMAIL
-        , NATION_CODE
-        , AREA_CODE
-        , HOTEL_ID
+        , STATUS
+        <include refid="common.content.column" />
         ) VALUES (
           #{inquiryId}
-        , #{writer}
-        , #{content}
         , #{contact}
         , #{email}
-        , #{nationCode}
-        , #{areaCode}
-        , #{hotelId}
+        , #{status}
+        <include refid="common.content.value" />
         )
-        <include refid="common.base.duplicateUpdate" />
-        , WRITER = VALUES(WRITER)
-        , CONTENT = VALUES(CONTENT)
+        <include refid="common.content.duplicateUpdate" />
         , CONTACT = VALUES(CONTACT)
         , EMAIL = VALUES(EMAIL)
+        , STATUS = VALUES(STATUS)
     </insert>
 
     <delete id="delete">

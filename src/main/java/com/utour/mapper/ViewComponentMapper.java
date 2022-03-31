@@ -5,4 +5,4 @@ import com.utour.entity.ViewComponent;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface ProductComponentMapper extends CommonMapper<ViewComponent> {}
+public interface ViewComponentMapper extends CommonMapper<ViewComponent> {}

@@ -9,8 +9,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true)
 @SuperBuilder(toBuilder = true)
-public class VwComponent extends CommonEntity {
+public class Component extends CommonEntity {
 
-    private String title;
-    private String description;
+    private Long viewComponentId;
+
 }

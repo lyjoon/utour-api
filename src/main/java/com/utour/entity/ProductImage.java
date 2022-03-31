@@ -12,7 +12,8 @@ import lombok.experimental.SuperBuilder;
 public class ProductImage extends CommonEntity {
 
     private Long productImageId;
+    private Long productId;
     private Long productImageGroupId;
     private String imageSrc;
-    private String imageDescription;
+    private String description;
 }

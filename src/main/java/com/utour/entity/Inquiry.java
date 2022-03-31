@@ -1,6 +1,6 @@
 package com.utour.entity;
 
-import com.utour.common.CommonEntity;
+import com.utour.entity.common.Content;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,14 +11,15 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Inquiry extends CommonEntity {
+public class Inquiry extends Content {
 
     private Long inquiryId;
-    private String writer;
-    private String content;
     private String contact;
     private String email;
-    private String nationCode;
-    private String areaCode;
-    private Long hotelId;
+    private String status;
+
+    @Override
+    public Long getId() {
+        return inquiryId;
+    }
 }

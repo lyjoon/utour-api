@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.utour.mapper.ViewComponentMapper">
+
+    <resultMap id="resultMap" type="com.utour.entity.ViewComponent" extends="common.component.resultMap">
+        <result javaType="java.lang.String" property="viewComponentType" column="VIEW_COMPONENT_TYPE" />
+        <result javaType="java.lang.String" property="title" column="TITLE" />
+        <result javaType="java.lang.String" property="description" column="DESCRIPTION" />
+        <result javaType="java.lang.Long" property="productId" column="PRODUCT_ID" />
+        <result javaType="java.lang.Integer" property="ordinal" column="ORDINAL" />
+        <result javaType="java.lang.Character" property="useYn" column="USE_YN" />
+    </resultMap>
+
+    <sql id="select">
+        SELECT
+          VIEW_COMPONENT_TYPE
+        , PRODUCT_ID
+        , TITLE
+        , DESCRIPTION
+        , ORDINAL
+        , USE_YN
+        <include refid="common.component.column" />
+        FROM VIEW_COMPONENT T
+    </sql>
+
+    <sql id="where">
+        <where>
+            <if test="viewComponentId != null">AND VIEW_COMPONENT_ID = #{viewComponentId}</if>
+            <if test="productId != null">AND PRODUCT_ID = #{productId}</if>
+            <if test="useYn != null">AND USE_YN = #{useYn}</if>
+        </where>
+    </sql>
+
+    <select id="exists" resultType="java.lang.Boolean">
+        /* com.utour.mapper.ViewComponentMapper.exists */
+        <include refid="common.base.existsPrefix" />
+        <include refid="select" />
+        WHERE VIEW_COMPONENT_ID = #{viewComponentId}
+        <include refid="common.base.existsSuffix" />
+    </select>
+
+    <select id="findById" resultMap="resultMap">
+        /* com.utour.mapper.ViewComponentMapper.findById */
+        <include refid="select" />
+        WHERE VIEW_COMPONENT_ID = #{viewComponentId}
+    </select>
+
+    <select id="findAll" resultMap="resultMap">
+        /* com.utour.mapper.ViewComponentMapper.findAll */
+        <include refid="select" />
+        <include refid="where" />
+        ORDER BY ORDINAL, VIEW_COMPONENT_ID
+    </select>
+
+    <insert id="save">
+        /* com.utour.mapper.ViewComponentMapper.save */
+        INSERT INTO VIEW_COMPONENT (
+          VIEW_COMPONENT_TYPE
+        , PRODUCT_ID
+        , TITLE
+        , DESCRIPTION
+        , ORDINAL
+        , USE_YN
+        <include refid="common.component.column" />
+        ) VALUES (
+          #{viewComponentType}
+        , #{productId}
+        , #{title}
+        , #{description}
+        , #{ordinal}
+        , #{useYn}
+        <include refid="common.component.value" />
+        )
+        <include refid="common.component.duplicateUpdate" />
+        , VIEW_COMPONENT_TYPE = VALUES(VIEW_COMPONENT_TYPE)
+        , PRODUCT_ID = VALUES(PRODUCT_ID)
+        , TITLE = VALUES(TITLE)
+        , DESCRIPTION = VALUES(DESCRIPTION)
+        , ORDINAL = VALUES(ORDINAL)
+        , USE_YN = VALUES(USE_YN)
+    </insert>
+
+    <delete id="delete">
+        /* com.utour.mapper.ViewComponentMapper.delete */
+        DELETE FROM VIEW_COMPONENT WHERE VIEW_COMPONENT_ID = #{viewComponentId}
+    </delete>
+
+</mapper>

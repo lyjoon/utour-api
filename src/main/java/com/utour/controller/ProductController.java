@@ -29,7 +29,6 @@ public class ProductController extends CommonController {
         return this.productService.getList(ProductPagingDto.builder()
                 .page(page)
                 .query(query)
-                .displayType(displayType)
                 .productType(productType)
                 .limit(Constants.DEFAULT_PAGING_COUNT)
                 .useYn(Constants.Y)

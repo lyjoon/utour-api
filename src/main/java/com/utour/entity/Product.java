@@ -1,6 +1,6 @@
 package com.utour.entity;
 
-import com.utour.common.CommonEntity;
+import com.utour.entity.common.Content;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,15 +11,17 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Product extends CommonEntity {
+public class Product extends Content {
 
     private Long productId;
     private String productType;
     private String nationCode;
     private String areaCode;
-    private String title;
-    private String writer;
-    private String description;
     private String repImageSrc;
     private Character useYn;
+
+    @Override
+    public Long getId() {
+        return this.productId;
+    }
 }

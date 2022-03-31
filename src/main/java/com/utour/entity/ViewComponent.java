@@ -1,6 +1,6 @@
 package com.utour.entity;
 
-import com.utour.common.CommonEntity;
+import com.utour.entity.common.Component;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -9,11 +9,12 @@ import lombok.experimental.SuperBuilder;
 @ToString(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ViewComponent extends CommonEntity {
+public class ViewComponent extends Component {
 
-    private Long viewComponentId;
-    private String viewComponentType;
     private Long productId;
+    private String viewComponentType;
+    private String title;
+    private String description;
     private Integer ordinal;
     private Character useYn;
 }

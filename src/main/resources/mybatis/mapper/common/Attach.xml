@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="common.attachment">
 
-    <resultMap id="resultMap" type="com.utour.entity.common.Attach" extends="common.board.resultMap">
+    <resultMap id="resultMap" type="com.utour.entity.common.Attach" extends="common.content.resultMap">
         <result javaType="java.lang.Long" property="attachId" column="ATTACH_ID" />
         <result javaType="java.lang.String" property="path" column="PATH" />
         <result javaType="java.lang.String" property="originName" column="ORIGIN_NAME" />
@@ -12,7 +12,7 @@
     </resultMap>
 
     <sql id="column">
-          ATTACH_ID
+        , ATTACH_ID
         , PATH
         , ORIGIN_NAME
         , SIZE
@@ -24,7 +24,7 @@
     </sql>
 
     <sql id="value">
-          #{attachId}
+        , #{attachId}
         , #{path}
         , #{originName}
         , #{size}

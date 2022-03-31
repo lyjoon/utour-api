@@ -1,7 +1,7 @@
 package com.utour.entity;
 
 import com.utour.annotation.EncryptValue;
-import com.utour.entity.common.Board;
+import com.utour.entity.common.Content;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -10,12 +10,13 @@ import lombok.experimental.SuperBuilder;
 @ToString(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Qna extends Board {
+public class Qna extends Content {
 
     private Long qnaId;
     private Character privateYn;
     @EncryptValue(length = 20)
     private String password;
+    private int pv;
 
     @Override
     public Long getId() {

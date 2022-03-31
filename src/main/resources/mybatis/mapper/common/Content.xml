@@ -2,32 +2,29 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="common.board">
+<mapper namespace="common.content">
 
-    <resultMap id="resultMap" type="com.utour.entity.common.Board" extends="common.board.resultMap">
+    <resultMap id="resultMap" type="com.utour.entity.common.Content" extends="common.base.resultMap">
         <result javaType="java.lang.String" property="title" column="TITLE" />
         <result javaType="java.lang.String" property="content" column="CONTENT" />
         <result javaType="java.lang.String" property="writer" column="WRITER" />
-        <result javaType="java.lang.Integer" property="pv" column="PV" />
     </resultMap>
 
     <sql id="column">
-          TITLE
+        , TITLE
         , CONTENT
         , WRITER
-        , PV
     </sql>
 
     <sql id="select">
-        <include refid="common.board.column" />
+        <include refid="common.content.column" />
         <include refid="common.base.column" />
     </sql>
 
     <sql id="value">
-          #{title}
+        , #{title}
         , #{content}
         , #{writer}
-        , #{pv}
     </sql>
 
     <sql id="duplicateUpdate">

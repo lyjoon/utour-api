@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.utour.mapper.ProductImageGroupMapper">
+
+    <resultMap id="resultMap" type="com.utour.entity.ProductImageGroup" extends="common.base.resultMap">
+        <result javaType="java.lang.Long" property="productImageGroupId" column="PRODUCT_IMAGE_GROUP_ID" />
+        <result javaType="java.lang.Long" property="productId" column="PRODUCT_ID" />
+        <result javaType="java.lang.String" property="groupName" column="GROUP_NAME" />
+        <result javaType="java.lang.String" property="useYn" column="USE_YN" />
+    </resultMap>
+
+    <sql id="select">
+        SELECT
+          PRODUCT_IMAGE_GROUP_ID
+        , PRODUCT_ID
+        , GROUP_NAME
+        , USE_YN
+        <include refid="common.base.column" />
+        FROM PRODUCT_IMAGE_GROUP T
+    </sql>
+
+    <sql id="where">
+        <where>
+            <if test="productId != null">AND PRODUCT_ID = #{productId}</if>
+            <if test="productImageGroupId != null">AND PRODUCT_IMAGE_GROUP_ID = #{productImageGroupId}</if>
+            <if test="useYn != null">AND USE_YN = #{useYn}</if>
+        </where>
+    </sql>
+
+    <select id="exists" resultType="java.lang.Boolean">
+        /* com.utour.mapper.ProductImageGroupMapper.exists */
+        <include refid="common.base.existsPrefix" />
+        <include refid="select" />
+        <include refid="where" />
+        <include refid="common.base.existsSuffix" />
+    </select>
+
+    <select id="findById" resultMap="resultMap">
+        /* com.utour.mapper.ProductImageGroupMapper.findById */
+        <include refid="select" />
+        WHERE PRODUCT_IMAGE_GROUP_ID = #{productImageGroupId}
+    </select>
+
+    <select id="findAll" resultMap="resultMap">
+        /* com.utour.mapper.ProductImageGroupMapper.findAll */
+        <include refid="select" />
+        <include refid="where" />
+    </select>
+
+    <insert id="save">
+        /* com.utour.mapper.ProductImageGroupMapper.save */
+        INSERT INTO PRODUCT_IMAGE_GROUP (
+          PRODUCT_IMAGE_GROUP_ID
+        , PRODUCT_ID
+        , GROUP_NAME
+        , USE_YN
+        <include refid="common.base.column" />
+        ) VALUES (
+          #{productImageGroupId}
+        , #{productId}
+        , #{groupName}
+        , #{useYn}
+        <include refid="common.base.value" />
+        )
+        <include refid="common.base.duplicateUpdate" />
+        , GROUP_NAME = VALUES(GROUP_NAME)
+        , USE_YN = VALUES(USE_YN)
+    </insert>
+
+    <delete id="delete">
+        /* com.utour.mapper.ProductImageGroupMapper.delete */
+        DELETE FROM PRODUCT_IMAGE_GROUP WHERE PRODUCT_IMAGE_GROUP_ID = #{productImageGroupId}
+    </delete>
+</mapper>

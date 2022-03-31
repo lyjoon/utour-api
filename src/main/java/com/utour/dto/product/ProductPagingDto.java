@@ -15,5 +15,7 @@ import lombok.experimental.SuperBuilder;
 public class ProductPagingDto extends PagingDto {
 
     private String productType;
-    private String displayType;
+    private Long productId;
+    private String nationCode;
+    private String areaCode;
 }
