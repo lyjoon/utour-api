@@ -9,10 +9,11 @@ import lombok.experimental.SuperBuilder;
 @ToString(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ViewComponentImages extends Component {
+public class ViewComponentFacility extends Component {
 
     private Integer viewComponentSeq;
-    private String imageSrc;
+    private String iconType;
     private String title;
     private String description;
+
 }

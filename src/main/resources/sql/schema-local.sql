@@ -208,13 +208,13 @@ create table view_component_image (
 drop table if exists view_component_images;
 create table view_component_images (
     view_component_id bigint not null comment '화면요소 ID',
-    seq int not null comment '이미지 구성요소 순번',
+    view_component_seq int not null comment '이미지 구성요소 순번',
     image_src varchar(4000) not null comment '이미지 경로',
     title varchar(50) comment '제목',
     description varchar(500) comment '설명(비고)',
     create_at datetime default now() comment '작성일자',
     update_at datetime comment '변경일자',
-    constraint pk_view_component_images primary key (view_component_id, seq),
+    constraint pk_view_component_images primary key (view_component_id, view_component_seq),
     constraint fk_view_component_images foreign key (view_component_id) references view_component_image (view_component_id)
 );
 
@@ -231,15 +231,15 @@ create table view_component_accommodation (
     constraint fk_view_component_accommodation foreign key (view_component_id) references view_component (view_component_id)
 );
 
-drop table if exists view_component_facilities;
-create table view_component_facilities (
+drop table if exists view_component_facility;
+create table view_component_facility (
     view_component_id bigint not null comment '화면요소 ID',
-    seq bigint not null comment '숙박시설 순번',
+    view_component_seq bigint not null comment '숙박시설 순번',
     icon_type varchar(50) not null comment '유형(icon)',
     title varchar(50) comment '제목',
     description varchar(500) comment '설명(비고)',
     create_at datetime default now() comment '작성일자',
     update_at datetime comment '변경일자',
-    constraint pk_view_component_facility primary key (view_component_id, seq),
+    constraint pk_view_component_facility primary key (view_component_id, view_component_seq),
     constraint fk_view_component_facility foreign key (view_component_id) references view_component_accommodation (view_component_id)
 );
