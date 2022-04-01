@@ -1,5 +1,6 @@
 package com.utour.entity;
 
+import com.utour.annotation.EncryptValue;
 import com.utour.common.CommonEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ public class QnaReply extends CommonEntity {
     private Integer qnaReplyId;
     private String writer;
     private String content;
+    @EncryptValue(length = 20)
     private String password;
     private Character privateYn;
     private Character adminYn;

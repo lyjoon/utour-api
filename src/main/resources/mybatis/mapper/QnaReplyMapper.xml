@@ -28,13 +28,12 @@
     </sql>
 
     <sql id="where">
-        <where>
-            <if test="qnaId != null">AND QNA_ID = #{qnaId}</if>
-            <if test="qnaReplyId != null">AND QNA_REPLY_ID = #{qnaReplyId}</if>
-        </where>
+        WHERE QNA_ID = #{qnaId}
+        <if test="qnaReplyId != null">AND QNA_REPLY_ID = #{qnaReplyId}</if>
     </sql>
 
     <select id="exists" resultType="java.lang.Boolean">
+        /* com.utour.mapper.QnaReplyMapper.exists */
         <include refid="common.base.existsPrefix" />
         <include refid="select" />
         <include refid="where" />
@@ -42,28 +41,37 @@
     </select>
 
     <select id="findById" resultMap="resultMap">
+        /* com.utour.mapper.QnaReplyMapper.findById */
         <include refid="select" />
         WHERE QNA_ID = #{qnaId}
           AND QNA_REPLY_ID = #{qnaReplyId}
     </select>
 
+    <select id="count" resultType="java.lang.Integer">
+        /* com.utour.mapper.QnaReplyMapper.count */
+        SELECT COUNT(*) AS CNT FROM QNA_REPLY T
+        <include refid="where" />
+    </select>
+
     <select id="findAll" resultMap="resultMap">
+        /* com.utour.mapper.QnaReplyMapper.findAll */
         <include refid="select" />
         <include refid="where" />
     </select>
 
     <insert id="save">
+        /* com.utour.mapper.QnaReplyMapper.save */
         INSERT INTO QNA_REPLY (
-          QNA_ID
-        , QNA_REPLY_ID
+          QNA_REPLY_ID
+        , QNA_ID
         , WRITER
         , CONTENT
         , PASSWORD
         , PRIVATE_YN
         , ADMIN_YN
         ) VALUES (
-          #{qnaId }
-        , #{qnaReplyId }
+          #{qnaReplyId }
+        , #{qnaId }
         , #{writer }
         , #{content }
         , #{password }
@@ -79,9 +87,16 @@
     </insert>
 
     <delete id="delete">
+        /* com.utour.mapper.QnaReplyMapper.delete */
         DELETE FROM QNA_REPLY
         WHERE QNA_ID = #{qnaId}
-          AND QNA_REPLY_ID = #{qnaReplyId}
+        <if test="qnaReplyId != null">AND QNA_REPLY_ID = #{qnaReplyId}</if>
+    </delete>
+
+    <delete id="deleteById">
+        /* com.utour.mapper.QnaReplyMapper.delete */
+        DELETE FROM QNA_REPLY
+        WHERE QNA_REPLY_ID = #{qnaReplyId}
     </delete>
 
 </mapper>

@@ -12,10 +12,11 @@ public class ProductDto {
 
     private Long productId;
     private String productType;
-    private String displayType;
-    private String title;
-    private String description;
-    private int ordinal;
-    private String src;
+    private String nationCode;
+    private String areaCode;
+    private String repImageSrc;
     private Character useYn;
+    private String title;
+    private String content;
+    private String writer;
 }
