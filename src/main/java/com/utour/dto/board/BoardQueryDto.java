@@ -1,6 +1,6 @@
 package com.utour.dto.board;
 
-import com.utour.dto.PagingDto;
+import com.utour.dto.PaginationQueryDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BoardQueryDto extends PagingDto {
+public class BoardQueryDto extends PaginationQueryDto {
 
     private String queryType;
 }

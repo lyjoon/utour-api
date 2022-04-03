@@ -3,7 +3,7 @@ package com.utour.controller;
 import com.utour.common.CommonController;
 import com.utour.common.Constants;
 import com.utour.dto.product.ProductDto;
-import com.utour.dto.product.ProductPagingDto;
+import com.utour.dto.product.ProductQueryDto;
 import com.utour.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -26,7 +26,7 @@ public class ProductController extends CommonController {
             @RequestParam(required = false) String displayType,
             @RequestParam(required = false) String productType
     ) {
-        return this.productService.getList(ProductPagingDto.builder()
+        return this.productService.getList(ProductQueryDto.builder()
                 .page(page)
                 .query(query)
                 .productType(productType)

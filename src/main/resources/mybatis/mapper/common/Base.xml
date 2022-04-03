@@ -21,6 +21,10 @@
         , CREATE_AT
         , UPDATE_AT
     </sql>
+    <sql id="value">
+        , CREATE_AT
+        , UPDATE_AT
+    </sql>
 
     <sql id="pagination">
         <if test="offset != null and limit != null">LIMIT #{offset}, #{limit}</if>

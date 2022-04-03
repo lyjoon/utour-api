@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseDto<T> {
+public class ResultDto<T> {
 
     /**
      * 응답 메세지
@@ -22,6 +22,6 @@ public class ResponseDto<T> {
     /**
      * 결과 데이터
      */
-    private T data;
+    private T results;
 
 }

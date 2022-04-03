@@ -1,7 +1,7 @@
 package com.utour.dto.qna;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.utour.common.Constants;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -14,13 +14,13 @@ import java.time.LocalDateTime;
 public class QnaReplyDto {
 
     private Long qnaId;
-    private Integer qnaReplyId;
+    private Long qnaReplyId;
     private String writer;
     private String content;
     private String password;
     private Character privateYn;
     private Character adminYn;
 
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonFormat(pattern = Constants.PATTERN_ISO_DATETIME)
     private LocalDateTime createAt;
 }

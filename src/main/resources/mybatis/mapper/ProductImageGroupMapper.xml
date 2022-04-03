@@ -56,13 +56,11 @@
         , PRODUCT_ID
         , GROUP_NAME
         , USE_YN
-        <include refid="common.base.column" />
         ) VALUES (
           #{productImageGroupId}
         , #{productId}
         , #{groupName}
         , #{useYn}
-        <include refid="common.base.value" />
         )
         <include refid="common.base.duplicateUpdate" />
         , GROUP_NAME = VALUES(GROUP_NAME)

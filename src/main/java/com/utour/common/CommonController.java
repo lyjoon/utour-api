@@ -1,6 +1,6 @@
 package com.utour.common;
 
-import com.utour.dto.ResponseDto;
+import com.utour.dto.ResultDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,24 +19,24 @@ public class CommonController extends CommonComponent {
 		return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession(false);
 	}
 
-	protected <T> ResponseEntity<T> ok(T data){
-		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(data);
+	protected <T> ResultDto ok(T data){
+		return ResultDto.builder().results(data).build();
 	}
 
-	protected ResponseEntity<Void> ok(){
-		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).build();
+	protected ResultDto<Void> ok(){
+		return ResultDto.<Void>builder().message(Constants.SUCCESS).build();
 	}
 
-	protected ResponseEntity<ResponseDto> ok(String message){
-		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(ResponseDto.builder().message(message).build());
+	protected ResultDto<Void> ok(String message){
+		return ResultDto.<Void>builder().message(message).build();
 	}
 
 	protected ResponseEntity<Void> response(HttpStatus httpStatus){
 		return ResponseEntity.status(httpStatus).contentType(MediaType.APPLICATION_JSON).build();
 	}
 
-	protected ResponseEntity<ResponseDto> response(HttpStatus httpStatus, String message){
-		return ResponseEntity.status(httpStatus).contentType(MediaType.APPLICATION_JSON).body(ResponseDto.builder().message(message).build());
+	protected ResponseEntity<ResultDto> response(HttpStatus httpStatus, String message){
+		return ResponseEntity.status(httpStatus).contentType(MediaType.APPLICATION_JSON).body(ResultDto.builder().message(message).build());
 	}
 
 }

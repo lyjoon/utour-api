@@ -59,14 +59,12 @@
         , PRODUCT_IMAGE_GROUP_ID
         , IMAGE_SRC
         , DESCRIPTION
-        <include refid="common.base.column" />
         ) VALUES (
           #{productImageId }
         , #{productId }
         , #{productImageGroupId }
         , #{imageSrc }
         , #{description }
-        <include refid="common.base.value" />
         )
         <include refid="common.base.duplicateUpdate" />
         , PRODUCT_IMAGE_GROUP_ID = VALUES(PRODUCT_IMAGE_GROUP_ID)

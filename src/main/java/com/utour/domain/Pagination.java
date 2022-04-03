@@ -10,17 +10,21 @@ import lombok.experimental.SuperBuilder;
 import java.util.Optional;
 
 @Setter
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class Pagination {
-
+    @Getter
     private Integer page;
-
     private Integer limit;
 
     public Integer getOffset() {
-        return Optional.ofNullable(page).map(i -> i * Optional.ofNullable(limit).orElse(Constants.DEFAULT_PAGING_COUNT)).orElse(null);
+        Integer offset = Optional.ofNullable(this.page).map(i -> (i > 0 ? i -1 : i) * this.getLimit()).orElse(null);
+        return offset;
+    }
+
+    public Integer getLimit() {
+        int limit = Optional.ofNullable(this.limit).orElse(Constants.DEFAULT_PAGING_COUNT);
+        return limit;
     }
 }

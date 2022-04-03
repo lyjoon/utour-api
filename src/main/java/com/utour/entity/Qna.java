@@ -14,7 +14,7 @@ public class Qna extends Content {
 
     private Long qnaId;
     private Character privateYn;
-    @EncryptValue(length = 20)
+    @EncryptValue
     private String password;
     private int pv;
 

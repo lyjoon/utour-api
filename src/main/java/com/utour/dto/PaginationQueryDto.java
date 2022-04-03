@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PagingDto extends Pagination {
+public class PaginationQueryDto extends Pagination {
 
     private String query;
     private LocalDate startAt, endAt;

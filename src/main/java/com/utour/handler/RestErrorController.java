@@ -1,6 +1,6 @@
 package com.utour.handler;
 
-import com.utour.dto.ErrorResponseDto;
+import com.utour.dto.ErrorResultDto;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,13 +15,13 @@ import java.util.Optional;
 public class RestErrorController implements ErrorController {
 
     @RequestMapping
-    public ErrorResponseDto error(HttpServletRequest request) {
+    public ErrorResultDto error(HttpServletRequest request) {
         HttpStatus status = this.getStatus(request);
-        ErrorResponseDto errorResponseDto;
+        ErrorResultDto errorResponseDto;
         if (status == HttpStatus.NO_CONTENT) {
-            errorResponseDto = ErrorResponseDto.builder().status(status.value()).message(status.getReasonPhrase()).build();
+            errorResponseDto = ErrorResultDto.builder().status(status.value()).message(status.getReasonPhrase()).build();
         } else {
-            errorResponseDto = ErrorResponseDto.builder().status(status.value()).message(status.getReasonPhrase()).build();
+            errorResponseDto = ErrorResultDto.builder().status(status.value()).message(status.getReasonPhrase()).build();
             Optional.ofNullable(request.getAttribute(RequestDispatcher.ERROR_EXCEPTION))
                     .ifPresent(throwable -> {
                         errorResponseDto.setMessage(throwable.toString());

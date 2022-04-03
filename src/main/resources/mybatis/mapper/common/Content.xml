@@ -34,4 +34,10 @@
         , WRITER = VALUES(WRITER)
     </sql>
 
+    <sql id="whereByBoardQuery">
+        <where>
+            <if test="query != null">AND TITLE LIKE CONCAT(#{title}, '%')</if>
+        </where>
+    </sql>
+
 </mapper>

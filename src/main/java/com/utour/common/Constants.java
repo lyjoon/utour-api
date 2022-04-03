@@ -2,7 +2,8 @@ package com.utour.common;
 
 public interface Constants {
 
-    String ROOT_PACKAGE = "com.utour";
+    String ROOT_PACKAGE = "com.utour", SUCCESS ="success", FAIL = "failure";
+    String PATTERN_ISO_DATETIME = "yyyy-MM-dd'T'HH:mm:ss";
 
     int DEFAULT_PAGING_COUNT = 20;
 

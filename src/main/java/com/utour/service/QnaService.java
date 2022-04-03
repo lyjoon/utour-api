@@ -1,6 +1,7 @@
 package com.utour.service;
 
 import com.utour.common.CommonService;
+import com.utour.dto.PaginationResultDto;
 import com.utour.dto.board.BoardQueryDto;
 import com.utour.dto.qna.QnaDto;
 import com.utour.dto.qna.QnaReplyDto;
@@ -27,7 +28,16 @@ public class QnaService extends CommonService {
      * 저장
      */
     public void save(QnaDto qnaDto) {
-        Qna qna = this.convert(qnaDto, Qna.class);
+        //Qna qna = this.convert(qnaDto, Qna.class);
+        Qna qna = Qna.builder()
+                .qnaId(qnaDto.getQnaId())
+                .title(qnaDto.getTitle())
+                .content(qnaDto.getContent())
+                .privateYn(qnaDto.getPrivateYn())
+                .pv(qnaDto.getPv())
+                .writer(qnaDto.getWriter())
+                .password(qnaDto.getPassword())
+                .build();
         this.qnaMapper.save(qna);
     }
 
@@ -64,7 +74,15 @@ public class QnaService extends CommonService {
         }
         boolean isMatched = qnaReply.getPassword().equals(qnaReplyDto.getPassword());
         if(isMatched) {
-            QnaReply qnaReply1 = this.convert(qnaReplyDto, QnaReply.class);
+            QnaReply qnaReply1 = QnaReply.builder()
+                    .qnaId(qnaReplyDto.getQnaId())
+                    .qnaReplyId(qnaReplyDto.getQnaReplyId())
+                    .writer(qnaReplyDto.getWriter())
+                    .content(qnaReplyDto.getContent())
+                    .password(qnaReplyDto.getPassword())
+                    .privateYn(qnaReplyDto.getPrivateYn())
+                    .adminYn(qnaReplyDto.getAdminYn())
+                    .build();
             this.qnaReplyMapper.deleteById(qnaReply1);
         } else {
             throw new InternalException(this.getMessage("qns.service.delete.error.002"));
@@ -119,12 +137,22 @@ public class QnaService extends CommonService {
      * @param boardQueryDto
      * @return
      */
-    public java.util.List<QnaDto> findPage(BoardQueryDto boardQueryDto) {
-        return this.qnaMapper.findPage(boardQueryDto).stream()
+    public PaginationResultDto findPage(BoardQueryDto boardQueryDto) {
+
+        long count = this.qnaMapper.count(boardQueryDto);
+        java.util.List<Qna> list = this.qnaMapper.findPage(boardQueryDto);
+        java.util.List<QnaDto> results = list.stream()
                 .map( v -> this.convert(v, QnaDto.class))
                 .peek(qnaDto -> qnaDto.setReplyCnt(Optional.ofNullable(this.qnaReplyMapper.count(QnaReply.builder().qnaId(qnaDto.getQnaId()).build()))
                         .orElse(0)))
                 .collect(Collectors.toList());
+
+        return PaginationResultDto.<QnaDto>builder()
+                .page(boardQueryDto.getPage())
+                .limit(boardQueryDto.getLimit())
+                .results(results)
+                .count(count)
+                .build();
     }
 
     /**

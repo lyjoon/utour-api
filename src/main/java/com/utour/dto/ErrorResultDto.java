@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ErrorResponseDto<T> extends ResponseDto<T>{
+public class ErrorResultDto<T> extends ResultDto<T> {
 
     private int status = 500;
 }

@@ -15,10 +15,10 @@ import lombok.experimental.SuperBuilder;
 public class QnaReply extends CommonEntity {
 
     private Long qnaId;
-    private Integer qnaReplyId;
+    private Long qnaReplyId;
     private String writer;
     private String content;
-    @EncryptValue(length = 20)
+    @EncryptValue
     private String password;
     private Character privateYn;
     private Character adminYn;

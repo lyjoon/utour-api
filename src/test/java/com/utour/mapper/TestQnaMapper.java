@@ -61,4 +61,12 @@ public class TestQnaMapper extends TestMapper {
         log.info("delete-count : {}", cnt);
         Assertions.assertNotEquals(cnt, 0L);
     }
+
+    @Test
+    public void testMatch(){
+        this.save();
+        List<Qna> list = this.qnAMapper.findAll(null);
+        boolean flag = this.qnAMapper.matched(1L, "1234");
+        log.info("is-matched : {}", flag);
+    }
 }

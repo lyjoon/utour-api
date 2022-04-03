@@ -1,5 +1,8 @@
 package com.utour.dto.qna;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.utour.common.Constants;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -7,7 +10,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
-@Builder @NoArgsConstructor
+@NoArgsConstructor
+@Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class QnaDto {
 
     private Long qnaId;
@@ -17,6 +22,7 @@ public class QnaDto {
     private Character privateYn;
     private String password;
 
+    @JsonFormat(pattern = Constants.PATTERN_ISO_DATETIME)
     private LocalDateTime createAt;
 
     private int pv;

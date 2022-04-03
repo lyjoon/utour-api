@@ -1,10 +1,10 @@
-insert into code_group (group_code, group_name, use_yn) values ('PRODUCT_TYPE', '상품유형', 'Y');
+INSERT INTO CODE_GROUP (GROUP_CODE, GROUP_NAME, USE_YN) VALUES ('PRODUCT_TYPE', '상품유형', 'Y');
 
-insert into code (group_code, code, code_name, description) values ('PRODUCT_TYPE', 'HOTEL', '호텔', null);
-insert into code (group_code, code, code_name, description) values ('PRODUCT_TYPE', 'SCUBA', '스쿠버', null);
+INSERT INTO CODE (GROUP_CODE, CODE, CODE_NAME, DESCRIPTION) VALUES ('PRODUCT_TYPE', 'HOTEL', '호텔', NULL);
+INSERT INTO CODE (GROUP_CODE, CODE, CODE_NAME, DESCRIPTION) VALUES ('PRODUCT_TYPE', 'SCUBA', '스쿠버', NULL);
 
-insert into nation (nation_name, nation_code, use_yn)
-values
+INSERT INTO NATION (NATION_NAME, NATION_CODE, USE_YN)
+VALUES
     ('가나','GH', 'Y'),
     ('가봉','GA', 'Y'),
     ('가이아나','GY', 'Y'),
