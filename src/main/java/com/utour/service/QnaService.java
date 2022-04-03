@@ -1,6 +1,7 @@
 package com.utour.service;
 
 import com.utour.common.CommonService;
+import com.utour.common.Constants;
 import com.utour.dto.PaginationResultDto;
 import com.utour.dto.board.BoardQueryDto;
 import com.utour.dto.qna.QnaDto;
@@ -110,7 +111,7 @@ public class QnaService extends CommonService {
      * @param boardQueryDto
      * @return
      */
-    public PaginationResultDto getPageList(BoardQueryDto boardQueryDto) {
+    public PaginationResultDto getQnaList(BoardQueryDto boardQueryDto) {
 
         long count = this.qnaMapper.count(boardQueryDto);
         java.util.List<Qna> list = this.qnaMapper.findPage(boardQueryDto);
@@ -133,10 +134,20 @@ public class QnaService extends CommonService {
      * @param qnaId
      * @return
      */
-    public java.util.List<QnaReplyDto> getList(Long qnaId) {
-        return Optional.ofNullable(this.qnaReplyMapper.findAll(QnaReply.builder().qnaId(qnaId).build()))
+    public PaginationResultDto getReplies(Long qnaId, Integer page) {
+        QnaReply qnaReply = QnaReply.builder().qnaId(qnaId).build();
+        long count = this.qnaReplyMapper.count(qnaReply);
+
+        java.util.List<QnaReplyDto> replies = Optional.ofNullable(this.qnaReplyMapper.findAll(qnaReply))
                 .map(list -> list.stream().map(v -> this.convert(v , QnaReplyDto.class) ).collect(Collectors.toList()))
                 .orElse(null);
+
+        return PaginationResultDto.builder()
+                .page(page)
+                .limit(Constants.DEFAULT_PAGING_COUNT)
+                .result(replies)
+                .count(count)
+                .build();
     }
 
     /**
@@ -144,6 +155,15 @@ public class QnaService extends CommonService {
      * @param qnaReplyDto
      */
     public void save(QnaReplyDto qnaReplyDto) {
-        this.qnaReplyMapper.save(this.convert(qnaReplyDto, QnaReply.class));
+        QnaReply qnaReply = QnaReply.builder()
+                .qnaId(qnaReplyDto.getQnaId())
+                .adminYn(qnaReplyDto.getAdminYn())
+                .content(qnaReplyDto.getContent())
+                .writer(qnaReplyDto.getWriter())
+                .password(qnaReplyDto.getPassword())
+                .qnaReplyId(qnaReplyDto.getQnaReplyId())
+                .privateYn(qnaReplyDto.getPrivateYn())
+                .build();
+        this.qnaReplyMapper.save(qnaReply);
     }
 }

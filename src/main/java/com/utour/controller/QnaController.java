@@ -15,7 +15,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,11 +31,11 @@ public class QnaController extends CommonController {
     }
 
     @GetMapping({"/list", "/page-list"})
-    public PaginationResultDto getPageList (
+    public PaginationResultDto getQnaList(
             @RequestParam(required = false, defaultValue = "1") Integer page,
             @RequestParam(required = false, name = "query_type") String queryType,
             @RequestParam(required = false) String query) {
-        return this.qnaService.getPageList(BoardQueryDto.builder()
+        return this.qnaService.getQnaList(BoardQueryDto.builder()
                 .page(page)
                 .query(query)
                 .queryType(queryType)
@@ -56,11 +55,13 @@ public class QnaController extends CommonController {
     }
 
     @GetMapping(value = "/{qnaId}/replies")
-    public ResultDto<List<QnaReplyDto>> getList(@PathVariable Long qnaId) {
-        return this.ok(this.qnaService.getList(qnaId));
+    public PaginationResultDto getReplies(
+            @PathVariable Long qnaId,
+            @RequestParam(required = false, defaultValue = "1") Integer page) {
+        return this.qnaService.getReplies(qnaId, page);
     }
 
-    @PostMapping(value = "/{qnaId}/reply/{qnaReplyId}")
+    @DeleteMapping(value = "/{qnaId}/reply/{qnaReplyId}")
     public ResultDto<Void> delete(@PathVariable Long qnaId, @PathVariable Long qnaReplyId) {
         this.qnaService.delete(QnaReplyDto.builder()
                 .qnaId(qnaId)

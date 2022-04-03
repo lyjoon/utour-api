@@ -6,7 +6,7 @@
 
     <resultMap id="resultMap" type="com.utour.entity.QnaReply" extends="common.base.resultMap">
         <result javaType="java.lang.Long" property="qnaId" column="QNA_ID" />
-        <result javaType="java.lang.Integer" property="qnaReplyId" column="QNA_REPLY_ID" />
+        <result javaType="java.lang.Long" property="qnaReplyId" column="QNA_REPLY_ID" />
         <result javaType="java.lang.String" property="writer" column="WRITER" />
         <result javaType="java.lang.String" property="content" column="CONTENT" />
         <result javaType="java.lang.String" property="password" column="PASSWORD" />
@@ -20,7 +20,6 @@
         , QNA_REPLY_ID
         , WRITER
         , CONTENT
-        , PASSWORD
         , PRIVATE_YN
         , ADMIN_YN
         <include refid="common.base.column" />
