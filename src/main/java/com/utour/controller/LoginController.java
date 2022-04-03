@@ -14,7 +14,7 @@ public class LoginController extends CommonController {
     private final LoginService loginService;
 
     @PostMapping
-    public String login(@RequestParam(value = "loginId") String loginId, @RequestParam(value = "password") String password) {
+    public String login(@RequestParam(value = "login_id") String loginId, @RequestParam(value = "password") String password) {
         return this.loginService.doLogin(loginId, password);
     }
 

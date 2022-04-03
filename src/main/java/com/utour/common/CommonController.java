@@ -20,7 +20,7 @@ public class CommonController extends CommonComponent {
 	}
 
 	protected <T> ResultDto ok(T data){
-		return ResultDto.builder().results(data).build();
+		return ResultDto.builder().result(data).build();
 	}
 
 	protected ResultDto<Void> ok(){

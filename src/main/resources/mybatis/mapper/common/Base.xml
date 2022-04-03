@@ -14,7 +14,7 @@
     </sql>
 
     <sql id="existsSuffix">
-        )) &gt; 0 THEN 'TRUE' ELSE 'FALSE' END AS YN
+        ) T_CNT) &gt; 0 THEN 'TRUE' ELSE 'FALSE' END AS YN
     </sql>
 
     <sql id="column">

@@ -1,6 +1,6 @@
 package com.utour.entity;
 
-import com.utour.annotation.EncryptValue;
+import com.utour.annotation.Encrypt;
 import com.utour.entity.common.Content;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -14,7 +14,7 @@ public class Qna extends Content {
 
     private Long qnaId;
     private Character privateYn;
-    @EncryptValue
+    @Encrypt
     private String password;
     private int pv;
 

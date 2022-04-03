@@ -39,15 +39,29 @@
     </select>
 
     <select id="findAll" resultMap="resultMap">
-        <include refid="select" />
+        SELECT
+          NOTICE_ID
+        , NOTICE_YN
+        , PV
+        , TITLE
+        , WRITER
+        , CREATE_AT
+        FROM NOTICE T
         <include refid="where" />
     </select>
 
     <select id="findPage" resultMap="resultMap">
         <include refid="select" />
-        <include refid="where" />
+        <include refid="common.content.whereByBoardQuery" />
         ORDER BY NOTICE_ID DESC
         <include refid="common.base.pagination" />
+    </select>
+
+    <select id="count" resultType="java.lang.Long">
+        SELEct COUNT(*) AS CNT FROM (
+        <include refid="select" />
+        <include refid="common.content.whereByBoardQuery" />
+        ) DUMMY
     </select>
 
     <insert id="save">

@@ -7,16 +7,15 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 /**
  * boot-runner
  */
-@EnableWebMvc
 @EnableConfigurationProperties
 @EnableAspectJAutoProxy
 @EnableCaching
 @SpringBootApplication
+//@org.springframework.web.servlet.config.annotation.EnableWebMvc //(application.yml 에 설정된 jackson 관련 설정이 무시됨)
 public class Application extends SpringBootServletInitializer {
 
 	/**

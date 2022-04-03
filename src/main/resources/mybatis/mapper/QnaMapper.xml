@@ -29,10 +29,11 @@
     <select id="exists" resultType="java.lang.Boolean">
         <include refid="common.base.existsPrefix" />
         <include refid="select" />
-        <include refid="where" />
+        WHERE QNA_ID = #{qnaId}
+        <include refid="common.base.existsSuffix" />
     </select>
 
-    <select id="matched" resultType="java.lang.Boolean">
+    <select id="isPermit" resultType="java.lang.Boolean">
         <include refid="common.base.existsPrefix" />
         <include refid="select" />
         WHERE QNA_ID = #{qnaId}
@@ -42,7 +43,6 @@
 
     <select id="findById" resultMap="resultMap">
         <include refid="select" />
-        <include refid="common.content.select" />
         WHERE QNA_ID = #{qnaId}
     </select>
 
@@ -64,6 +64,7 @@
         , PV
         , WRITER
         , TITLE
+        , CREATE_AT
         FROM QNA T
         <include refid="common.content.whereByBoardQuery" />
         ORDER BY QNA_ID DESC
@@ -93,7 +94,6 @@
         )
         <include refid="common.content.duplicateUpdate" />
         , PRIVATE_YN = VALUES(PRIVATE_YN)
-        , PV = VALUES(PV)
         <if test="password != null">, PASSWORD = VALUES(PASSWORD)</if>
     </insert>
 
@@ -101,5 +101,11 @@
         DELETE FROM QNA
         WHERE QNA_ID = #{qnaId}
     </delete>
+
+    <update id="updateIncrementPv">
+        UPDATE QNA
+        SET PV = PV + 1
+        WHERE QNA_ID = #{qnaId}
+    </update>
 
 </mapper>

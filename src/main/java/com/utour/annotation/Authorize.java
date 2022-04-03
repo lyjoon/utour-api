@@ -1,9 +1,10 @@
 package com.utour.annotation;
 
+
 import java.lang.annotation.*;
 
 @Documented
-@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EncryptValue {
+public @interface Authorize {
 }

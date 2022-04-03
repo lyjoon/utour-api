@@ -23,8 +23,8 @@ public class ProductController extends CommonController {
     public List<ProductDto> getList(
             @PathVariable Integer page,
             @RequestParam(required = false) String query,
-            @RequestParam(required = false) String displayType,
-            @RequestParam(required = false) String productType
+            @RequestParam(required = false, name = "display_type") String displayType,
+            @RequestParam(required = false, name = "product_type") String productType
     ) {
         return this.productService.getList(ProductQueryDto.builder()
                 .page(page)

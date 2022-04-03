@@ -17,7 +17,7 @@ public class PaginationResultDto extends ResultDto<List> {
     private Integer limit;
     private Long count;
 
-    public int getPageSize(){
+    public int getPageCount(){
         return Optional.ofNullable(count)
                 .map(n -> (int) Math.ceil((double) n / getLimit()))
                 .orElse(0);

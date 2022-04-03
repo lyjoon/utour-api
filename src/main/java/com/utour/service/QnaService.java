@@ -13,7 +13,6 @@ import com.utour.mapper.QnaReplyMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -46,16 +45,12 @@ public class QnaService extends CommonService {
      * @param qnaDto
      */
     public void delete(QnaDto qnaDto) {
-        Qna qna = this.qnaMapper.findById(Qna.builder().qnaId(qnaDto.getQnaId()).build());
-        if(Objects.isNull(qna)) {
-            throw new InternalException(this.getMessage("qns.service.delete.error.001"));
-        }
-        boolean isMatched = qna.getPassword().equals(qnaDto.getPassword());
-        if(isMatched) {
+        Qna qna = Qna.builder().qnaId(qnaDto.getQnaId()).build();
+        if(this.qnaMapper.exists(qna)) {
             this.qnaReplyMapper.delete(QnaReply.builder().qnaId(qnaDto.getQnaId()).build());
             this.qnaMapper.delete(qna);
         } else {
-            throw new InternalException(this.getMessage("qns.service.delete.error.002"));
+            throw new InternalException(this.getMessage("qns.service.delete.error.001"));
         }
     }
 
@@ -64,28 +59,17 @@ public class QnaService extends CommonService {
      * @param qnaReplyDto
      */
     public void delete(QnaReplyDto qnaReplyDto) {
-        QnaReply qnaReply = this.qnaReplyMapper.findById(QnaReply.builder()
+
+        QnaReply qnaReply = QnaReply.builder()
                 .qnaReplyId(qnaReplyDto.getQnaReplyId())
                 .qnaId(qnaReplyDto.getQnaId())
-                .build());
+                .build();
 
-        if(Objects.isNull(qnaReply)) {
-            throw new InternalException(this.getMessage("qns.service.delete.error.001"));
-        }
-        boolean isMatched = qnaReply.getPassword().equals(qnaReplyDto.getPassword());
-        if(isMatched) {
-            QnaReply qnaReply1 = QnaReply.builder()
-                    .qnaId(qnaReplyDto.getQnaId())
-                    .qnaReplyId(qnaReplyDto.getQnaReplyId())
-                    .writer(qnaReplyDto.getWriter())
-                    .content(qnaReplyDto.getContent())
-                    .password(qnaReplyDto.getPassword())
-                    .privateYn(qnaReplyDto.getPrivateYn())
-                    .adminYn(qnaReplyDto.getAdminYn())
-                    .build();
-            this.qnaReplyMapper.deleteById(qnaReply1);
+        boolean exists = this.qnaReplyMapper.exists(qnaReply);
+        if(exists) {
+            this.qnaReplyMapper.delete(qnaReply);
         } else {
-            throw new InternalException(this.getMessage("qns.service.delete.error.002"));
+            throw new InternalException(this.getMessage("qns.service.delete.error.001"));
         }
     }
 
@@ -94,13 +78,8 @@ public class QnaService extends CommonService {
      * @param qnaDto
      * @return
      */
-    public boolean checkup(QnaDto qnaDto){
-        Qna qna = this.qnaMapper.findById(Qna.builder().qnaId(qnaDto.getQnaId()).build());
-        if(Objects.isNull(qna)) {
-            throw new InternalException(this.getMessage("qns.service.delete.error.001"));
-        }
-        boolean isMatched = qna.getPassword().equals(qnaDto.getPassword());
-        return isMatched;
+    public boolean isPermit(QnaDto qnaDto){
+        return this.qnaMapper.isPermit(qnaDto.getQnaId(), qnaDto.getPassword());
     }
 
     /**
@@ -108,17 +87,8 @@ public class QnaService extends CommonService {
      * @param qnaReplyDto
      * @return
      */
-    public boolean checkup(QnaReplyDto qnaReplyDto){
-        QnaReply qnaReply = this.qnaReplyMapper.findById(QnaReply.builder()
-                .qnaReplyId(qnaReplyDto.getQnaReplyId())
-                .qnaId(qnaReplyDto.getQnaId())
-                .build());
-
-        if(Objects.isNull(qnaReply)) {
-            throw new InternalException(this.getMessage("qns.service.delete.error.001"));
-        }
-        boolean isMatched = qnaReply.getPassword().equals(qnaReplyDto.getPassword());
-        return isMatched;
+    public boolean isPermit(QnaReplyDto qnaReplyDto){
+        return this.qnaReplyMapper.isPermit(qnaReplyDto.getQnaId(), qnaReplyDto.getQnaReplyId(), qnaReplyDto.getPassword());
     }
 
     /**
@@ -126,9 +96,12 @@ public class QnaService extends CommonService {
      * @param qnaId
      * @return
      */
-    public QnaDto findById(Long qnaId) {
+    public QnaDto get(Long qnaId) {
         return Optional.ofNullable(this.qnaMapper.findById(Qna.builder().qnaId(qnaId).build()))
-                .map(v -> this.convert(v, QnaDto.class))
+                .map(v -> {
+                    this.qnaMapper.updateIncrementPv(v);
+                    return this.convert(v, QnaDto.class);
+                })
                 .orElse(null);
     }
 
@@ -137,7 +110,7 @@ public class QnaService extends CommonService {
      * @param boardQueryDto
      * @return
      */
-    public PaginationResultDto findPage(BoardQueryDto boardQueryDto) {
+    public PaginationResultDto getPageList(BoardQueryDto boardQueryDto) {
 
         long count = this.qnaMapper.count(boardQueryDto);
         java.util.List<Qna> list = this.qnaMapper.findPage(boardQueryDto);
@@ -147,10 +120,10 @@ public class QnaService extends CommonService {
                         .orElse(0)))
                 .collect(Collectors.toList());
 
-        return PaginationResultDto.<QnaDto>builder()
+        return PaginationResultDto.builder()
                 .page(boardQueryDto.getPage())
                 .limit(boardQueryDto.getLimit())
-                .results(results)
+                .result(results)
                 .count(count)
                 .build();
     }
@@ -160,7 +133,7 @@ public class QnaService extends CommonService {
      * @param qnaId
      * @return
      */
-    public java.util.List<QnaReplyDto> findAll(Long qnaId) {
+    public java.util.List<QnaReplyDto> getList(Long qnaId) {
         return Optional.ofNullable(this.qnaReplyMapper.findAll(QnaReply.builder().qnaId(qnaId).build()))
                 .map(list -> list.stream().map(v -> this.convert(v , QnaReplyDto.class) ).collect(Collectors.toList()))
                 .orElse(null);

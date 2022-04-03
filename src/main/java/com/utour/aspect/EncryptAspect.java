@@ -1,20 +1,6 @@
 package com.utour.aspect;
 
-import com.utour.annotation.EncryptValue;
 import com.utour.common.CommonComponent;
-import com.utour.common.Constants;
-import com.utour.util.ErrorUtils;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.stereotype.Component;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
-
-import java.lang.annotation.Annotation;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 //@Aspect
 //@Component

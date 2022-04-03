@@ -8,10 +8,13 @@ import com.utour.dto.board.BoardQueryDto;
 import com.utour.dto.qna.QnaDto;
 import com.utour.dto.qna.QnaReplyDto;
 import com.utour.service.QnaService;
+import com.utour.validator.ValidatorMarkers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,19 +24,19 @@ public class QnaController extends CommonController {
 
     private final QnaService qnaService;
 
-
     @PutMapping
-    public ResultDto<Void> save(@RequestBody QnaDto qnaDto) {
+    @Validated(ValidatorMarkers.Put.class)
+    public ResultDto<Void> save(@Valid @RequestBody QnaDto qnaDto) {
         this.qnaService.save(qnaDto);
         return this.ok(Constants.SUCCESS);
     }
 
-    @GetMapping("/list")
-    public PaginationResultDto findPage(
+    @GetMapping({"/list", "/page-list"})
+    public PaginationResultDto getPageList (
             @RequestParam(required = false, defaultValue = "1") Integer page,
-            @RequestParam(required = false) String queryType,
+            @RequestParam(required = false, name = "query_type") String queryType,
             @RequestParam(required = false) String query) {
-        return this.qnaService.findPage(BoardQueryDto.builder()
+        return this.qnaService.getPageList(BoardQueryDto.builder()
                 .page(page)
                 .query(query)
                 .queryType(queryType)
@@ -42,8 +45,8 @@ public class QnaController extends CommonController {
     }
 
     @GetMapping("/{qnaId}")
-    public ResultDto<QnaDto> findById(@PathVariable Long qnaId) {
-        return this.ok(this.qnaService.findById(qnaId));
+    public ResultDto<QnaDto> get(@PathVariable Long qnaId) {
+        return this.ok(this.qnaService.get(qnaId));
     }
 
     @DeleteMapping("/{qnaId}")
@@ -52,19 +55,22 @@ public class QnaController extends CommonController {
         return this.ok(Constants.SUCCESS);
     }
 
-    @GetMapping(value = "/{qnaId}/reply/list")
-    public ResultDto<List<QnaReplyDto>> findRepliesById(@PathVariable Long qnaId) {
-        return this.ok(this.qnaService.findAll(qnaId));
+    @GetMapping(value = "/{qnaId}/replies")
+    public ResultDto<List<QnaReplyDto>> getList(@PathVariable Long qnaId) {
+        return this.ok(this.qnaService.getList(qnaId));
     }
 
-    @DeleteMapping(value = "/{qnaId}/reply/{qnaReplyId}")
+    @PostMapping(value = "/{qnaId}/reply/{qnaReplyId}")
     public ResultDto<Void> delete(@PathVariable Long qnaId, @PathVariable Long qnaReplyId) {
-        this.qnaService.delete(QnaReplyDto.builder().qnaId(qnaId).qnaReplyId(qnaReplyId).build());
+        this.qnaService.delete(QnaReplyDto.builder()
+                .qnaId(qnaId)
+                .qnaReplyId(qnaReplyId).build());
         return this.ok(Constants.SUCCESS);
     }
 
     @PutMapping(value = "/reply")
-    public ResultDto<Void> save(@RequestBody QnaReplyDto qnaReplyDto) {
+    @Validated(ValidatorMarkers.Put.class)
+    public ResultDto<Void> save(@RequestBody @Valid QnaReplyDto qnaReplyDto) {
         this.qnaService.save(qnaReplyDto);
         return this.ok(Constants.SUCCESS);
     }

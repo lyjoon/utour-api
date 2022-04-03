@@ -1,6 +1,5 @@
 package com.utour.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -9,7 +8,7 @@ import lombok.experimental.SuperBuilder;
  */
 @Setter
 @Getter
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResultDto<T> {
@@ -22,6 +21,6 @@ public class ResultDto<T> {
     /**
      * 결과 데이터
      */
-    private T results;
+    private T result;
 
 }
