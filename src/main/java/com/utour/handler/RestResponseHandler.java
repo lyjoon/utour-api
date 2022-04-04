@@ -5,6 +5,7 @@ import com.utour.dto.ErrorResultDto;
 import com.utour.exception.ValidException;
 import com.utour.util.ErrorUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -24,36 +25,36 @@ public class RestResponseHandler extends CommonComponent {
      * @return
      */
     @ExceptionHandler(value = ValidException.class)
-    public ErrorResultDto exceptionHandler(ValidException validException) {
+    public ResponseEntity<ErrorResultDto> exceptionHandler(ValidException validException) {
         BindingResult bindingResult = validException.getBindingResult();
         String errorMessage = this.getBindingErrorMessage(bindingResult);
         log.warn("{}", ErrorUtils.throwableInfo(validException));
-        return ErrorResultDto.builder()
+        return ResponseEntity.badRequest().body(ErrorResultDto.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .message(errorMessage)
-                .build();
+                .build());
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ErrorResultDto exceptionHandler(MethodArgumentNotValidException methodArgumentNotValidException) {
+    public ResponseEntity<ErrorResultDto> exceptionHandler(MethodArgumentNotValidException methodArgumentNotValidException) {
         BindingResult bindingResult = methodArgumentNotValidException.getBindingResult();
         String errorMessage = this.getBindingErrorMessage(bindingResult);
         log.warn("{}", ErrorUtils.throwableInfo(methodArgumentNotValidException));
-        return ErrorResultDto.builder()
+        return ResponseEntity.badRequest().body(ErrorResultDto.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .message(errorMessage)
-                .build();
+                .build());
     }
 
     @ExceptionHandler(value = HttpMessageNotReadableException.class)
-    public ErrorResultDto exceptionHandler(HttpMessageNotReadableException httpMessageNotReadableException) {
+    public ResponseEntity<ErrorResultDto> exceptionHandler(HttpMessageNotReadableException httpMessageNotReadableException) {
         //String errorMessage = httpMessageNotReadableException.getMessage();
         String errorMessage = "Payload(request body) is empty.";
         log.warn("{}", ErrorUtils.throwableInfo(httpMessageNotReadableException));
-        return ErrorResultDto.builder()
+        return ResponseEntity.badRequest().body(ErrorResultDto.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .message(errorMessage)
-                .build();
+                .build());
     }
 
     private String getBindingErrorMessage(BindingResult bindingResult) {

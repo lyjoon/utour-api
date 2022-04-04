@@ -5,12 +5,12 @@ import com.utour.dto.ErrorResultDto;
 import com.utour.util.ErrorUtils;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Objects;
 import java.util.Optional;
 
 import static org.springframework.web.servlet.DispatcherServlet.EXCEPTION_ATTRIBUTE;
@@ -20,7 +20,7 @@ import static org.springframework.web.servlet.DispatcherServlet.EXCEPTION_ATTRIB
 public class RestErrorController extends CommonComponent implements ErrorController {
 
     @RequestMapping
-    public ErrorResultDto error(HttpServletRequest request) {
+    public ResponseEntity<ErrorResultDto> error(HttpServletRequest request) {
         HttpStatus status = this.getStatus(request);
         ErrorResultDto errorResponseDto = new ErrorResultDto();
         errorResponseDto.setStatus(status.value());
@@ -33,7 +33,8 @@ public class RestErrorController extends CommonComponent implements ErrorControl
                     log.error("{}", errorLogMessage);
                 });
 
-        return errorResponseDto;
+        return ResponseEntity.status(status)
+                .body(errorResponseDto);
     }
 
     protected HttpStatus getStatus(HttpServletRequest request) {
@@ -43,8 +44,7 @@ public class RestErrorController extends CommonComponent implements ErrorControl
         }
         try {
             return HttpStatus.valueOf(statusCode);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             return HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }

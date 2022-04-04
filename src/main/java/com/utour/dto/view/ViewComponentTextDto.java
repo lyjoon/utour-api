@@ -8,8 +8,11 @@ import lombok.experimental.SuperBuilder;
 
 @Setter
 @Getter
-@SuperBuilder(toBuilder = true)
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ViewComponentTextDto extends ViewComponentDto {
+
+    private String content;
+
 }
