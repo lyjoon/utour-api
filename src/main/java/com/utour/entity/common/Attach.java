@@ -8,7 +8,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder(toBuilder = true)
-@ToString(callSuper = true)
 public abstract class Attach extends CommonEntity {
 
     private Long attachId;

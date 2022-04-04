@@ -6,7 +6,6 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-@ToString(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProductImage extends CommonEntity {

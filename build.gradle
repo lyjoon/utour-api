@@ -1,10 +1,10 @@
 buildscript {
     ext {
-        springBootVersion = '2.6.3'
+        springBootVersion = '2.6.5'
         lombokVersion = '1.18.22'
         h2DatabaseVersion = '2.1.210'
-        mariaJdbcVersion = '2.7.5'
-        springMybatisVersion = '2.2.1'
+        mariaJdbcVersion = '3.0.3'
+        springMybatisVersion = '2.2.2'
     }
     repositories {
         mavenCentral()
@@ -27,6 +27,7 @@ dependencies {
     //spring-boot(webmvc)
     implementation("org.springframework.boot:spring-boot-starter:${springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+
     implementation("org.springframework.boot:spring-boot-starter-aop:${springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
     //implementation("org.springframework.boot:spring-boot-starter-webflux:${springBootVersion}")
@@ -40,18 +41,18 @@ dependencies {
     implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.9'
 
     // https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot-starter
-    implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3")
+    implementation('com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4')
 
-    implementation("org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}")
 
     //mybatis
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${springMybatisVersion}")
-    runtimeOnly 'mysql:mysql-connector-java:8.0.25'
+    runtimeOnly 'mysql:mysql-connector-java:8.0.28'
 
     //lombok
-    implementation "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    implementation "org.projectlombok:lombok:${lombokVersion}"
 
     //jdbc(maria, h2)
     implementation "com.h2database:h2:${h2DatabaseVersion}"
@@ -60,12 +61,12 @@ dependencies {
     //runtimeOnly "org.mariadb.jdbc:mariadb-java-client"
     //implementation "mysql:mysql-connector-java:8.0.25"
 
-    implementation("commons-io:commons-io:2.8.0")
+    implementation('commons-io:commons-io:2.11.0')
 
     testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
     testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
 
-    implementation "org.ehcache:ehcache:3.9.9"
+    implementation 'org.ehcache:ehcache:3.10.0'
     implementation "javax.cache:cache-api:1.1.1"
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
 

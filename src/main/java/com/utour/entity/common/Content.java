@@ -7,7 +7,6 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(callSuper = true)
 @SuperBuilder(toBuilder = true)
 public abstract class Content extends CommonEntity {
 
