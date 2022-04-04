@@ -18,14 +18,13 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/qna", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/v1/qna", produces = MediaType.APPLICATION_JSON_VALUE)
 public class QnaController extends CommonController {
 
     private final QnaService qnaService;
 
     @PutMapping
-    @Validated(ValidatorMarkers.Put.class)
-    public ResultDto<Void> save(@Valid @RequestBody QnaDto qnaDto) {
+    public ResultDto<Void> save(@Validated(ValidatorMarkers.Put.class) @Valid @RequestBody QnaDto qnaDto) {
         this.qnaService.save(qnaDto);
         return this.ok(Constants.SUCCESS);
     }
@@ -70,9 +69,8 @@ public class QnaController extends CommonController {
     }
 
     @PutMapping(value = "/reply")
-    @Validated(ValidatorMarkers.Put.class)
-    public ResultDto<Void> save(@RequestBody @Valid QnaReplyDto qnaReplyDto) {
-        this.qnaService.save(qnaReplyDto);
+    public ResultDto<Void> save(@Validated(ValidatorMarkers.Put.class) @RequestBody @Valid QnaReplyDto qnaReplyDto) {
+        // this.qnaService.save(qnaReplyDto);
         return this.ok(Constants.SUCCESS);
     }
 }

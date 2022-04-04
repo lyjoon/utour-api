@@ -36,8 +36,7 @@ public class NoticeController extends CommonController {
 
     @Authorize
     @PutMapping
-    @Validated(value = ValidatorMarkers.Put.class)
-    public ResultDto<Void> save(@Valid @RequestBody NoticeDto noticeDto) {
+    public ResultDto<Void> save(@Valid @Validated(value = ValidatorMarkers.Put.class) @RequestBody NoticeDto noticeDto) {
         this.noticeService.save(noticeDto);
         return ok();
     }

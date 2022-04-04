@@ -1,7 +1,5 @@
 package com.utour.dto.qna;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.utour.common.Constants;
 import com.utour.validator.ValidatorMarkers;
 import lombok.*;
 
@@ -17,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class QnaReplyDto {
 
-    @NotNull(groups = {ValidatorMarkers.Delete.class})
+    @NotNull(groups = {ValidatorMarkers.Put.class, ValidatorMarkers.Delete.class})
     private Long qnaId;
     @NotNull(groups = {ValidatorMarkers.Delete.class})
     private Long qnaReplyId;
