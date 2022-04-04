@@ -1,7 +1,9 @@
 package com.utour.controller;
 
+import com.utour.annotation.Authorize;
 import com.utour.common.CommonController;
 import com.utour.common.Constants;
+import com.utour.dto.ResultDto;
 import com.utour.dto.product.ProductDto;
 import com.utour.dto.product.ProductQueryDto;
 import com.utour.service.ProductService;
@@ -35,13 +37,15 @@ public class ProductController extends CommonController {
                 .build());
     }
 
-    @PutMapping
-    public Boolean save(@Valid @RequestBody ProductDto productDto) {
-        // TODO : 저장
+    @Authorize
+    @PutMapping(value = "/create")
+    public ResultDto<Void> create(@Valid @RequestBody ProductDto productDto) {
         log.info("save : {}", productDto.toString());
-        return true;
+        this.productService.create(productDto);
+        return this.ok();
     }
 
+    @Authorize
     @DeleteMapping(value = "{productId}")
     public Boolean delete(@PathVariable Long productId) {
         // TODO : 삭제

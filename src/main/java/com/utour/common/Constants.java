@@ -13,4 +13,15 @@ public interface Constants {
         PRODUCT_TYPE,
         DISPLAY_TYPE
     }
+
+    enum PRODUCT_TYPE {
+        HOTEL
+    }
+
+    enum VIEW_COMPONENT_TYPE {
+        TEXT,
+        IMAGE,
+        ACCOMMODATION,
+        FACILITY
+    }
 }

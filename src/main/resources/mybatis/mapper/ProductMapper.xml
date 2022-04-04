@@ -70,7 +70,7 @@
         <include refid="common.base.pagination" />
     </select>
 
-    <insert id="save">
+    <insert id="save" useGeneratedKeys="true" keyProperty="productId">
         /* com.utour.mapper.ProductMapper.save */
         INSERT INTO PRODUCT (
           PRODUCT_ID
@@ -90,10 +90,10 @@
         <include refid="common.content.value" />
         )
         <include refid="common.content.duplicateUpdate" />
-        , REP_IMAGE_SRC = VALUES(REP_IMAGE_SRC)
-        , NATION_CODE = VALUES(NATION_CODE)
-        , AREA_CODE = VALUES(AREA_CODE)
-        , USE_YN = VALUES(USE_YN)
+        <if test="repImageSrc != null">, REP_IMAGE_SRC = VALUES(REP_IMAGE_SRC)</if>
+        <if test="nationCode != null">, NATION_CODE = VALUES(NATION_CODE)</if>
+        <if test="areaCode != null">, AREA_CODE = VALUES(AREA_CODE)</if>
+        <if test="useYn != null">, USE_YN = VALUES(USE_YN)</if>
     </insert>
 
     <delete id="delete">
