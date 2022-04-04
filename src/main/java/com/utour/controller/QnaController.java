@@ -70,7 +70,7 @@ public class QnaController extends CommonController {
 
     @PutMapping(value = "/reply")
     public ResultDto<Void> save(@Validated(ValidatorMarkers.Put.class) @RequestBody @Valid QnaReplyDto qnaReplyDto) {
-        // this.qnaService.save(qnaReplyDto);
+        this.qnaService.save(qnaReplyDto);
         return this.ok(Constants.SUCCESS);
     }
 }
