@@ -7,18 +7,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-@Getter
 @Setter
+@Getter
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder(toBuilder = true)
-public class ViewComponentDto extends CommonDto {
+public class ViewComponentFacilityDto extends CommonDto {
 
     private Long viewComponentId;
-    private Long productId;
-    private String viewComponentType;
+    private Long viewComponentSeq;
+    private String iconType;
     private String title;
     private String description;
-    private Integer ordinal;
-    private Character useYn;
 }

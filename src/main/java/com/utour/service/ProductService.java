@@ -19,12 +19,6 @@ import java.util.stream.Collectors;
 public class ProductService extends CommonService {
 
     private final ProductMapper productMapper;
-    private final ViewComponentMapper viewComponentMapper;
-    private final ViewComponentTextMapper viewComponentTextMapper;
-    private final ViewComponentImageMapper viewComponentImageMapper;
-    private final ViewComponentImagesMapper viewComponentImagesMapper;
-    private final ViewComponentAccommodationMapper viewComponentAccommodationMapper;
-    private final ViewComponentFacilityMapper viewComponentFacilityMapper;
 
     /**
      * 상품정보 생성
@@ -38,10 +32,6 @@ public class ProductService extends CommonService {
 
                 break;
         }
-    }
-
-    public void save(ViewComponent viewComponent) {
-        this.viewComponentMapper.save(viewComponent);
     }
 
     public void delete(ProductDto productDto) {
