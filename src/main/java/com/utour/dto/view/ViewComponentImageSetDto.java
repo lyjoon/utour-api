@@ -12,10 +12,10 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ViewComponentImagesDto extends CommonDto {
+public class ViewComponentImageSetDto extends CommonDto {
 
     private Long viewComponentId;
-    private Long viewComponentSeq;
+    private Integer viewComponentSeq;
     private String imageSrc;
     private String title;
     private String description;

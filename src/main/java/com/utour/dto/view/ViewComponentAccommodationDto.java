@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Setter
 @Getter
 @SuperBuilder
@@ -17,4 +19,6 @@ public class ViewComponentAccommodationDto extends ViewComponentDto{
     private String address;
     private String contact;
     private String fax;
+
+    private List<ViewComponentFacilityDto> facilities;
 }

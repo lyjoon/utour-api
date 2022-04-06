@@ -5,8 +5,6 @@ import com.utour.common.Constants;
 import com.utour.dto.product.ProductDto;
 import com.utour.dto.product.ProductQueryDto;
 import com.utour.entity.Product;
-import com.utour.entity.ViewComponent;
-import com.utour.entity.ViewComponentImages;
 import com.utour.mapper.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

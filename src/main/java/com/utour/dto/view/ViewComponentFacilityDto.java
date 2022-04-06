@@ -15,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 public class ViewComponentFacilityDto extends CommonDto {
 
     private Long viewComponentId;
-    private Long viewComponentSeq;
+    private Integer viewComponentSeq;
     private String iconType;
     private String title;
     private String description;

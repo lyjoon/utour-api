@@ -8,7 +8,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ViewComponentImages extends Component {
+public class ViewComponentImageSet extends Component {
 
     private Integer viewComponentSeq;
     private String imageSrc;

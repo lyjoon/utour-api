@@ -74,12 +74,12 @@
         <include refid="common.component.value" />
         )
         <include refid="common.component.duplicateUpdate" />
-        , VIEW_COMPONENT_TYPE = VALUES(VIEW_COMPONENT_TYPE)
-        , PRODUCT_ID = VALUES(PRODUCT_ID)
-        , TITLE = VALUES(TITLE)
-        , DESCRIPTION = VALUES(DESCRIPTION)
-        , ORDINAL = VALUES(ORDINAL)
-        , USE_YN = VALUES(USE_YN)
+        <if test="viewComponentType != null">, VIEW_COMPONENT_TYPE = VALUES(VIEW_COMPONENT_TYPE)</if>
+        <if test="productId != null">, PRODUCT_ID = VALUES(PRODUCT_ID)</if>
+        <if test="title != null">, TITLE = VALUES(TITLE)</if>
+        <if test="description != null">, DESCRIPTION = VALUES(DESCRIPTION)</if>
+        <if test="ordinal != null">, ORDINAL = VALUES(ORDINAL)</if>
+        <if test="useYn != null">, USE_YN = VALUES(USE_YN)</if>
     </insert>
 
     <delete id="delete">

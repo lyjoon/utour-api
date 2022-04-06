@@ -17,5 +17,5 @@ public class ViewComponentImageDto extends ViewComponentDto{
 
     private String displayType;
 
-    private List<ViewComponentImagesDto> imagesList;
+    private List<ViewComponentImageSetDto> imagesList;
 }
