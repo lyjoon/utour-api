@@ -49,7 +49,7 @@
         <include refid="where" />
     </select>
 
-    <insert id="save">
+    <insert id="save" useGeneratedKeys="true" keyProperty="productImageGroupId">
         /* com.utour.mapper.ProductImageGroupMapper.save */
         INSERT INTO PRODUCT_IMAGE_GROUP (
           PRODUCT_IMAGE_GROUP_ID

@@ -51,7 +51,7 @@ public class QnaService extends CommonService {
             this.qnaReplyMapper.delete(QnaReply.builder().qnaId(qnaDto.getQnaId()).build());
             this.qnaMapper.delete(qna);
         } else {
-            throw new InternalException(this.getMessage("qns.service.delete.error.001"));
+            throw new InternalException(this.getMessage("error.service.qna.delete.not-exists"));
         }
     }
 
@@ -70,7 +70,7 @@ public class QnaService extends CommonService {
         if(exists) {
             this.qnaReplyMapper.delete(qnaReply);
         } else {
-            throw new InternalException(this.getMessage("qns.service.delete.error.001"));
+            throw new InternalException(this.getMessage("error.service.qna.delete.not-exists"));
         }
     }
 

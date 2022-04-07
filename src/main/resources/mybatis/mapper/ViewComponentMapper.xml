@@ -54,7 +54,7 @@
         ORDER BY ORDINAL, VIEW_COMPONENT_ID
     </select>
 
-    <insert id="save">
+    <insert id="save" useGeneratedKeys="true" keyProperty="viewComponentId">
         /* com.utour.mapper.ViewComponentMapper.save */
         INSERT INTO VIEW_COMPONENT (
           VIEW_COMPONENT_TYPE

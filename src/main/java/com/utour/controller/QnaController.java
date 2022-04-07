@@ -32,7 +32,7 @@ public class QnaController extends CommonController {
     @GetMapping({"/list", "/page-list"})
     public PaginationResultDto getQnaList(
             @RequestParam(required = false, defaultValue = "1") Integer page,
-            @RequestParam(required = false, name = "query_type") String queryType,
+            @RequestParam(required = false) String queryType,
             @RequestParam(required = false) String query) {
         return this.qnaService.getQnaList(BoardQueryDto.builder()
                 .page(page)

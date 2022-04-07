@@ -6,7 +6,6 @@ import lombok.experimental.SuperBuilder;
 import java.time.LocalDateTime;
 
 @Getter
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SuperBuilder(toBuilder = true)
