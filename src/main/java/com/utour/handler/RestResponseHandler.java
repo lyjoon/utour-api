@@ -12,6 +12,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.Optional;
 
@@ -49,8 +50,20 @@ public class RestResponseHandler extends CommonComponent {
     @ExceptionHandler(value = HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResultDto> exceptionHandler(HttpMessageNotReadableException httpMessageNotReadableException) {
         //String errorMessage = httpMessageNotReadableException.getMessage();
-        String errorMessage = "Payload(request body) is empty.";
+        //String errorMessage = "Payload(request body) is empty.";
+        String errorMessage = this.getMessage("error.valid.400.message-not-readable");
         log.warn("{}", ErrorUtils.throwableInfo(httpMessageNotReadableException));
+        return ResponseEntity.badRequest().body(ErrorResultDto.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message(errorMessage)
+                .build());
+    }
+
+    @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResultDto> exceptionHandler(MethodArgumentTypeMismatchException methodArgumentTypeMismatchException) {
+        //String errorMessage = httpMessageNotReadableException.getMessage();
+        String errorMessage = this.getMessage("error.valid.400.method-arguments-mismatch");
+        log.warn("{}", ErrorUtils.throwableInfo(methodArgumentTypeMismatchException));
         return ResponseEntity.badRequest().body(ErrorResultDto.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .message(errorMessage)
