@@ -43,13 +43,18 @@ public class ViewComponentService extends CommonService {
                 .useYn(viewComponentDto.getUseYn())
                 .build());
 
-        return viewComponents.stream().map(this::map).filter(Objects::nonNull).collect(Collectors.toList());
+        return Optional.ofNullable(viewComponents)
+                .map(list -> list.stream()
+                        .map(this::map)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList())
+                ).orElse(null);
     }
 
     private ViewComponentDto map(ViewComponent viewComponent) {
         Constants.VIEW_COMPONENT_TYPE viewComponentType = Arrays.stream(Constants.VIEW_COMPONENT_TYPE.values())
                 .filter(type -> type.name().equals(viewComponent.getViewComponentType()))
-                .findFirst().orElse(null);
+                .findFirst().orElse(Constants.VIEW_COMPONENT_TYPE.NA);
 
         ViewComponentDto t;
 
@@ -64,7 +69,16 @@ public class ViewComponentService extends CommonService {
                 t = this.getImage(viewComponent);
                 break;
             default:
-                t = null;
+                t = ViewComponentDto.builder()
+                        .productId(viewComponent.getProductId())
+                        .viewComponentId(viewComponent.getViewComponentId())
+                        .viewComponentType(viewComponentType.name())
+                        .description(viewComponent.getDescription())
+                        .title(viewComponent.getTitle())
+                        .ordinal(viewComponent.getOrdinal())
+                        .useYn(viewComponent.getUseYn())
+                        .createAt(viewComponent.getCreateAt())
+                        .build();
                 break;
         }
 
@@ -246,54 +260,98 @@ public class ViewComponentService extends CommonService {
         this.viewComponentFacilityMapper.save(viewComponentFacility);
     }
 
-    public <T extends ViewComponentDto> void delete(T t) {
-
-        if(t instanceof ViewComponentAccommodationDto) {
-            this.delete((ViewComponentAccommodationDto) t);
-        } else if(t instanceof ViewComponentTextDto) {
-            this.delete((ViewComponentTextDto) t);
-        } else if(t instanceof ViewComponentImageDto) {
-            this.delete((ViewComponentImageDto) t);
-        }
-        this.viewComponentMapper.delete(ViewComponent.builder()
-                .viewComponentId(t.getViewComponentId())
-                .viewComponentType(t.getViewComponentType())
-                .productId(t.getProductId())
-                .build());
+    /**
+     * 요소 전체삭제
+     * @param viewComponentDto
+     */
+    public void deleteAll(ViewComponentDto viewComponentDto) {
+        Optional.ofNullable(this.viewComponentMapper.findAll(ViewComponent.builder()
+                .viewComponentId(viewComponentDto.getViewComponentId())
+                .productId(viewComponentDto.getProductId())
+                .build()))
+                .ifPresent(list -> {
+                    for(ViewComponent viewComponent : list) {
+                        if(this.delete(ViewComponentTextDto.builder().viewComponentId(viewComponent.getViewComponentId()).build())) continue;
+                        else if(this.delete(ViewComponentAccommodationDto.builder().viewComponentId(viewComponent.getViewComponentId()).build())) continue;
+                        else if(this.delete(ViewComponentImageDto.builder().viewComponentId(viewComponent.getViewComponentId()).build())) continue;
+                    }
+                });
     }
 
-    private void delete(ViewComponentTextDto viewComponentTextDto) {
-        this.viewComponentTextMapper.delete(ViewComponentText.builder()
+    private boolean delete(ViewComponentTextDto viewComponentTextDto) {
+        ViewComponentText viewComponentText = ViewComponentText.builder()
                 .viewComponentId(viewComponentTextDto.getViewComponentId())
-                .build());
+                .build();
+
+        Boolean exists = this.viewComponentTextMapper.exists(viewComponentText);
+        if(exists) {
+            this.viewComponentTextMapper.delete(viewComponentText);
+            this.delete(ViewComponentDto.builder().viewComponentId(viewComponentText.getViewComponentId()).build());
+            return true;
+        }
+        return false;
     }
 
-    private void delete(ViewComponentAccommodationDto viewComponentAccommodationDto) {
-        this.delete(ViewComponentFacilityDto.builder().viewComponentId(viewComponentAccommodationDto.getViewComponentId()).build());
-        this.viewComponentAccommodationMapper.delete(ViewComponentAccommodation.builder()
+    private boolean delete(ViewComponentAccommodationDto viewComponentAccommodationDto) {
+
+        ViewComponentAccommodation viewComponentAccommodation = ViewComponentAccommodation.builder()
                 .viewComponentId(viewComponentAccommodationDto.getViewComponentId())
-                .build());
+                .build();
+
+        if(this.viewComponentAccommodationMapper.exists(viewComponentAccommodation)) {
+            this.delete(ViewComponentFacilityDto.builder().viewComponentId(viewComponentAccommodationDto.getViewComponentId()).build());
+            this.viewComponentAccommodationMapper.delete(viewComponentAccommodation);
+            this.delete(ViewComponentDto.builder().viewComponentId(viewComponentAccommodationDto.getViewComponentId()).build());
+            return true;
+        }
+        return false;
     }
 
-    private void delete(ViewComponentImageDto viewComponentImageDto) {
-        this.delete(ViewComponentImageSetDto.builder().viewComponentId(viewComponentImageDto.getViewComponentId()).build());
-        this.viewComponentImageMapper.delete(ViewComponentImage.builder()
+    private boolean delete(ViewComponentImageDto viewComponentImageDto) {
+        ViewComponentImage viewComponentImage = ViewComponentImage.builder()
                 .viewComponentId(viewComponentImageDto.getViewComponentId())
-                .build());
+                .build();
+
+        if(this.viewComponentImageMapper.exists(viewComponentImage)) {
+            this.delete(ViewComponentImageSetDto.builder().viewComponentId(viewComponentImageDto.getViewComponentId()).build());
+            this.viewComponentImageMapper.delete(viewComponentImage);
+            this.delete(ViewComponentDto.builder().viewComponentId(viewComponentImage.getViewComponentId()).build());
+            return true;
+        }
+        return false;
+    }
+
+    private void delete(ViewComponentDto viewComponentDto) {
+        ViewComponent viewComponent = ViewComponent.builder()
+                .viewComponentId(viewComponentDto.getViewComponentId())
+                .viewComponentType(viewComponentDto.getViewComponentType())
+                .productId(viewComponentDto.getProductId())
+                .build();
+
+        if(this.viewComponentMapper.exists(viewComponent)) {
+            this.viewComponentMapper.delete(viewComponent);
+        }
     }
 
     private void delete(ViewComponentImageSetDto viewComponentImageSetDto) {
-        this.viewComponentImageSetMapper.delete(ViewComponentImageSet.builder()
+        ViewComponentImageSet viewComponentImageSet = ViewComponentImageSet.builder()
                 .viewComponentId(viewComponentImageSetDto.getViewComponentId())
                 .viewComponentSeq(viewComponentImageSetDto.getViewComponentSeq())
-                .build());
+                .build();
+        if(this.viewComponentImageSetMapper.exists(viewComponentImageSet)) {
+            this.viewComponentImageSetMapper.delete(viewComponentImageSet);
+        }
     }
 
     private void delete(ViewComponentFacilityDto viewComponentFacilityDto) {
-        this.viewComponentFacilityMapper.delete(ViewComponentFacility.builder()
+        ViewComponentFacility viewComponentFacility = ViewComponentFacility.builder()
                 .viewComponentId(viewComponentFacilityDto.getViewComponentId())
                 .viewComponentSeq(viewComponentFacilityDto.getViewComponentSeq())
-                .build());
+                .build();
+
+        if(this.viewComponentFacilityMapper.exists(viewComponentFacility)) {
+            this.viewComponentFacilityMapper.delete(viewComponentFacility);
+        }
     }
 
 }

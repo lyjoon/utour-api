@@ -24,4 +24,10 @@ public class TestViewComponentMapper extends TestLocalApplication {
 
         log.info("{}", viewComponent);
     }
+
+    @Test
+    public void testExists(){
+        boolean exists = this.viewComponentMapper.exists(ViewComponent.builder().viewComponentId(1L).build());
+        log.info("{}", exists);
+    }
 }

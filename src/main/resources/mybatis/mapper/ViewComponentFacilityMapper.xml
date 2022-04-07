@@ -18,7 +18,7 @@
         , TITLE
         , DESCRIPTION
         <include refid="common.component.column" />
-        FROM VIEW_COMPONENT_IMAGES T
+        FROM VIEW_COMPONENT_FACILITY T
     </sql>
 
     <sql id="where">
@@ -48,13 +48,17 @@
 
     <insert id="save">
         /* com.utour.mapper.ViewComponentFacilityMapper.save */
-        INSERT INTO VIEW_COMPONENT_IMAGES (
+        INSERT INTO VIEW_COMPONENT_FACILITY (
           VIEW_COMPONENT_SEQ
-        , IMAGE_SRC
+        , ICON_TYPE
+        , TITLE
+        , DESCRIPTION
         <include refid="common.component.column" />
         ) VALUES (
           #{viewComponentSeq}
-        , #{imageSrc}
+        , #{iconType}
+        , #{title}
+        , #{description}
         <include refid="common.component.value" />
         )
         <include refid="common.component.duplicateUpdate" />
@@ -63,7 +67,7 @@
 
     <delete id="delete">
         /* com.utour.mapper.ViewComponentFacilityMapper.delete */
-        DELETE FROM VIEW_COMPONENT_IMAGES
+        DELETE FROM VIEW_COMPONENT_FACILITY
         WHERE VIEW_COMPONENT_ID = #{viewComponentId}
           AND VIEW_COMPONENT_SEQ = #{viewComponentSeq}
     </delete>

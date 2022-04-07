@@ -3,10 +3,7 @@ package com.utour.service;
 import com.utour.common.CommonService;
 import com.utour.common.Constants;
 import com.utour.dto.PaginationResultDto;
-import com.utour.dto.product.ProductDto;
-import com.utour.dto.product.ProductImageDto;
-import com.utour.dto.product.ProductQueryDto;
-import com.utour.dto.product.ProductViewDto;
+import com.utour.dto.product.*;
 import com.utour.dto.view.ViewComponentAccommodationDto;
 import com.utour.dto.view.ViewComponentDto;
 import com.utour.dto.view.ViewComponentFacilityDto;
@@ -41,13 +38,24 @@ public class ProductService extends CommonService {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void create(ProductDto productDto) {
         Constants.PRODUCT_TYPE productType = Constants.PRODUCT_TYPE.valueOf(productDto.getProductType());
-        Product product = this.convert(productDto, Product.class);
+        Product product = Product.builder()
+                .productId(productDto.getProductId())
+                .productType(productDto.getProductType())
+                .writer(productDto.getWriter())
+                .repImageSrc(productDto.getRepImageSrc())
+                .nationCode(productDto.getNationCode())
+                .areaCode(productDto.getAreaCode())
+                .title(productDto.getTitle())
+                .content(productDto.getContent())
+                .useYn(productDto.getUseYn())
+                .build();
         this.productMapper.save(product);
         switch (productType) {
             case HOTEL:
                 // ACCOMMODATION 기본추가
                 this.viewComponentService.save(ViewComponentAccommodationDto.builder()
                         .productId(product.getProductId())
+                        .viewComponentType(Constants.VIEW_COMPONENT_TYPE.ACCOMMODATION.name())
                         .build());
                 break;
         }
@@ -83,45 +91,51 @@ public class ProductService extends CommonService {
 
         this.productMapper.save(product);
 
-
         if(!Optional.ofNullable(productViewDto.getProductImages()).map(List::isEmpty).orElse(true)) {
             productViewDto.getProductImages().forEach(productImageDto -> {
-                this.productImageMapper.save(ProductImage.builder()
-                        .productImageId(product.getProductId())
-                        .imageSrc(productImageDto.getImageSrc())
-                        .productImageGroupId(null)
-                        .imageSrc(productImageDto.getImageSrc())
-                        .description(productImageDto.getDescription())
-                        .build());
+                productImageDto.setProductId(product.getProductId());
+                this.save(productImageDto);
             });
         }
 
         if(!Optional.ofNullable(productViewDto.getProductImageGroups()).map(List::isEmpty).orElse(true)) {
             productViewDto.getProductImageGroups().forEach(productImageGroupDto -> {
-                ProductImageGroup productImageGroup = ProductImageGroup.builder()
-                        .productId(product.getProductId())
-                        .groupName(productImageGroupDto.getGroupName())
-                        .productImageGroupId(productImageGroupDto.getProductImageGroupId())
-                        .build();
-                this.productImageGroupMapper.save(productImageGroup);
-                if(!Optional.ofNullable(productImageGroupDto.getProductImages()).map(List::isEmpty).orElse(true)) {
-                    productImageGroupDto.getProductImages().forEach(productImageDto -> {
-                        this.productImageMapper.save(ProductImage.builder()
-                                .productImageId(product.getProductId())
-                                .productImageGroupId(productImageGroup.getProductImageGroupId())
-                                .imageSrc(productImageDto.getImageSrc())
-                                .productImageGroupId(null)
-                                .imageSrc(productImageDto.getImageSrc())
-                                .description(productImageDto.getDescription())
-                                .build());
-                    });
-                }
+                productImageGroupDto.setProductId(product.getProductId());
+                this.save(productImageGroupDto);
             });
         }
 
         if(!Optional.ofNullable(productViewDto.getViewComponents()).map(List::isEmpty).orElse(true)) {
-            productViewDto.getViewComponents().forEach(viewComponentDto ->
-                    this.viewComponentService.save(viewComponentDto));
+            productViewDto.getViewComponents().forEach(viewComponentDto -> {
+                viewComponentDto.setProductId(product.getProductId());
+                this.viewComponentService.save(viewComponentDto);
+            });
+        }
+    }
+
+    protected void save(ProductImageDto productImageDto) {
+        this.productImageMapper.save(ProductImage.builder()
+                .productImageId(productImageDto.getProductId())
+                .imageSrc(productImageDto.getImageSrc())
+                .productImageGroupId(null)
+                .imageSrc(productImageDto.getImageSrc())
+                .description(productImageDto.getDescription())
+                .build());
+    }
+
+    protected void save(ProductImageGroupDto productImageGroupDto) {
+        ProductImageGroup productImageGroup = ProductImageGroup.builder()
+                .productId(productImageGroupDto.getProductId())
+                .groupName(productImageGroupDto.getGroupName())
+                .productImageGroupId(productImageGroupDto.getProductImageGroupId())
+                .build();
+        this.productImageGroupMapper.save(productImageGroup);
+        if(!Optional.ofNullable(productImageGroupDto.getProductImages()).map(List::isEmpty).orElse(true)) {
+            productImageGroupDto.getProductImages().forEach(productImageDto -> {
+                productImageDto.setProductImageId(productImageGroupDto.getProductId());
+                productImageDto.setProductImageGroupId(productImageGroupDto.getProductImageGroupId());
+                this.save(productImageDto);
+            });
         }
     }
 
@@ -136,33 +150,42 @@ public class ProductService extends CommonService {
                 .productId(productDto.getProductId())
                 .build();
 
-        Optional.ofNullable(this.productMapper.exists(product))
-                .ifPresent(aBoolean -> {
-                    if(!aBoolean) throw new InternalException(getMessage("error.service.product.delete.not-exists"));
-                });
+        boolean exists = Optional.ofNullable(this.productMapper.exists(product)).orElse(false);
+        if(!exists) throw new InternalException(getMessage("error.service.product.delete.not-exists"));
+        // 상품 이미지 삭제
+        this.delete(ProductImageDto.builder().productId(product.getProductId()).build());
+        // 상품 이미지그룹 삭제
+        this.delete(ProductImageGroupDto.builder().productId(product.getProductId()).build());
+        // 화면요소 삭제
+        this.viewComponentService.deleteAll(ViewComponentDto.builder().productId(productDto.getProductId()).build());
+        // 상품삭제
+        this.productMapper.delete(product);
+    }
 
-        // 상품이미지 삭제
-        ProductImageGroup productImageGroup = ProductImageGroup.builder()
-                .productId(product.getProductId())
-                .build();
-
-        if(this.productImageGroupMapper.exists(productImageGroup)) {
-            this.productImageGroupMapper.delete(productImageGroup);
-        }
-
+    /**
+     * 상품 이미지 삭제
+     * @param productImageDto
+     */
+    private void delete(ProductImageDto productImageDto) {
         ProductImage productImage = ProductImage.builder()
-                .productId(product.getProductId())
+                .productId(productImageDto.getProductId())
                 .build();
         if(this.productImageMapper.exists(productImage)) {
             this.productImageMapper.delete(productImage);
         }
+    }
 
-        // 화면요소 삭제
-        this.viewComponentService.getList(ViewComponentDto.builder().productId(productDto.getProductId()).build())
-                .forEach(viewComponentService::delete);
-
-        // 상품삭제
-        this.productMapper.delete(product);
+    /**
+     * 상품 이미지 그룹삭제
+     * @param productImageGroupDto
+     */
+    private void delete(ProductImageGroupDto productImageGroupDto) {
+        ProductImageGroup productImageGroup = ProductImageGroup.builder()
+                .productId(productImageGroupDto.getProductId())
+                .build();
+        if(this.productImageGroupMapper.exists(productImageGroup)) {
+            this.productImageGroupMapper.delete(productImageGroup);
+        }
     }
 
     public PaginationResultDto getList(ProductQueryDto productPagingDto) {

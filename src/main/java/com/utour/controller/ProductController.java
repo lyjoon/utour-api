@@ -69,8 +69,7 @@ public class ProductController extends CommonController {
 
     @Authorize
     @PutMapping(value = "/create")
-    public ResultDto<Void> create(@Valid @RequestBody ProductDto productDto) {
-        log.info("save : {}", productDto.toString());
+    public ResultDto<Void> create(@Validated(ValidatorMarkers.Put.class) @Valid @RequestBody ProductDto productDto) {
         this.productService.create(productDto);
         return this.ok();
     }

@@ -22,5 +22,6 @@ public interface Constants {
         TEXT,
         IMAGE,
         ACCOMMODATION,
+        NA
     }
 }

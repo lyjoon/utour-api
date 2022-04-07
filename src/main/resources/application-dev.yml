@@ -6,10 +6,10 @@ server:
 spring:
   datasource:
     hikari:
-      driver-class-name: org.mariadb.jdbc.Driver
+      driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
       username: roywmc
       password: dldydwns2..
-      jdbc-url: jdbc:mariadb://roywmc.cafe24.com:3306/roywmc
+      jdbc-url: jdbc:log4jdbc:mariadb://roywmc.cafe24.com:3306/roywmc
 
 logging:
   file:
