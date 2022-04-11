@@ -15,7 +15,7 @@ public interface QnaMapper extends CommonMapper<Qna> {
 
     Long count(BoardQueryDto boardQueryDto);
 
-    boolean isPermit(@Param(value = "qnaId") Long qnaId, @Param(value = "password") String password);
+    boolean isAccess(@Param(value = "qnaId") Long qnaId, @Param(value = "password") String password);
 
     void updateIncrementPv(Qna qna);
 }

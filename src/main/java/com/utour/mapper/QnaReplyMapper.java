@@ -11,6 +11,6 @@ public interface QnaReplyMapper extends CommonMapper<QnaReply> {
 
     Long deleteById(QnaReply qnaReply);
 
-    boolean isPermit(Long qnaId, Long qnaReplyId, String Password);
+    boolean isAccess(QnaReply qnaReply);
 
 }

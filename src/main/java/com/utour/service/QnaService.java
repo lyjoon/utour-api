@@ -6,14 +6,18 @@ import com.utour.dto.PaginationResultDto;
 import com.utour.dto.board.BoardQueryDto;
 import com.utour.dto.qna.QnaDto;
 import com.utour.dto.qna.QnaReplyDto;
+import com.utour.dto.qna.QnaViewDto;
 import com.utour.entity.Qna;
 import com.utour.entity.QnaReply;
 import com.utour.exception.InternalException;
 import com.utour.mapper.QnaMapper;
 import com.utour.mapper.QnaReplyMapper;
+import com.utour.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -43,13 +47,17 @@ public class QnaService extends CommonService {
 
     /**
      * 삭제
-     * @param qnaDto
+     * @param qnaId 질문과답변 순번
+     * @param password 질문과답변 비밀번호
      */
-    public void delete(QnaDto qnaDto) {
-        Qna qna = Qna.builder().qnaId(qnaDto.getQnaId()).build();
+    @Transactional
+    public void delete(Long qnaId, String password) {
+        Qna qna = Qna.builder().qnaId(qnaId).password(password).build();
         if(this.qnaMapper.exists(qna)) {
-            this.qnaReplyMapper.delete(QnaReply.builder().qnaId(qnaDto.getQnaId()).build());
-            this.qnaMapper.delete(qna);
+            if(this.qnaMapper.isAccess(qnaId, password)) {
+                this.qnaReplyMapper.delete(QnaReply.builder().qnaId(qnaId).build());
+                this.qnaMapper.delete(qna);
+            } else throw new InternalException(this.getMessage("error.service.qna.delete.invalid-password"));
         } else {
             throw new InternalException(this.getMessage("error.service.qna.delete.not-exists"));
         }
@@ -57,7 +65,7 @@ public class QnaService extends CommonService {
 
     /**
      * 삭제
-     * @param qnaReplyDto
+     * @param qnaReplyDto dto
      */
     public void delete(QnaReplyDto qnaReplyDto) {
 
@@ -68,7 +76,9 @@ public class QnaService extends CommonService {
 
         boolean exists = this.qnaReplyMapper.exists(qnaReply);
         if(exists) {
-            this.qnaReplyMapper.delete(qnaReply);
+            if(this.qnaReplyMapper.isAccess(qnaReply)) {
+                this.qnaReplyMapper.delete(qnaReply);
+            } else throw new InternalException(this.getMessage("error.service.qna.delete.invalid-password"));
         } else {
             throw new InternalException(this.getMessage("error.service.qna.delete.not-exists"));
         }
@@ -76,20 +86,27 @@ public class QnaService extends CommonService {
 
     /**
      * 비밀번호 확인
-     * @param qnaDto
+     * @param qnaId 게시글 순번
+     * @param password 비밀번호
      * @return
      */
-    public boolean isPermit(QnaDto qnaDto){
-        return this.qnaMapper.isPermit(qnaDto.getQnaId(), qnaDto.getPassword());
+    public boolean isAccess(Long qnaId, String password){
+        return this.qnaMapper.isAccess(qnaId, password);
     }
 
     /**
      * 비밀번호 확인
-     * @param qnaReplyDto
+     * @param qnaId 게시글 순번
+     * @param qnaReplyId 답글 순번
+     * @param password 비밀번호
      * @return
      */
-    public boolean isPermit(QnaReplyDto qnaReplyDto){
-        return this.qnaReplyMapper.isPermit(qnaReplyDto.getQnaId(), qnaReplyDto.getQnaReplyId(), qnaReplyDto.getPassword());
+    public boolean isAccess(Long qnaId, Long qnaReplyId, String password){
+        return this.qnaReplyMapper.isAccess(QnaReply.builder()
+                .qnaId(qnaId)
+                .qnaReplyId(qnaReplyId)
+                .password(password)
+                .build());
     }
 
     /**
@@ -97,18 +114,34 @@ public class QnaService extends CommonService {
      * @param qnaId
      * @return
      */
-    public QnaDto get(Long qnaId) {
-        return Optional.ofNullable(this.qnaMapper.findById(Qna.builder().qnaId(qnaId).build()))
-                .map(v -> {
-                    this.qnaMapper.updateIncrementPv(v);
-                    return this.convert(v, QnaDto.class);
-                })
-                .orElse(null);
+    public QnaViewDto get(Long qnaId, String password) {
+        Qna qna = this.qnaMapper.findById(Qna.builder().qnaId(qnaId).build());
+        QnaViewDto qnaViewDto = QnaViewDto.builder()
+                .access(false)
+                .exists(Objects.nonNull(qna))
+                .build();
+
+        if(qnaViewDto.isExists()) {
+            if(Constants.Y.equals(qna.getPrivateYn())) {
+                if(StringUtils.defaultString(qna.getPassword(), Long.toString(System.currentTimeMillis())).equals(password)) {
+                    qnaViewDto.setAccess(true);
+                    qnaViewDto.setQnaDto(this.convert(qna, QnaDto.class));
+                } else {
+                    qnaViewDto.setAccess(false);
+                }
+            } else {
+                qnaViewDto.setAccess(true);
+                qnaViewDto.setQnaDto(this.convert(qna, QnaDto.class));
+                qnaViewDto.getQnaDto().setPassword(null);
+            }
+        }
+
+        return qnaViewDto;
     }
 
     /**
      * 페이지 목록조회
-     * @param boardQueryDto
+     * @param boardQueryDto dto
      * @return
      */
     public PaginationResultDto getQnaList(BoardQueryDto boardQueryDto) {
@@ -131,7 +164,7 @@ public class QnaService extends CommonService {
 
     /**
      * 목록
-     * @param qnaId
+     * @param qnaId 게시글 순번
      * @return
      */
     public PaginationResultDto getReplies(Long qnaId, Integer page) {

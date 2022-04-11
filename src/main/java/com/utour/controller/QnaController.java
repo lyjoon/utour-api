@@ -43,13 +43,24 @@ public class QnaController extends CommonController {
     }
 
     @GetMapping("/{qnaId}")
-    public ResultDto<QnaDto> get(@PathVariable Long qnaId) {
-        return this.ok(this.qnaService.get(qnaId));
+    public ResultDto<QnaDto> get(@PathVariable Long qnaId, @RequestParam(required = false) String password) {
+        return this.ok(this.qnaService.get(qnaId, password));
+    }
+
+    @GetMapping("/access/{qnaId}")
+    public ResultDto<Boolean> access(@PathVariable Long qnaId, @RequestParam(required = false) String password) {
+        return this.ok(this.qnaService.isAccess(qnaId, password));
+    }
+
+
+    @GetMapping("/access/{qnaId}/reply/{qnaReplyId}")
+    public ResultDto<Boolean> access(@PathVariable Long qnaId, @PathVariable Long qnaReplyId, @RequestParam(required = false) String password) {
+        return this.ok(this.qnaService.isAccess(qnaId, qnaReplyId, password));
     }
 
     @DeleteMapping("/{qnaId}")
-    public ResultDto<Void> delete(@PathVariable Long qnaId) {
-        this.qnaService.delete(QnaDto.builder().qnaId(qnaId).build());
+    public ResultDto<Void> delete(@PathVariable Long qnaId, @RequestParam(required = false) String password) {
+        this.qnaService.delete(qnaId, password);
         return this.ok(Constants.SUCCESS);
     }
 
@@ -61,10 +72,12 @@ public class QnaController extends CommonController {
     }
 
     @DeleteMapping(value = "/{qnaId}/reply/{qnaReplyId}")
-    public ResultDto<Void> delete(@PathVariable Long qnaId, @PathVariable Long qnaReplyId) {
+    public ResultDto<Void> delete(@PathVariable Long qnaId, @PathVariable Long qnaReplyId, @RequestParam(required = false) String password) {
         this.qnaService.delete(QnaReplyDto.builder()
                 .qnaId(qnaId)
-                .qnaReplyId(qnaReplyId).build());
+                .qnaReplyId(qnaReplyId)
+                .password(password)
+                .build());
         return this.ok(Constants.SUCCESS);
     }
 

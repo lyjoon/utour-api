@@ -10,6 +10,13 @@
         <result property="pv" javaType="java.lang.Integer" column="PV" />
     </resultMap>
 
+    <resultMap id="resultMap2" type="com.utour.entity.Qna" extends="common.content.resultMap">
+        <result property="qnaId" javaType="java.lang.Long" column="QNA_ID" />
+        <result property="privateYn" javaType="java.lang.Character" column="PRIVATE_YN" />
+        <result property="pv" javaType="java.lang.Integer" column="PV" />
+        <result property="password" javaType="java.lang.String" column="PASSWORD" />
+    </resultMap>
+
     <sql id="select">
         SELECT
           QNA_ID
@@ -33,7 +40,7 @@
         <include refid="common.base.existsSuffix" />
     </select>
 
-    <select id="isPermit" resultType="java.lang.Boolean">
+    <select id="isAccess" resultType="java.lang.Boolean">
         <include refid="common.base.existsPrefix" />
         <include refid="select" />
         WHERE QNA_ID = #{qnaId}
@@ -41,8 +48,14 @@
         <include refid="common.base.existsSuffix" />
     </select>
 
-    <select id="findById" resultMap="resultMap">
-        <include refid="select" />
+    <select id="findById" resultMap="resultMap2">
+        SELECT
+          QNA_ID
+        , PRIVATE_YN
+        , PV
+        , PASSWORD
+        <include refid="common.content.select" />
+        FROM QNA T
         WHERE QNA_ID = #{qnaId}
     </select>
 
