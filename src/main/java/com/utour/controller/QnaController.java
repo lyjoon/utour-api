@@ -2,15 +2,19 @@ package com.utour.controller;
 
 import com.utour.common.CommonController;
 import com.utour.common.Constants;
+import com.utour.dto.ErrorResultDto;
 import com.utour.dto.PaginationResultDto;
 import com.utour.dto.ResultDto;
 import com.utour.dto.board.BoardQueryDto;
 import com.utour.dto.qna.QnaDto;
 import com.utour.dto.qna.QnaReplyDto;
+import com.utour.exception.PasswordIncorrectException;
 import com.utour.service.QnaService;
 import com.utour.validator.ValidatorMarkers;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -85,5 +89,15 @@ public class QnaController extends CommonController {
     public ResultDto<Void> save(@Validated(ValidatorMarkers.Put.class) @RequestBody @Valid QnaReplyDto qnaReplyDto) {
         this.qnaService.save(qnaReplyDto);
         return this.ok(Constants.SUCCESS);
+    }
+
+    @ExceptionHandler(value = PasswordIncorrectException.class)
+    public ResponseEntity<ErrorResultDto<Void>> exceptionHandler(PasswordIncorrectException passwordIncorrectException){
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorResultDto.<Void>builder()
+                        .status(HttpStatus.UNAUTHORIZED.value())
+                        .message(passwordIncorrectException.getMessage())
+                        .build());
     }
 }

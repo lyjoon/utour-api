@@ -10,6 +10,7 @@ import com.utour.dto.qna.QnaViewDto;
 import com.utour.entity.Qna;
 import com.utour.entity.QnaReply;
 import com.utour.exception.InternalException;
+import com.utour.exception.PasswordIncorrectException;
 import com.utour.mapper.QnaMapper;
 import com.utour.mapper.QnaReplyMapper;
 import com.utour.util.StringUtils;
@@ -57,7 +58,9 @@ public class QnaService extends CommonService {
             if(this.qnaMapper.isAccess(qnaId, password)) {
                 this.qnaReplyMapper.delete(QnaReply.builder().qnaId(qnaId).build());
                 this.qnaMapper.delete(qna);
-            } else throw new InternalException(this.getMessage("error.service.qna.delete.invalid-password"));
+            } else {
+                throw new PasswordIncorrectException(this.getMessage("error.service.qna.delete.invalid-password"));
+            }
         } else {
             throw new InternalException(this.getMessage("error.service.qna.delete.not-exists"));
         }
@@ -78,7 +81,7 @@ public class QnaService extends CommonService {
         if(exists) {
             if(this.qnaReplyMapper.isAccess(qnaReply)) {
                 this.qnaReplyMapper.delete(qnaReply);
-            } else throw new InternalException(this.getMessage("error.service.qna.delete.invalid-password"));
+            } else throw new PasswordIncorrectException(this.getMessage("error.service.qna.delete.invalid-password"));
         } else {
             throw new InternalException(this.getMessage("error.service.qna.delete.not-exists"));
         }
@@ -132,10 +135,9 @@ public class QnaService extends CommonService {
             } else {
                 qnaViewDto.setAccess(true);
                 qnaViewDto.setQnaDto(this.convert(qna, QnaDto.class));
-                qnaViewDto.getQnaDto().setPassword(null);
             }
         }
-
+        Optional.ofNullable(qnaViewDto.getQnaDto()).ifPresent(dto -> dto.setPassword(null));
         return qnaViewDto;
     }
 
