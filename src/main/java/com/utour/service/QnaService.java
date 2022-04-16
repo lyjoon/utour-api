@@ -75,6 +75,7 @@ public class QnaService extends CommonService {
         QnaReply qnaReply = QnaReply.builder()
                 .qnaReplyId(qnaReplyDto.getQnaReplyId())
                 .qnaId(qnaReplyDto.getQnaId())
+                .password(qnaReplyDto.getPassword())
                 .build();
 
         boolean exists = this.qnaReplyMapper.exists(qnaReply);
