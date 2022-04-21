@@ -35,9 +35,15 @@
     </sql>
 
     <sql id="whereByBoardQuery">
-        <where>
-            <if test="query != null">AND TITLE LIKE CONCAT(#{query}, '%')</if>
-        </where>
+        <where><if test="query != null">
+            <choose>
+                <when test="queryType == 'ALL'">AND (TITLE LIKE CONCAT(#{query}, '%') OR CONTENT LIKE CONCAT(#{query}, '%') OR WRITER LIKE CONCAT(#{query}, '%'))</when>
+                <when test="queryType == 'CONTENT'">AND CONTENT LIKE CONCAT(#{query}, '%')</when>
+                <when test="queryType == 'WRITER'">AND WRITER LIKE CONCAT(#{query}, '%')</when>
+                <when test="queryType == 'TITLE'">AND TITLE LIKE CONCAT(#{query}, '%')</when>
+                <otherwise>TITLE LIKE CONCAT(#{query}, '%')</otherwise>
+            </choose>
+        </if></where>
     </sql>
 
 </mapper>
