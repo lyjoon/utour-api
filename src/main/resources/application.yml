@@ -26,3 +26,6 @@ jasypt:
   encryptor:
     bean: jasyptStringEncryptor
 
+app:
+  login:
+    secret-key: utour

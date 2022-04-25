@@ -2,6 +2,7 @@ package com.utour.handler;
 
 import com.utour.common.CommonComponent;
 import com.utour.dto.ErrorResultDto;
+import com.utour.exception.PasswordIncorrectException;
 import com.utour.exception.ValidException;
 import com.utour.util.ErrorUtils;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,6 @@ import java.util.Optional;
 
 @RestControllerAdvice
 public class RestResponseHandler extends CommonComponent {
-
 
     /**
      * valid error 처리
@@ -49,8 +49,6 @@ public class RestResponseHandler extends CommonComponent {
 
     @ExceptionHandler(value = HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResultDto> exceptionHandler(HttpMessageNotReadableException httpMessageNotReadableException) {
-        //String errorMessage = httpMessageNotReadableException.getMessage();
-        //String errorMessage = "Payload(request body) is empty.";
         String errorMessage = this.getMessage("error.valid.400.message-not-readable");
         log.warn("{}", ErrorUtils.throwableInfo(httpMessageNotReadableException));
         return ResponseEntity.badRequest().body(ErrorResultDto.builder()
@@ -61,13 +59,22 @@ public class RestResponseHandler extends CommonComponent {
 
     @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResultDto> exceptionHandler(MethodArgumentTypeMismatchException methodArgumentTypeMismatchException) {
-        //String errorMessage = httpMessageNotReadableException.getMessage();
         String errorMessage = this.getMessage("error.valid.400.method-arguments-mismatch");
         log.warn("{}", ErrorUtils.throwableInfo(methodArgumentTypeMismatchException));
         return ResponseEntity.badRequest().body(ErrorResultDto.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .message(errorMessage)
                 .build());
+    }
+
+    @ExceptionHandler(value = PasswordIncorrectException.class)
+    public ResponseEntity<ErrorResultDto<Void>> exceptionHandler(PasswordIncorrectException passwordIncorrectException){
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorResultDto.<Void>builder()
+                        .status(HttpStatus.UNAUTHORIZED.value())
+                        .message(passwordIncorrectException.getMessage())
+                        .build());
     }
 
     private String getBindingErrorMessage(BindingResult bindingResult) {

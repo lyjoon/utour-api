@@ -31,6 +31,10 @@ public class CommonController extends CommonComponent {
 		return ResultDto.<Void>builder().message(message).build();
 	}
 
+	protected ResultDto<String> ok(String message, String body){
+		return ResultDto.<String>builder().message(message).result(body).build();
+	}
+
 	protected ResponseEntity<Void> response(HttpStatus httpStatus){
 		return ResponseEntity.status(httpStatus).contentType(MediaType.APPLICATION_JSON).build();
 	}

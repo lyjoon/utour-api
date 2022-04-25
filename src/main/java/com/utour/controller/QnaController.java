@@ -90,14 +90,4 @@ public class QnaController extends CommonController {
         this.qnaService.save(qnaReplyDto);
         return this.ok(Constants.SUCCESS);
     }
-
-    @ExceptionHandler(value = PasswordIncorrectException.class)
-    public ResponseEntity<ErrorResultDto<Void>> exceptionHandler(PasswordIncorrectException passwordIncorrectException){
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(ErrorResultDto.<Void>builder()
-                        .status(HttpStatus.UNAUTHORIZED.value())
-                        .message(passwordIncorrectException.getMessage())
-                        .build());
-    }
 }

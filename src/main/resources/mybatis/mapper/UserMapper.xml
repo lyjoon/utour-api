@@ -18,7 +18,7 @@
         , PASSWORD
         , NAME
         <include refid="common.base.column" />
-        FROM MEMBER T
+        FROM USER T
     </sql>
 
     <sql id="where">
@@ -46,7 +46,7 @@
     </select>
 
     <insert id="save">
-        INSERT INTO MEMBER (
+        INSERT INTO USER (
           USER_ID
         , USE_YN
         , PASSWORD
@@ -64,7 +64,7 @@
     </insert>
 
     <delete id="delete">
-        DELETE FROM MEMBER
+        DELETE FROM USER
         WHERE USER_ID = #{userId}
     </delete>
 

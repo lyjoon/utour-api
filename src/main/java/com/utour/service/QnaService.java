@@ -129,13 +129,19 @@ public class QnaService extends CommonService {
             if(Constants.Y.equals(qna.getPrivateYn())) {
                 if(StringUtils.defaultString(qna.getPassword(), Long.toString(System.currentTimeMillis())).equals(password)) {
                     qnaViewDto.setAccess(true);
-                    qnaViewDto.setQnaDto(this.convert(qna, QnaDto.class));
+                    QnaDto qnaDto = this.convert(qna, QnaDto.class);
+                    qnaViewDto.setQnaDto(qnaDto);
+                    this.qnaMapper.updateIncrementPv(qna);
+                    qnaDto.setPv(1 + qnaDto.getPv());
                 } else {
                     qnaViewDto.setAccess(false);
                 }
             } else {
                 qnaViewDto.setAccess(true);
-                qnaViewDto.setQnaDto(this.convert(qna, QnaDto.class));
+                QnaDto qnaDto = this.convert(qna, QnaDto.class);
+                qnaViewDto.setQnaDto(qnaDto);
+                this.qnaMapper.updateIncrementPv(qna);
+                qnaDto.setPv(qnaViewDto.getQnaDto().getPv() + 1);
             }
         }
         Optional.ofNullable(qnaViewDto.getQnaDto()).ifPresent(dto -> dto.setPassword(null));
