@@ -12,8 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping(value = "/notice", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -35,9 +37,12 @@ public class NoticeController extends CommonController {
     }
 
     @Authorize
-    @PostMapping
-    public ResultDto<Void> save(@Valid @Validated(value = ValidatorMarkers.Put.class) @RequestBody NoticeDto noticeDto) {
-        this.noticeService.save(noticeDto);
+    @PostMapping(produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResultDto<Void> save(
+            @Valid @RequestPart(value = "notice") @NotNull NoticeDto noticeDto,
+            @RequestPart(value = "files", required = false) MultipartFile[] multipartFiles) {
+        log.info("notice.save.toString : {}", noticeDto.toString());
+        log.info("notice.save.files : {}", multipartFiles != null ? multipartFiles.length : -1);
         return ok();
     }
 
