@@ -44,7 +44,7 @@ public class NoticeController extends CommonController {
     @GetMapping({"/list", "/page-list"})
     public PaginationResultDto getPageList(
             @RequestParam(required = false, defaultValue = "1") Integer page,
-            @RequestParam(required = false, name = "query_type") String queryType,
+            @RequestParam(required = false) String queryType,
             @RequestParam(required = false) String query
     ){
         return this.noticeService.getPageList(BoardQueryDto.builder()
