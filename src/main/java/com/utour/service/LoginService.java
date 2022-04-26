@@ -4,6 +4,7 @@ import com.utour.common.CommonService;
 import com.utour.entity.User;
 import com.utour.exception.AuthenticationException;
 import com.utour.mapper.UserMapper;
+import com.utour.util.ErrorUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
@@ -58,12 +59,18 @@ public class LoginService extends CommonService {
     }
 
     public Boolean isExpired(String authorizationHeader) {
-        String token = authorizationHeader.substring("Bearer ".length());
-        Claims claims = Jwts.parser()
-                .setSigningKey(this.secretKey) // (3)
-                .parseClaimsJws(token) // (4)
-                .getBody();
+        try {
+            String token = authorizationHeader.substring("Bearer ".length());
+            Claims claims = Jwts.parser()
+                    .setSigningKey(this.key) // (3)
+                    .parseClaimsJws(token) // (4)
+                    .getBody();
 
-        return claims.isEmpty();
+            return !claims.isEmpty();
+
+        } catch (Throwable throwable) {
+            log.error("{}", ErrorUtils.throwableInfo(throwable));
+            return false;
+        }
     }
 }

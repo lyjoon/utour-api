@@ -6,7 +6,6 @@ import com.utour.dto.PaginationResultDto;
 import com.utour.dto.product.*;
 import com.utour.dto.view.ViewComponentAccommodationDto;
 import com.utour.dto.view.ViewComponentDto;
-import com.utour.dto.view.ViewComponentFacilityDto;
 import com.utour.entity.Product;
 import com.utour.entity.ProductImage;
 import com.utour.entity.ProductImageGroup;
@@ -37,7 +36,7 @@ public class ProductService extends CommonService {
      */
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void create(ProductDto productDto) {
-        Constants.PRODUCT_TYPE productType = Constants.PRODUCT_TYPE.valueOf(productDto.getProductType());
+        Constants.ProductType productType = Constants.ProductType.valueOf(productDto.getProductType());
         Product product = Product.builder()
                 .productId(productDto.getProductId())
                 .productType(productDto.getProductType())
@@ -55,7 +54,7 @@ public class ProductService extends CommonService {
                 // ACCOMMODATION 기본추가
                 this.viewComponentService.save(ViewComponentAccommodationDto.builder()
                         .productId(product.getProductId())
-                        .viewComponentType(Constants.VIEW_COMPONENT_TYPE.ACCOMMODATION.name())
+                        .viewComponentType(Constants.ViewComponentType.ACCOMMODATION.name())
                         .build());
                 break;
         }
@@ -151,7 +150,7 @@ public class ProductService extends CommonService {
                 .build();
 
         boolean exists = Optional.ofNullable(this.productMapper.exists(product)).orElse(false);
-        if(!exists) throw new InternalException(getMessage("error.service.product.delete.not-exists"));
+        if(!exists) throw new InternalException(getMessage("error.service.product.not-exists"));
         // 상품 이미지 삭제
         this.delete(ProductImageDto.builder().productId(product.getProductId()).build());
         // 상품 이미지그룹 삭제

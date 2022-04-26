@@ -16,7 +16,7 @@ public class TestViewComponentMapper extends TestLocalApplication {
         ViewComponent viewComponent = ViewComponent.builder()
                 .title("제목")
                 .useYn(Constants.Y)
-                .viewComponentType(Constants.VIEW_COMPONENT_TYPE.TEXT.name())
+                .viewComponentType(Constants.ViewComponentType.TEXT.name())
                 .ordinal(1)
                 .description("메모")
                 .build();

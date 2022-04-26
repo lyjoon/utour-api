@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -36,7 +35,7 @@ public class ProductController extends CommonController {
         return this.productService.getList(ProductQueryDto.builder()
                 .page(page)
                 .query(query)
-                .productType(Arrays.stream(Constants.PRODUCT_TYPE.values()).filter(type -> type.name().equals(productType)).findFirst()
+                .productType(Arrays.stream(Constants.ProductType.values()).filter(type -> type.name().equals(productType)).findFirst()
                         .map(Enum::name)
                         .orElse(null))
                 .limit(Constants.DEFAULT_PAGING_COUNT)
@@ -59,7 +58,7 @@ public class ProductController extends CommonController {
                 .query(query)
                 .nationCode(nationCode)
                 .areaCode(areaCode)
-                .productType(Arrays.stream(Constants.PRODUCT_TYPE.values()).filter(type -> type.name().equals(productType)).findFirst()
+                .productType(Arrays.stream(Constants.ProductType.values()).filter(type -> type.name().equals(productType)).findFirst()
                         .map(Enum::name)
                         .orElse(null))
                 .limit(Constants.DEFAULT_PAGING_COUNT)

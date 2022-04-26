@@ -14,14 +14,18 @@ public interface Constants {
         DISPLAY_TYPE
     }
 
-    enum PRODUCT_TYPE {
+    enum ProductType {
         HOTEL
     }
 
-    enum VIEW_COMPONENT_TYPE {
+    enum ViewComponentType {
         TEXT,
         IMAGE,
         ACCOMMODATION,
         NA
+    }
+
+    enum InquiryStatus {
+        WAIT, COMPLETE
     }
 }

@@ -52,9 +52,9 @@ public class ViewComponentService extends CommonService {
     }
 
     private ViewComponentDto map(ViewComponent viewComponent) {
-        Constants.VIEW_COMPONENT_TYPE viewComponentType = Arrays.stream(Constants.VIEW_COMPONENT_TYPE.values())
+        Constants.ViewComponentType viewComponentType = Arrays.stream(Constants.ViewComponentType.values())
                 .filter(type -> type.name().equals(viewComponent.getViewComponentType()))
-                .findFirst().orElse(Constants.VIEW_COMPONENT_TYPE.NA);
+                .findFirst().orElse(Constants.ViewComponentType.NA);
 
         ViewComponentDto t;
 

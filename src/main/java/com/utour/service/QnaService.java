@@ -62,7 +62,7 @@ public class QnaService extends CommonService {
                 throw new PasswordIncorrectException(this.getMessage("error.service.qna.delete.invalid-password"));
             }
         } else {
-            throw new InternalException(this.getMessage("error.service.qna.delete.not-exists"));
+            throw new InternalException(this.getMessage("error.service.qna.not-exists"));
         }
     }
 
@@ -84,7 +84,7 @@ public class QnaService extends CommonService {
                 this.qnaReplyMapper.delete(qnaReply);
             } else throw new PasswordIncorrectException(this.getMessage("error.service.qna.delete.invalid-password"));
         } else {
-            throw new InternalException(this.getMessage("error.service.qna.delete.not-exists"));
+            throw new InternalException(this.getMessage("error.service.qna.not-exists"));
         }
     }
 

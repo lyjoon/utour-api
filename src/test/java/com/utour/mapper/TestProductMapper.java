@@ -19,7 +19,7 @@ public class TestProductMapper extends TestLocalApplication {
                 .areaCode("ICH")
                 .nationCode("KR")
                 .content("ㅁㄴㅇㅁㄴㅇ")
-                .productType(Constants.PRODUCT_TYPE.HOTEL.name())
+                .productType(Constants.ProductType.HOTEL.name())
                 .useYn(Constants.Y)
                 .build();
         this.productMapper.save(product);

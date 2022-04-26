@@ -41,8 +41,37 @@
     </select>
 
     <select id="findAll" resultMap="resultMap">
-        <include refid="select" />
+        SELECT
+          INQUIRY_ID
+        , CONTACT
+        , EMAIL
+        , STATUS
+        , WRITER
+        , TITLE
+        FROM INQUIRY T
         <include refid="where" />
+    </select>
+
+    <select id="findPage" resultMap="resultMap">
+        SELECT
+          INQUIRY_ID
+        , CONTACT
+        , EMAIL
+        , STATUS
+        , WRITER
+        , TITLE
+        FROM INQUIRY T
+        <include refid="common.content.whereByBoardQuery" />
+        ORDER BY INQUIRY_ID DESC
+        <include refid="common.base.pagination" />
+    </select>
+
+    <select id="count" resultType="java.lang.Long">
+        SELECT COUNT(*) AS CNT
+        FROM INQUIRY T
+        <include refid="common.content.whereByBoardQuery" />
+        ORDER BY INQUIRY_ID DESC
+        <include refid="common.base.pagination" />
     </select>
 
     <insert id="save">
