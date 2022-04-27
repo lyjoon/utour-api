@@ -3,7 +3,6 @@ package com.utour.mapper;
 import com.utour.TestLocalApplication;
 import com.utour.dto.board.BoardQueryDto;
 import com.utour.entity.Inquiry;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
