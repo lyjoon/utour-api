@@ -37,7 +37,7 @@ public class NoticeController extends CommonController {
     }
 
     @Authorize
-    @PostMapping(produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/save")
     public ResultDto<Void> save(
             @Valid @RequestPart(value = "notice") @NotNull NoticeDto noticeDto,
             @RequestPart(value = "files", required = false) MultipartFile[] multipartFiles) {
