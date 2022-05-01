@@ -4,15 +4,15 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.utour.mapper.NoticeAttachMapper">
 
-    <resultMap id="resultMap" type="com.utour.entity.NoticeAttach" extends="common.attachment.resultMap">
+    <resultMap id="resultMap" type="com.utour.entity.NoticeAttach" extends="common.attach.resultMap">
         <result javaType="java.lang.Long" property="noticeId" column="NOTICE_ID"  />
     </resultMap>
 
     <sql id="select">
         SELECT
         NOTICE_ID
-        <include refid="common.attachment.select" />
-        FROM NOTICE_ATTACHMENT T
+        <include refid="common.attach.select" />
+        FROM NOTICE_ATTACH T
     </sql>
 
     <sql id="where">
@@ -30,7 +30,7 @@
 
     <select id="findById" resultMap="resultMap">
         <include refid="select" />
-        WHERE ATTACHMENT_ID = #{attachmentId}
+        WHERE ATTACH_ID = #{attachId}
     </select>
 
     <select id="findAll" resultMap="resultMap">
@@ -39,19 +39,19 @@
     </select>
 
     <insert id="save">
-        INSERT INTO NOTICE_ATTACHMENT (
+        INSERT INTO NOTICE_ATTACH (
         NOTICE_ID
-        <include refid="common.attachment.column" />
+        <include refid="common.attach.column" />
         ) VALUES (
         #{noticeId}
-        <include refid="common.attachment.value" />
+        <include refid="common.attach.value" />
         )
-        <include refid="common.attachment.duplicateUpdate" />
+        <include refid="common.attach.duplicateUpdate" />
     </insert>
 
     <delete id="delete">
-        DELETE FROM NOTICE_ATTACHMENT
-        WHERE ATTACHMENT_ID = #{attachmentId}
+        DELETE FROM NOTICE_ATTACH
+        WHERE ATTACH_ID = #{attachId}
     </delete>
 
 </mapper>

@@ -20,4 +20,6 @@ public class NoticeDto extends ContentDto {
     private Character noticeYn;
 
     private int pv;
+
+    private boolean attachment;
 }

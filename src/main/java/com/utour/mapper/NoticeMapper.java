@@ -14,4 +14,5 @@ public interface NoticeMapper extends CommonMapper<Notice> {
 
     Long count(BoardQueryDto boardQueryDto);
 
+    List<Notice> fixedList();
 }

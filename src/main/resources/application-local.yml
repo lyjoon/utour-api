@@ -23,3 +23,8 @@ logging:
   config: classpath:logback-local.xml
   pattern:
     console:
+
+app:
+  file-upload-storage:
+    root: ${user.home}/.upload
+    notice: ${app.file-upload-storage.root}/notice

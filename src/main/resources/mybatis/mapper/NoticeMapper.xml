@@ -48,10 +48,17 @@
         , CREATE_AT
         FROM NOTICE T
         <include refid="where" />
+        ORDER BY NOTICE_ID DESC
     </select>
 
     <select id="findPage" resultMap="resultMap">
-        <include refid="select" />
+        SELECT
+          NOTICE_ID
+        , NOTICE_YN
+        , PV
+        , TITLE
+        , WRITER
+        , CREATE_AT
         <include refid="common.content.whereByBoardQuery" />
         ORDER BY NOTICE_ID DESC
         <include refid="common.base.pagination" />
@@ -64,7 +71,7 @@
         ) DUMMY
     </select>
 
-    <insert id="save">
+    <insert id="save" useGeneratedKeys="true" keyProperty="noticeId">
         INSERT INTO NOTICE (
           NOTICE_ID
         , NOTICE_YN

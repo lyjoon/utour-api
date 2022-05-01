@@ -24,7 +24,9 @@ public class CommonController extends CommonComponent {
 	}
 
 	protected ResultDto<Void> ok(){
-		return ResultDto.<Void>builder().message(Constants.SUCCESS).build();
+		return ResultDto.<Void>builder()
+				.message(Constants.SUCCESS)
+				.build();
 	}
 
 	protected ResultDto<Void> ok(String message){

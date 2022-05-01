@@ -5,20 +5,24 @@ import com.utour.common.CommonController;
 import com.utour.dto.PaginationResultDto;
 import com.utour.dto.ResultDto;
 import com.utour.dto.board.BoardQueryDto;
+import com.utour.dto.notice.NoticeAttachDto;
 import com.utour.dto.notice.NoticeDto;
 import com.utour.service.NoticeService;
 import com.utour.validator.ValidatorMarkers;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartRequest;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 @RestController
-@RequestMapping(value = "/notice", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/v1/notice")
 @RequiredArgsConstructor
 public class NoticeController extends CommonController {
 
@@ -37,13 +41,13 @@ public class NoticeController extends CommonController {
     }
 
     @Authorize
-    @PostMapping(value = "/save")
-    public ResultDto<Void> save(
+    @PostMapping(value = "/save", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResultDto<Void>> save(
             @Valid @RequestPart(value = "notice") @NotNull NoticeDto noticeDto,
-            @RequestPart(value = "files", required = false) MultipartFile[] multipartFiles) {
-        log.info("notice.save.toString : {}", noticeDto.toString());
-        log.info("notice.save.files : {}", multipartFiles != null ? multipartFiles.length : -1);
-        return ok();
+            @RequestPart(value = "attachments", required = false) MultipartFile[] attachments
+    ) {
+        this.noticeService.save(noticeDto, attachments);
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(this.ok());
     }
 
     @GetMapping({"/list", "/page-list"})
