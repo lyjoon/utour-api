@@ -59,6 +59,7 @@
         , TITLE
         , WRITER
         , CREATE_AT
+        FROM NOTICE T
         <include refid="common.content.whereByBoardQuery" />
         ORDER BY NOTICE_ID DESC
         <include refid="common.base.pagination" />
