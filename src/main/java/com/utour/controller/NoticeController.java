@@ -2,6 +2,7 @@ package com.utour.controller;
 
 import com.utour.annotation.Authorize;
 import com.utour.common.CommonController;
+import com.utour.common.Constants;
 import com.utour.dto.PaginationResultDto;
 import com.utour.dto.ResultDto;
 import com.utour.dto.board.BoardQueryDto;
@@ -60,6 +61,7 @@ public class NoticeController extends CommonController {
                 .page(page)
                 .query(query)
                 .queryType(queryType)
+                .limit(Constants.DEFAULT_PAGING_COUNT)
                 .build());
     }
 
