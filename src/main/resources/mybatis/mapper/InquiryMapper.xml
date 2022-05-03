@@ -61,7 +61,7 @@
         , WRITER
         , TITLE
         FROM INQUIRY T
-        <include refid="common.content.whereByBoardQuery" />
+        <where><include refid="common.content.whereByBoardQuery" /></where>
         ORDER BY INQUIRY_ID DESC
         <include refid="common.base.pagination" />
     </select>
@@ -69,7 +69,7 @@
     <select id="count" resultType="java.lang.Long">
         SELECT COUNT(*) AS CNT
         FROM INQUIRY T
-        <include refid="common.content.whereByBoardQuery" />
+        <where><include refid="common.content.whereByBoardQuery" /></where>
         ORDER BY INQUIRY_ID DESC
         <include refid="common.base.pagination" />
     </select>

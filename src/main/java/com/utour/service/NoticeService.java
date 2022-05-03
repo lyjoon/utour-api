@@ -4,7 +4,9 @@ import com.utour.common.CommonService;
 import com.utour.common.Constants;
 import com.utour.dto.PaginationResultDto;
 import com.utour.dto.board.BoardQueryDto;
+import com.utour.dto.notice.NoticeAttachDto;
 import com.utour.dto.notice.NoticeDto;
+import com.utour.dto.notice.NoticeViewDto;
 import com.utour.entity.Notice;
 import com.utour.entity.NoticeAttach;
 import com.utour.mapper.NoticeAttachMapper;
@@ -14,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -36,10 +39,20 @@ public class NoticeService extends CommonService {
     @Value(value = "${app.file-upload-storage.notice:}")
     private Path fileStoragePath;
 
-    public NoticeDto get(Long noticeId) {
-        return Optional.ofNullable(noticeMapper.findById(Notice.builder().noticeId(noticeId).build()))
-                .map(notice -> this.convert(notice, NoticeDto.class))
-                .orElse(null);
+    @Transactional
+    public NoticeViewDto get(Long noticeId) {
+        Notice notice = Notice.builder().noticeId(noticeId).build();
+        boolean exists = noticeMapper.exists(notice);
+        if(exists) {
+            this.noticeMapper.updateIncrementPv(notice);
+            Notice resultEntity = noticeMapper.findById(notice);
+            NoticeViewDto noticeViewDto = this.convert(resultEntity, NoticeViewDto.class);
+            List<NoticeAttachDto> noticeAttachments = this.noticeAttachMapper.findAll(NoticeAttach.builder().noticeId(noticeId).build()).stream().map(v -> this.convert(v, NoticeAttachDto.class)).collect(Collectors.toList());
+            noticeViewDto.setAttachment(!noticeAttachments.isEmpty());
+            noticeViewDto.setAttachments(noticeAttachments);
+            return noticeViewDto;
+        }
+        return null;
     }
 
     public void save(NoticeDto noticeDto, MultipartFile[] attachments) {
@@ -92,6 +105,7 @@ public class NoticeService extends CommonService {
         List<Notice> results = this.noticeMapper.findAll(Notice.builder()
                 .noticeYn(Constants.Y)
                 .build());
+
         // 페이징 건수 조회
         long count = this.noticeMapper.count(boardQueryDto);
         // 일반공지사항 조회

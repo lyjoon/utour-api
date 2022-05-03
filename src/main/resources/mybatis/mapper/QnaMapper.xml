@@ -79,7 +79,7 @@
         , TITLE
         , CREATE_AT
         FROM QNA T
-        <include refid="common.content.whereByBoardQuery" />
+        <where><include refid="common.content.whereByBoardQuery" /></where>
         ORDER BY QNA_ID DESC
         <include refid="common.base.pagination" />
     </select>
@@ -87,7 +87,7 @@
     <select id="count" resultType="java.lang.Long">
         SELEct COUNT(*) AS CNT FROM (
             <include refid="select" />
-            <include refid="common.content.whereByBoardQuery" />
+            <where><include refid="common.content.whereByBoardQuery" /></where>
         ) DUMMY
     </select>
 

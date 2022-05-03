@@ -60,6 +60,7 @@
         , WRITER
         , CREATE_AT
         FROM NOTICE T
+        WHERE NOTICE_YN = 'N'
         <include refid="common.content.whereByBoardQuery" />
         ORDER BY NOTICE_ID DESC
         <include refid="common.base.pagination" />
@@ -67,8 +68,9 @@
 
     <select id="count" resultType="java.lang.Long">
         SELEct COUNT(*) AS CNT FROM (
-        <include refid="select" />
-        <include refid="common.content.whereByBoardQuery" />
+            <include refid="select" />
+            WHERE NOTICE_YN = 'N'
+            <include refid="common.content.whereByBoardQuery" />
         ) DUMMY
     </select>
 
@@ -88,6 +90,12 @@
         , NOTICE_YN = VALUES(NOTICE_YN)
         , PV = VALUES(PV)
     </insert>
+
+    <update id="updateIncrementPv">
+        UPDATE NOTICE
+        SET PV = PV + 1
+        WHERE NOTICE_ID = #{noticeId}
+    </update>
 
     <delete id="delete">
         DELETE FROM NOTICE

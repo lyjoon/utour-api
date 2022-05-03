@@ -8,6 +8,7 @@ import com.utour.dto.ResultDto;
 import com.utour.dto.board.BoardQueryDto;
 import com.utour.dto.notice.NoticeAttachDto;
 import com.utour.dto.notice.NoticeDto;
+import com.utour.dto.notice.NoticeViewDto;
 import com.utour.service.NoticeService;
 import com.utour.validator.ValidatorMarkers;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class NoticeController extends CommonController {
     private final NoticeService noticeService;
 
     @GetMapping("/{noticeId}")
-    public ResultDto<NoticeDto> get(@PathVariable Long noticeId) {
+    public ResultDto<NoticeViewDto> get(@PathVariable Long noticeId) {
         return this.ok(this.noticeService.get(noticeId));
     }
 
