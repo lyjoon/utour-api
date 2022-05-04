@@ -16,7 +16,7 @@
         SELECT * FROM HOME_PRESENT
         <where>
             <if test="homePresentId != null">AND HOME_PRESENT_ID = #{homePresentId}</if>
-            <if test="presentId != null">AND PRODUCT_ID = #{presentId}</if>
+            <if test="productId != null">AND PRODUCT_ID = #{productId}</if>
             <if test="useYn != null">AND USE_YN = #{useYn}</if>
         </where>
         <include refid="common.base.existsSuffix" />
@@ -24,7 +24,7 @@
 
     <select id="findById" resultMap="resultMap">
         SELECT
-          HOME_PRESENT_ID
+        HOME_PRESENT_ID
         , PRODUCT_ID
         , ORDINAL_POSITION
         , USE_YN
@@ -35,7 +35,7 @@
 
     <select id="findAll" resultMap="resultMap">
         SELECT
-          HOME_PRESENT_ID
+        HOME_PRESENT_ID
         , PRODUCT_ID
         , ORDINAL_POSITION
         , USE_YN
@@ -43,7 +43,7 @@
         FROM HOME_PRESENT
         <where>
             <if test="homePresentId != null">AND HOME_PRESENT_ID = #{homePresentId}</if>
-            <if test="presentId != null">AND PRODUCT_ID = #{presentId}</if>
+            <if test="productId != null">AND PRODUCT_ID = #{productId}</if>
             <if test="useYn != null">AND USE_YN = #{useYn}</if>
         </where>
         ORDER BY ORDINAL_POSITION, HOME_PRESENT_ID DESC
@@ -51,17 +51,17 @@
 
     <insert id="save">
         INSERT INTO HOME_PRESENT (
-          HOME_PRESENT_ID
+        HOME_PRESENT_ID
         , PRODUCT_ID
         , ORDINAL_POSITION
         , USE_YN
-        ) VALULES (
-          #{homePresentId}
+        ) VALUES (
+        #{homePresentId}
         , #{productId}
         , #{ordinalPosition}
         , #{useYn}
         )
-        <include refid="common.content.duplicateUpdate" />
+        <include refid="common.base.duplicateUpdate" />
         <if test="productId != null">, PRODUCT_ID = VALUES(PRODUCT_ID)</if>
         <if test="ordinalPosition != null">, ORDINAL_POSITION = VALUES(ORDINAL_POSITION)</if>
         <if test="useYn != null">, USE_YN = VALUES(USE_YN)</if>

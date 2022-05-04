@@ -1,6 +1,7 @@
 package com.utour.dto.home;
 
 import com.utour.dto.common.CommonDto;
+import com.utour.dto.product.ProductDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 @NoArgsConstructor
-public class HomePresentDto extends CommonDto {
+public class HomePresentDto extends ProductDto {
     private Long homePresentId;
     private Long productId;
     private Integer ordinalPosition;

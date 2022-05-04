@@ -23,14 +23,14 @@ public class HomeController extends CommonController {
     private final HomeService homeService;
 
     @GetMapping(value = "/present/list")
-    public ResultDto<List<HomePresentDto>> getPresentList(@RequestHeader(value="Authorization") String authorization){
+    public ResultDto<List<HomePresentDto>> getPresentList(@RequestHeader(value="Authorization", required = false) String authorization){
         return this.ok(this.homeService.getList(HomePresentDto.builder()
                 .useYn(this.useByToken(authorization))
                 .build()));
     }
 
     @GetMapping(value = "/carousel/list")
-    public ResultDto<List<HomeCarouselDto>> getCarouselList(@RequestHeader(value="Authorization") String authorization){
+    public ResultDto<List<HomeCarouselDto>> getCarouselList(@RequestHeader(value="Authorization", required = false) String authorization){
         return this.ok(this.homeService.getList(HomeCarouselDto.builder()
                 .useYn(this.useByToken(authorization))
                 .build()));
