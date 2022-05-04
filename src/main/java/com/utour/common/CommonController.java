@@ -1,15 +1,22 @@
 package com.utour.common;
 
 import com.utour.dto.ResultDto;
+import com.utour.service.LoginService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Validator;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpSession;
+import java.util.Optional;
 
 public class CommonController extends CommonComponent {
+
+	@Autowired
+	protected Validator validator;
 
 	protected HttpSession getSession(boolean create){
 		return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession(create);
@@ -45,4 +52,8 @@ public class CommonController extends CommonComponent {
 		return ResponseEntity.status(httpStatus).contentType(MediaType.APPLICATION_JSON).body(ResultDto.builder().message(message).build());
 	}
 
+	protected Character useByToken(String authorization){
+		return Optional.ofNullable(this.getBean(LoginService.class).isExpired(authorization))
+				.map(v -> v ? null : Constants.Y).orElse(Constants.Y);
+	}
 }
