@@ -5,11 +5,15 @@ import org.jasypt.encryption.StringEncryptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.MessageSourceAccessor;
 
 public class CommonComponent {
 
     protected Logger log = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    protected ApplicationContext applicationContext;
 
     @Autowired
     protected MessageSourceAccessor messageSourceAccessor;
@@ -42,4 +46,7 @@ public class CommonComponent {
         }
     }
 
+    protected <T> T getBean(Class<T> type) {
+        return this.applicationContext.getBean(type);
+    }
 }

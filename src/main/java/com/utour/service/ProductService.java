@@ -3,9 +3,11 @@ package com.utour.service;
 import com.utour.common.CommonService;
 import com.utour.common.Constants;
 import com.utour.dto.PaginationResultDto;
+import com.utour.dto.home.HomePresentDto;
 import com.utour.dto.product.*;
 import com.utour.dto.view.ViewComponentAccommodationDto;
 import com.utour.dto.view.ViewComponentDto;
+import com.utour.entity.HomePresent;
 import com.utour.entity.Product;
 import com.utour.entity.ProductImage;
 import com.utour.entity.ProductImageGroup;
@@ -27,6 +29,8 @@ public class ProductService extends CommonService {
     private final ProductMapper productMapper;
     private final ProductImageGroupMapper productImageGroupMapper;
     private final ProductImageMapper productImageMapper;
+
+    private final HomePresentMapper homePresentMapper;
 
     private final ViewComponentService viewComponentService;
 
@@ -138,19 +142,33 @@ public class ProductService extends CommonService {
         }
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    protected void delete(HomePresentDto homePresentDto) {
+        Optional.ofNullable(this.homePresentMapper.findAll(HomePresent.builder().homePresentId(homePresentDto.getHomePresentId()).build()))
+                .ifPresent(list -> list.forEach(present -> {
+                    this.homePresentMapper.delete(present);
+                }));
+    }
+
     /**
      * 상품 삭제
      * @param productDto
      */
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void delete(ProductDto productDto) {
-        // 상품요소 확인
+        // 파라미터 설정
         Product product = Product.builder()
                 .productId(productDto.getProductId())
                 .build();
-
+        // 상품요소 확인
         boolean exists = Optional.ofNullable(this.productMapper.exists(product)).orElse(false);
-        if(!exists) throw new InternalException(getMessage("error.service.product.not-exists"));
+        if(!exists) {
+            throw new InternalException(getMessage("error.service.product.not-exists"));
+        }
+
+        // 하위 데이터 HOME_PRESENT 삭제
+        this.delete(HomePresentDto.builder().productId(product.getProductId()).build());
+
         // 상품 이미지 삭제
         this.delete(ProductImageDto.builder().productId(product.getProductId()).build());
         // 상품 이미지그룹 삭제

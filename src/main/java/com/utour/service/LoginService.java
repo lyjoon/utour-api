@@ -12,6 +12,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.spec.SecretKeySpec;
@@ -60,6 +61,7 @@ public class LoginService extends CommonService {
 
     public Boolean isExpired(String authorizationHeader) {
         try {
+            if(!StringUtils.hasText(authorizationHeader)) return null;
             String token = authorizationHeader.substring("Bearer ".length());
             Claims claims = Jwts.parser()
                     .setSigningKey(this.key) // (3)

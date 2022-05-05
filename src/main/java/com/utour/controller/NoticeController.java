@@ -24,7 +24,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 @RestController
-@RequestMapping(value = "/v1/notice")
+@RequestMapping(value = "/v1/notice", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class NoticeController extends CommonController {
 
