@@ -9,9 +9,11 @@ import com.utour.dto.notice.NoticeDto;
 import com.utour.dto.notice.NoticeViewDto;
 import com.utour.entity.Notice;
 import com.utour.entity.NoticeAttach;
+import com.utour.exception.InternalException;
 import com.utour.mapper.NoticeAttachMapper;
 import com.utour.mapper.NoticeMapper;
 import com.utour.util.ErrorUtils;
+import com.utour.util.FileUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,15 +73,7 @@ public class NoticeService extends CommonService {
         if(attachments != null && attachments.length > 0) {
             for (MultipartFile multipartFile : attachments) {
                 try {
-                    String originName = multipartFile.getOriginalFilename();
-                    String fileName = new StringBuilder(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE))
-                            .append("-")
-                            .append(UUID.randomUUID())
-                            .append("-")
-                            .append(originName)
-                            .toString();
-                    Path toPath = Paths.get(fileStoragePath.toFile().getPath(), fileName);
-                    multipartFile.transferTo(toPath);
+                    Path toPath = FileUtils.uploadFile(fileStoragePath, multipartFile);
                     NoticeAttach noticeAttach = NoticeAttach.builder()
                             .noticeId(notice.getNoticeId())
                             .originName(multipartFile.getOriginalFilename())
@@ -95,6 +89,25 @@ public class NoticeService extends CommonService {
     }
 
     public void delete(Long noticeId) {
+
+        NoticeAttach noticeAttach = NoticeAttach.builder()
+                .noticeId(noticeId)
+                .build();
+
+        List<NoticeAttach> noticeAttachments = this.noticeAttachMapper.findAll(noticeAttach);
+        if(!noticeAttachments.isEmpty()) {
+            // 파일삭제
+            for (NoticeAttach noticeAttachment : noticeAttachments) {
+                try {
+                    FileUtils.delete(Paths.get(noticeAttachment.getPath()));
+                } catch (IOException ioException) {
+                    throw new InternalException(ioException);
+                }
+                this.noticeAttachMapper.delete(noticeAttachment);
+            }
+
+        }
+
         this.noticeMapper.delete(Notice.builder()
                 .noticeId(noticeId)
                 .build());
@@ -121,5 +134,10 @@ public class NoticeService extends CommonService {
                     return noticeDto;
                 }).collect(Collectors.toList()))
                 .build();
+    }
+
+    public NoticeAttachDto get(NoticeAttachDto noticeAttachDto) {
+        return Optional.ofNullable(this.noticeAttachMapper.findById(NoticeAttach.builder().noticeId(noticeAttachDto.getNoticeId()).attachId(noticeAttachDto.getAttachId()).build()))
+                .map(v -> this.convert(v, NoticeAttachDto.class)).orElse(null);
     }
 }

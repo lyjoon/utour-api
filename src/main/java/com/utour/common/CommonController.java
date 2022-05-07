@@ -3,14 +3,22 @@ package com.utour.common;
 import com.utour.dto.ResultDto;
 import com.utour.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.*;
 import org.springframework.validation.Validator;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.constraints.NotNull;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Optional;
 
 public class CommonController extends CommonComponent {
@@ -55,5 +63,23 @@ public class CommonController extends CommonComponent {
 	protected Character useByToken(String authorization){
 		return Optional.ofNullable(this.getBean(LoginService.class).isExpired(authorization))
 				.map(v -> v ? null : Constants.Y).orElse(Constants.Y);
+	}
+
+	protected ResponseEntity<Object> download(String path) throws IOException {
+		return this.download(Paths.get(path));
+	}
+
+	protected ResponseEntity<Object> download(Path path) throws IOException {
+		if(Objects.isNull(path) || !Files.exists(path) || !Files.isRegularFile(path)) {
+			// throw new IOException("Cannot find");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+		}
+
+		String fileName = URLEncoder.encode(path.toFile().getName(), "UTF-8");
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentDisposition(ContentDisposition.builder("attachment").filename(fileName).build());
+		//headers.add("name", path.toFile().getName());
+		Resource resource = new InputStreamResource(Files.newInputStream(path));
+		return new ResponseEntity<>(resource, headers, HttpStatus.OK);
 	}
 }

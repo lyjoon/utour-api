@@ -60,7 +60,7 @@
         , WRITER
         , CREATE_AT
         FROM NOTICE T
-        WHERE NOTICE_YN = 'N'
+        WHERE IFNULL(NOTICE_YN, 'N') = 'N'
         <include refid="common.content.whereByBoardQuery" />
         ORDER BY NOTICE_ID DESC
         <include refid="common.base.pagination" />
@@ -69,7 +69,7 @@
     <select id="count" resultType="java.lang.Long">
         SELEct COUNT(*) AS CNT FROM (
             <include refid="select" />
-            WHERE NOTICE_YN = 'N'
+            WHERE IFNULL(NOTICE_YN, 'N') = 'N'
             <include refid="common.content.whereByBoardQuery" />
         ) DUMMY
     </select>

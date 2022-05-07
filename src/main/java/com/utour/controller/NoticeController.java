@@ -6,22 +6,22 @@ import com.utour.common.Constants;
 import com.utour.dto.PaginationResultDto;
 import com.utour.dto.ResultDto;
 import com.utour.dto.board.BoardQueryDto;
+import com.utour.dto.common.AttachDto;
 import com.utour.dto.notice.NoticeAttachDto;
 import com.utour.dto.notice.NoticeDto;
 import com.utour.dto.notice.NoticeViewDto;
 import com.utour.service.NoticeService;
-import com.utour.validator.ValidatorMarkers;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartRequest;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/v1/notice", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -66,4 +66,9 @@ public class NoticeController extends CommonController {
                 .build());
     }
 
+    @GetMapping("/{noticeId}/attach/{attachId}")
+    public ResponseEntity<Object> download(@PathVariable Long noticeId, @PathVariable Long attachId) throws IOException {
+        NoticeAttachDto noticeAttachDto = this.noticeService.get(NoticeAttachDto.builder().noticeId(noticeId).attachId(attachId).build());
+        return this.download(Optional.ofNullable(noticeAttachDto).map(AttachDto::getPath).orElse(null));
+    }
 }
