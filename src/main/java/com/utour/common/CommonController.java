@@ -1,11 +1,15 @@
 package com.utour.common;
 
 import com.utour.dto.ResultDto;
+import com.utour.exception.ValidException;
 import com.utour.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.BindingResultUtils;
 import org.springframework.validation.Validator;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -81,5 +85,13 @@ public class CommonController extends CommonComponent {
 		//headers.add("name", path.toFile().getName());
 		Resource resource = new InputStreamResource(Files.newInputStream(path));
 		return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+	}
+
+	protected void validator(Object value) {
+		BindingResult bindingResult = new BeanPropertyBindingResult(value, value.getClass().getName());
+		this.validator.validate(value, bindingResult);
+		if(bindingResult.hasErrors()) {
+			throw new ValidException(bindingResult);
+		}
 	}
 }

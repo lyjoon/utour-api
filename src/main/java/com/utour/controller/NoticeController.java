@@ -9,6 +9,7 @@ import com.utour.dto.board.BoardQueryDto;
 import com.utour.dto.common.AttachDto;
 import com.utour.dto.notice.NoticeAttachDto;
 import com.utour.dto.notice.NoticeDto;
+import com.utour.dto.notice.NoticeStoreDto;
 import com.utour.dto.notice.NoticeViewDto;
 import com.utour.service.NoticeService;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 @RestController
@@ -45,10 +44,10 @@ public class NoticeController extends CommonController {
     @Authorize
     @PostMapping(value = "/save", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResultDto<Void>> save(
-            @Valid @RequestPart(value = "notice") @NotNull NoticeDto noticeDto,
+            @Valid @RequestPart(value = "notice") @NotNull NoticeStoreDto noticeStoreDto,
             @RequestPart(value = "attachments", required = false) MultipartFile[] attachments
     ) {
-        this.noticeService.save(noticeDto, attachments);
+        this.noticeService.save(noticeStoreDto, attachments);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(this.ok());
     }
 

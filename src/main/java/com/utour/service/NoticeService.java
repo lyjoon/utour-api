@@ -6,6 +6,7 @@ import com.utour.dto.PaginationResultDto;
 import com.utour.dto.board.BoardQueryDto;
 import com.utour.dto.notice.NoticeAttachDto;
 import com.utour.dto.notice.NoticeDto;
+import com.utour.dto.notice.NoticeStoreDto;
 import com.utour.dto.notice.NoticeViewDto;
 import com.utour.entity.Notice;
 import com.utour.entity.NoticeAttach;
@@ -15,7 +16,6 @@ import com.utour.mapper.NoticeMapper;
 import com.utour.util.ErrorUtils;
 import com.utour.util.FileUtils;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,7 +54,9 @@ public class NoticeService extends CommonService {
         return null;
     }
 
-    public void save(NoticeDto noticeDto, MultipartFile[] attachments) {
+    public void save(NoticeStoreDto noticeStoreDto, MultipartFile[] attachments) {
+
+        NoticeDto noticeDto = noticeStoreDto.getCommand();
         Notice notice = Notice.builder()
                 .noticeId(noticeDto.getNoticeId())
                 .content(noticeDto.getContent())
@@ -67,6 +66,24 @@ public class NoticeService extends CommonService {
                 .writer(noticeDto.getWriter())
                 .build();
         this.noticeMapper.save(notice);
+
+        // 삭제목록 정리
+        Optional.ofNullable(noticeStoreDto.getDeleteAttachId()).ifPresent(list -> {
+            for (long l : list) {
+                NoticeAttach noticeAttach = NoticeAttach.builder().attachId(l).build();
+                NoticeAttach noticeAttach1 = this.noticeAttachMapper.findById(noticeAttach);
+                if(noticeAttach1 != null) {
+                    Path path = Paths.get(noticeAttach1.getPath());
+                    try {
+                        FileUtils.delete(path);
+                    } catch (IOException e) {
+                        log.error("{}", ErrorUtils.throwableInfo(e));
+                    } finally {
+                        this.noticeAttachMapper.delete(noticeAttach);
+                    }
+                }
+            }
+        });
 
         // cmdType 에 따른 기존파일삭제
         // 신규파일저장
