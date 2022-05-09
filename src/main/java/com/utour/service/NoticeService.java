@@ -135,13 +135,13 @@ public class NoticeService extends CommonService {
         List<Notice> results = this.noticeMapper.findAll(Notice.builder()
                 .noticeYn(Constants.Y)
                 .build());
-
+        int noticeYnCnt = results.size();
         // 페이징 건수 조회
         long count = this.noticeMapper.count(boardQueryDto);
         // 일반공지사항 조회
         results.addAll(this.noticeMapper.findPage(boardQueryDto));
         return PaginationResultDto.builder()
-                .count(count)
+                .count(count < 1 && noticeYnCnt > 0 ? 1 : count)
                 .page(boardQueryDto.getPage())
                 .limit(boardQueryDto.getLimit())
                 .result(results.stream().map(v -> {
