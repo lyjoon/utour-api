@@ -28,6 +28,7 @@ public class QnaService extends CommonService {
 
     private final QnaMapper qnaMapper;
     private final QnaReplyMapper qnaReplyMapper;
+    private final LoginService loginService;
 
     /**
      * 저장
@@ -52,14 +53,20 @@ public class QnaService extends CommonService {
      * @param password 질문과답변 비밀번호
      */
     @Transactional
-    public void delete(Long qnaId, String password) {
+    public void delete(Long qnaId, String password, String authorization) {
         Qna qna = Qna.builder().qnaId(qnaId).password(password).build();
         if(this.qnaMapper.exists(qna)) {
-            if(this.qnaMapper.isAccess(qnaId, password)) {
+            boolean isExpired = this.loginService.isExpired(authorization);
+            if(isExpired) {
                 this.qnaReplyMapper.delete(QnaReply.builder().qnaId(qnaId).build());
                 this.qnaMapper.delete(qna);
             } else {
-                throw new PasswordIncorrectException(this.getMessage("error.service.qna.delete.invalid-password"));
+                if(this.qnaMapper.isAccess(qnaId, password)) {
+                    this.qnaReplyMapper.delete(QnaReply.builder().qnaId(qnaId).build());
+                    this.qnaMapper.delete(qna);
+                } else {
+                    throw new PasswordIncorrectException(this.getMessage("error.service.qna.delete.invalid-password"));
+                }
             }
         } else {
             throw new InternalException(this.getMessage("error.service.qna.not-exists"));
@@ -70,7 +77,7 @@ public class QnaService extends CommonService {
      * 삭제
      * @param qnaReplyDto dto
      */
-    public void delete(QnaReplyDto qnaReplyDto) {
+    public void delete(QnaReplyDto qnaReplyDto, String authorization) {
 
         QnaReply qnaReply = QnaReply.builder()
                 .qnaReplyId(qnaReplyDto.getQnaReplyId())
@@ -80,9 +87,14 @@ public class QnaService extends CommonService {
 
         boolean exists = this.qnaReplyMapper.exists(qnaReply);
         if(exists) {
-            if(this.qnaReplyMapper.isAccess(qnaReply)) {
+            boolean isExpired = this.loginService.isExpired(authorization);
+            if(isExpired) {
                 this.qnaReplyMapper.delete(qnaReply);
-            } else throw new PasswordIncorrectException(this.getMessage("error.service.qna.delete.invalid-password"));
+            } else {
+                if(this.qnaReplyMapper.isAccess(qnaReply)) {
+                    this.qnaReplyMapper.delete(qnaReply);
+                } else throw new PasswordIncorrectException(this.getMessage("error.service.qna.delete.invalid-password"));
+            }
         } else {
             throw new InternalException(this.getMessage("error.service.qna.not-exists"));
         }
@@ -118,7 +130,7 @@ public class QnaService extends CommonService {
      * @param qnaId
      * @return
      */
-    public QnaViewDto get(Long qnaId, String password) {
+    public QnaViewDto get(Long qnaId, String password, String authorization) {
         Qna qna = this.qnaMapper.findById(Qna.builder().qnaId(qnaId).build());
         QnaViewDto qnaViewDto = QnaViewDto.builder()
                 .access(false)
@@ -126,22 +138,29 @@ public class QnaService extends CommonService {
                 .build();
 
         if(qnaViewDto.isExists()) {
-            if(Constants.Y.equals(qna.getPrivateYn())) {
-                if(StringUtils.defaultString(qna.getPassword(), Long.toString(System.currentTimeMillis())).equals(password)) {
+            boolean isExpired = loginService.isExpired(authorization);
+            if(isExpired) {
+                qnaViewDto.setAccess(true);
+                QnaDto qnaDto = this.convert(qna, QnaDto.class);
+                qnaViewDto.setQnaDto(qnaDto);
+            } else {
+                if(Constants.Y.equals(qna.getPrivateYn())) {
+                    if(StringUtils.defaultString(qna.getPassword(), Long.toString(System.currentTimeMillis())).equals(password)) {
+                        qnaViewDto.setAccess(true);
+                        QnaDto qnaDto = this.convert(qna, QnaDto.class);
+                        qnaViewDto.setQnaDto(qnaDto);
+                        this.qnaMapper.updateIncrementPv(qna);
+                        qnaDto.setPv(1 + qnaDto.getPv());
+                    } else {
+                        qnaViewDto.setAccess(false);
+                    }
+                } else {
                     qnaViewDto.setAccess(true);
                     QnaDto qnaDto = this.convert(qna, QnaDto.class);
                     qnaViewDto.setQnaDto(qnaDto);
                     this.qnaMapper.updateIncrementPv(qna);
-                    qnaDto.setPv(1 + qnaDto.getPv());
-                } else {
-                    qnaViewDto.setAccess(false);
+                    qnaDto.setPv(qnaViewDto.getQnaDto().getPv() + 1);
                 }
-            } else {
-                qnaViewDto.setAccess(true);
-                QnaDto qnaDto = this.convert(qna, QnaDto.class);
-                qnaViewDto.setQnaDto(qnaDto);
-                this.qnaMapper.updateIncrementPv(qna);
-                qnaDto.setPv(qnaViewDto.getQnaDto().getPv() + 1);
             }
         }
         Optional.ofNullable(qnaViewDto.getQnaDto()).ifPresent(dto -> dto.setPassword(null));

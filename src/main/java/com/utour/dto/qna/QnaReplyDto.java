@@ -23,7 +23,7 @@ public class QnaReplyDto {
     private String writer;
     @NotEmpty(groups = {ValidatorMarkers.Put.class})
     private String content;
-    @NotEmpty(groups = {ValidatorMarkers.Put.class, ValidatorMarkers.Delete.class})
+    @NotEmpty(groups = {ValidatorMarkers.Delete.class})
     private String password;
     private Character privateYn;
     private Character adminYn;

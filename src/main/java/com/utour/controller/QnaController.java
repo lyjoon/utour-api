@@ -2,19 +2,15 @@ package com.utour.controller;
 
 import com.utour.common.CommonController;
 import com.utour.common.Constants;
-import com.utour.dto.ErrorResultDto;
 import com.utour.dto.PaginationResultDto;
 import com.utour.dto.ResultDto;
 import com.utour.dto.board.BoardQueryDto;
 import com.utour.dto.qna.QnaDto;
 import com.utour.dto.qna.QnaReplyDto;
-import com.utour.exception.PasswordIncorrectException;
 import com.utour.service.QnaService;
 import com.utour.validator.ValidatorMarkers;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,8 +43,12 @@ public class QnaController extends CommonController {
     }
 
     @GetMapping("/{qnaId}")
-    public ResultDto<QnaDto> get(@PathVariable Long qnaId, @RequestParam(required = false) String password) {
-        return this.ok(this.qnaService.get(qnaId, password));
+    public ResultDto<QnaDto> get(
+            @PathVariable Long qnaId,
+            @RequestParam(required = false) String password,
+            @RequestHeader(value="Authorization") String authorization
+            ) {
+        return this.ok(this.qnaService.get(qnaId, password, authorization));
     }
 
     @GetMapping("/access/{qnaId}")
@@ -63,8 +63,8 @@ public class QnaController extends CommonController {
     }
 
     @DeleteMapping("/{qnaId}")
-    public ResultDto<Void> delete(@PathVariable Long qnaId, @RequestParam(required = false) String password) {
-        this.qnaService.delete(qnaId, password);
+    public ResultDto<Void> delete(@PathVariable Long qnaId, @RequestParam(required = false) String password, @RequestHeader(value="Authorization") String authorization) {
+        this.qnaService.delete(qnaId, password, authorization);
         return this.ok(Constants.SUCCESS);
     }
 
@@ -76,12 +76,13 @@ public class QnaController extends CommonController {
     }
 
     @DeleteMapping(value = "/{qnaId}/reply/{qnaReplyId}")
-    public ResultDto<Void> delete(@PathVariable Long qnaId, @PathVariable Long qnaReplyId, @RequestParam(required = false) String password) {
-        this.qnaService.delete(QnaReplyDto.builder()
+    public ResultDto<Void> delete(@PathVariable Long qnaId, @PathVariable Long qnaReplyId, @RequestParam(required = false) String password, @RequestHeader(value="Authorization") String authorization) {
+        QnaReplyDto qnaReplyDto = QnaReplyDto.builder()
                 .qnaId(qnaId)
                 .qnaReplyId(qnaReplyId)
                 .password(password)
-                .build());
+                .build();
+        this.qnaService.delete(qnaReplyDto, authorization);
         return this.ok(Constants.SUCCESS);
     }
 

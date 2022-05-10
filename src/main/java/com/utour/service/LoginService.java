@@ -55,6 +55,7 @@ public class LoginService extends CommonService {
                 .setIssuedAt(current)
                 .setExpiration(new Date(current.getTime() + Duration.ofMinutes(60).toMillis()))
                 .claim("userId", user.getUserId())
+                .claim("isAdmin", true)
                 .signWith(this.signatureAlgorithm, this.key)
                 .compact();
     }
@@ -69,6 +70,23 @@ public class LoginService extends CommonService {
                     .getBody();
 
             return !claims.isEmpty();
+
+        } catch (Throwable throwable) {
+            log.error("{}", ErrorUtils.throwableInfo(throwable));
+            return false;
+        }
+    }
+
+    public Boolean isAdmin(String authorizationHeader) {
+        try {
+            if(!StringUtils.hasText(authorizationHeader)) return false;
+            String token = authorizationHeader.substring("Bearer ".length());
+            Claims claims = Jwts.parser()
+                    .setSigningKey(this.key) // (3)
+                    .parseClaimsJws(token) // (4)
+                    .getBody();
+
+            return !claims.isEmpty() && claims.get("isAdmin", Boolean.TYPE);
 
         } catch (Throwable throwable) {
             log.error("{}", ErrorUtils.throwableInfo(throwable));
