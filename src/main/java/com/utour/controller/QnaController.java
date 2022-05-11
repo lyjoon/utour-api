@@ -2,7 +2,7 @@ package com.utour.controller;
 
 import com.utour.common.CommonController;
 import com.utour.common.Constants;
-import com.utour.dto.PaginationResultDto;
+import com.utour.dto.PagingResultDto;
 import com.utour.dto.ResultDto;
 import com.utour.dto.board.BoardQueryDto;
 import com.utour.dto.qna.QnaDto;
@@ -30,7 +30,7 @@ public class QnaController extends CommonController {
     }
 
     @GetMapping({"/list", "/page-list"})
-    public PaginationResultDto getQnaList(
+    public PagingResultDto getQnaList(
             @RequestParam(required = false, defaultValue = "1") Integer page,
             @RequestParam(required = false) String queryType,
             @RequestParam(required = false) String query) {
@@ -69,7 +69,7 @@ public class QnaController extends CommonController {
     }
 
     @GetMapping(value = "/{qnaId}/replies")
-    public PaginationResultDto getReplies(
+    public PagingResultDto getReplies(
             @PathVariable Long qnaId,
             @RequestParam(required = false, defaultValue = "1") Integer page) {
         return this.qnaService.getReplies(qnaId, page);

@@ -48,6 +48,7 @@
         , STATUS
         , WRITER
         , TITLE
+        <include refid="common.base.column" />
         FROM INQUIRY T
         <include refid="where" />
     </select>
@@ -60,6 +61,7 @@
         , STATUS
         , WRITER
         , TITLE
+        <include refid="common.base.column" />
         FROM INQUIRY T
         <where><include refid="common.content.whereByBoardQuery" /></where>
         ORDER BY INQUIRY_ID DESC

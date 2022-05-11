@@ -2,7 +2,7 @@ package com.utour.service;
 
 import com.utour.common.CommonService;
 import com.utour.common.Constants;
-import com.utour.dto.PaginationResultDto;
+import com.utour.dto.PagingResultDto;
 import com.utour.dto.home.HomePresentDto;
 import com.utour.dto.product.*;
 import com.utour.dto.view.ViewComponentAccommodationDto;
@@ -205,12 +205,12 @@ public class ProductService extends CommonService {
         }
     }
 
-    public PaginationResultDto getList(ProductQueryDto productPagingDto) {
+    public PagingResultDto getList(ProductQueryDto productPagingDto) {
         List<ProductDto> result = this.productMapper.findPage(productPagingDto)
                 .stream()
                 .map(vo -> this.convert(vo, ProductDto.class))
                 .collect(Collectors.toList());
-        return PaginationResultDto.builder()
+        return PagingResultDto.builder()
                 .page(productPagingDto.getPage())
                 .limit(productPagingDto.getLimit())
                 .result(result)

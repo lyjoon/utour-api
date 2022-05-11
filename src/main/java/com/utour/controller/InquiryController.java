@@ -3,7 +3,7 @@ package com.utour.controller;
 import com.utour.annotation.Authorize;
 import com.utour.common.CommonController;
 import com.utour.common.Constants;
-import com.utour.dto.PaginationResultDto;
+import com.utour.dto.PagingResultDto;
 import com.utour.dto.ResultDto;
 import com.utour.dto.board.BoardQueryDto;
 import com.utour.dto.inquiry.InquiryDto;
@@ -51,7 +51,7 @@ public class InquiryController extends CommonController {
 
     @Authorize
     @GetMapping({"/list", "/page-list"})
-    public PaginationResultDto findPage(
+    public PagingResultDto findPage(
             @RequestParam(required = false, defaultValue = "1") Integer page,
             @RequestParam(required = false) String queryType,
             @RequestParam(required = false) String query) {

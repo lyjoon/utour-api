@@ -2,7 +2,7 @@ package com.utour.service;
 
 import com.utour.common.CommonService;
 import com.utour.common.Constants;
-import com.utour.dto.PaginationResultDto;
+import com.utour.dto.PagingResultDto;
 import com.utour.dto.board.BoardQueryDto;
 import com.utour.dto.notice.NoticeAttachDto;
 import com.utour.dto.notice.NoticeDto;
@@ -130,7 +130,7 @@ public class NoticeService extends CommonService {
                 .build());
     }
 
-    public PaginationResultDto getPageList(BoardQueryDto boardQueryDto) {
+    public PagingResultDto getPageList(BoardQueryDto boardQueryDto) {
         //고정목록 조회
         List<Notice> results = this.noticeMapper.findAll(Notice.builder()
                 .noticeYn(Constants.Y)
@@ -140,7 +140,7 @@ public class NoticeService extends CommonService {
         long count = this.noticeMapper.count(boardQueryDto);
         // 일반공지사항 조회
         results.addAll(this.noticeMapper.findPage(boardQueryDto));
-        return PaginationResultDto.builder()
+        return PagingResultDto.builder()
                 .count(count < 1 && noticeYnCnt > 0 ? 1 : count)
                 .page(boardQueryDto.getPage())
                 .limit(boardQueryDto.getLimit())

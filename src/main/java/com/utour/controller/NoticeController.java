@@ -3,12 +3,11 @@ package com.utour.controller;
 import com.utour.annotation.Authorize;
 import com.utour.common.CommonController;
 import com.utour.common.Constants;
-import com.utour.dto.PaginationResultDto;
+import com.utour.dto.PagingResultDto;
 import com.utour.dto.ResultDto;
 import com.utour.dto.board.BoardQueryDto;
 import com.utour.dto.common.AttachDto;
 import com.utour.dto.notice.NoticeAttachDto;
-import com.utour.dto.notice.NoticeDto;
 import com.utour.dto.notice.NoticeStoreDto;
 import com.utour.dto.notice.NoticeViewDto;
 import com.utour.service.NoticeService;
@@ -52,7 +51,7 @@ public class NoticeController extends CommonController {
     }
 
     @GetMapping({"/list", "/page-list"})
-    public PaginationResultDto getPageList(
+    public PagingResultDto getPageList(
             @RequestParam(required = false, defaultValue = "1") Integer page,
             @RequestParam(required = false) String queryType,
             @RequestParam(required = false) String query

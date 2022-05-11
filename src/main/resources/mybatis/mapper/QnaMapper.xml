@@ -66,6 +66,7 @@
         , PV
         , WRITER
         , TITLE
+        <include refid="common.base.column" />
         FROM QNA T
         <include refid="where" />
     </select>
@@ -77,7 +78,7 @@
         , PV
         , WRITER
         , TITLE
-        , CREATE_AT
+        <include refid="common.base.column" />
         FROM QNA T
         <where><include refid="common.content.whereByBoardQuery" /></where>
         ORDER BY QNA_ID DESC

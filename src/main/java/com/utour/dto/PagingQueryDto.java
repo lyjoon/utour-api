@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaginationQueryDto extends Pagination {
+public class PagingQueryDto extends Pagination {
 
     private String query;
     private LocalDate startAt, endAt;

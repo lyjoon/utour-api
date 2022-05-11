@@ -2,7 +2,7 @@ package com.utour.service;
 
 import com.utour.common.CommonService;
 import com.utour.common.Constants;
-import com.utour.dto.PaginationResultDto;
+import com.utour.dto.PagingResultDto;
 import com.utour.dto.board.BoardQueryDto;
 import com.utour.dto.inquiry.InquiryDto;
 import com.utour.entity.Inquiry;
@@ -57,13 +57,13 @@ public class InquiryService extends CommonService {
         this.inquiryMapper.delete(inquiry);
     }
 
-    public PaginationResultDto getPageList(BoardQueryDto boardQueryDto) {
+    public PagingResultDto getPageList(BoardQueryDto boardQueryDto) {
         long count = this.inquiryMapper.count(boardQueryDto);
         List<InquiryDto> results = this.inquiryMapper.findPage(boardQueryDto).stream()
                 .map(v -> this.convert(v, InquiryDto.class))
                 .collect(Collectors.toList());
 
-        return PaginationResultDto.builder()
+        return PagingResultDto.builder()
                 .page(boardQueryDto.getPage())
                 .limit(boardQueryDto.getLimit())
                 .count(count)

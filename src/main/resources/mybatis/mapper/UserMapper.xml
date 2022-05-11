@@ -31,7 +31,7 @@
     <select id="exists" resultType="java.lang.Boolean">
         <include refid="common.base.existsPrefix" />
         <include refid="select" />
-        <include refid="where" />
+        WHERE USER_ID = #{userId}
         <include refid="common.base.existsSuffix" />
     </select>
 
@@ -41,8 +41,37 @@
     </select>
 
     <select id="findAll" resultMap="resultMap">
-        <include refid="select" />
+        SELECT
+          USER_ID
+        , USE_YN
+        , NAME
+        <include refid="common.base.column" />
+        FROM USER T
         <include refid="where" />
+    </select>
+
+    <select id="findPage" resultMap="resultMap">
+        SELECT
+          T.USER_ID
+        , T.USE_YN
+        , T.NAME
+        <include refid="common.base.column" />
+        FROM USER T
+        <where>
+            <if test="query != null and query != ''">AND (USER_ID LIKE CONCAT(#{query}, '%') OR NAME LIKE CONCAT(#{query}, '%'))</if>
+            <if test="useYn != null">AND USE_YN = #{useYn}</if>
+        </where>
+        <include refid="common.base.pagination" />
+    </select>
+
+
+    <select id="count" resultType="java.lang.Long">
+        SELECT COUNT(T.USER_ID) AS CNT
+        FROM USER T
+        <where>
+            <if test="query != null and query != ''">AND (USER_ID LIKE CONCAT(#{query}, '%') OR NAME LIKE CONCAT(#{query}, '%'))</if>
+            <if test="useYn != null">AND USE_YN = #{useYn}</if>
+        </where>
     </select>
 
     <insert id="save">
@@ -62,6 +91,12 @@
         , PASSWORD = VALUES(PASSWORD)
         , NAME = VALUES(NAME)
     </insert>
+
+    <update id="updateYn">
+        UPDATE USER
+        SET USE_YN = #{useYn}
+        WHERE USER_ID = #{userId}
+    </update>
 
     <delete id="delete">
         DELETE FROM USER

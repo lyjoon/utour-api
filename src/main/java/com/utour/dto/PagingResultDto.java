@@ -11,7 +11,7 @@ import java.util.Optional;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaginationResultDto extends ResultDto<List> {
+public class PagingResultDto extends ResultDto<List> {
 
     private Integer page;
     private Integer limit;

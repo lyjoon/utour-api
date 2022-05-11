@@ -3,7 +3,7 @@ package com.utour.controller;
 import com.utour.annotation.Authorize;
 import com.utour.common.CommonController;
 import com.utour.common.Constants;
-import com.utour.dto.PaginationResultDto;
+import com.utour.dto.PagingResultDto;
 import com.utour.dto.ResultDto;
 import com.utour.dto.product.ProductDto;
 import com.utour.dto.product.ProductQueryDto;
@@ -27,7 +27,7 @@ public class ProductController extends CommonController {
     private final ProductService productService;
 
     @GetMapping(value = "/list/{page}")
-    public PaginationResultDto getList(
+    public PagingResultDto getList(
             @PathVariable Integer page,
             @RequestParam(required = false) String query,
             @RequestParam(required = false) String productType
@@ -45,7 +45,7 @@ public class ProductController extends CommonController {
 
     @Authorize
     @GetMapping(value = "/list-all/{page}")
-    public PaginationResultDto getList (
+    public PagingResultDto getList (
             @PathVariable Integer page,
             @RequestParam(required = false) String nationCode,
             @RequestParam(required = false) String areaCode,

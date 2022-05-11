@@ -2,7 +2,7 @@ package com.utour.service;
 
 import com.utour.common.CommonService;
 import com.utour.common.Constants;
-import com.utour.dto.PaginationResultDto;
+import com.utour.dto.PagingResultDto;
 import com.utour.dto.board.BoardQueryDto;
 import com.utour.dto.qna.QnaDto;
 import com.utour.dto.qna.QnaReplyDto;
@@ -172,7 +172,7 @@ public class QnaService extends CommonService {
      * @param boardQueryDto dto
      * @return
      */
-    public PaginationResultDto getQnaList(BoardQueryDto boardQueryDto) {
+    public PagingResultDto getQnaList(BoardQueryDto boardQueryDto) {
 
         long count = this.qnaMapper.count(boardQueryDto);
         java.util.List<Qna> list = this.qnaMapper.findPage(boardQueryDto);
@@ -182,7 +182,7 @@ public class QnaService extends CommonService {
                         .orElse(0)))
                 .collect(Collectors.toList());
 
-        return PaginationResultDto.builder()
+        return PagingResultDto.builder()
                 .page(boardQueryDto.getPage())
                 .limit(boardQueryDto.getLimit())
                 .result(results)
@@ -195,7 +195,7 @@ public class QnaService extends CommonService {
      * @param qnaId 게시글 순번
      * @return
      */
-    public PaginationResultDto getReplies(Long qnaId, Integer page) {
+    public PagingResultDto getReplies(Long qnaId, Integer page) {
         QnaReply qnaReply = QnaReply.builder().qnaId(qnaId).build();
         long count = this.qnaReplyMapper.count(qnaReply);
 
@@ -203,7 +203,7 @@ public class QnaService extends CommonService {
                 .map(list -> list.stream().map(v -> this.convert(v , QnaReplyDto.class) ).collect(Collectors.toList()))
                 .orElse(null);
 
-        return PaginationResultDto.builder()
+        return PagingResultDto.builder()
                 .page(page)
                 .limit(Constants.DEFAULT_PAGING_COUNT)
                 .result(replies)

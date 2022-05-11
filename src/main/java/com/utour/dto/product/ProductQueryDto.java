@@ -1,6 +1,6 @@
 package com.utour.dto.product;
 
-import com.utour.dto.PaginationQueryDto;
+import com.utour.dto.PagingQueryDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductQueryDto extends PaginationQueryDto {
+public class ProductQueryDto extends PagingQueryDto {
 
     private String productType;
     private Long productId;
