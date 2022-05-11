@@ -65,7 +65,7 @@ public class InquiryController extends CommonController {
 
     @PutMapping("/status")
     public ResultDto<Void> setStatus(@RequestBody @Valid @Validated(ValidatorMarkers.Update.class) InquiryDto inquiryDto){
-        this.inquiryService.save(inquiryDto);
+        this.inquiryService.updateStatus(inquiryDto);
         return ok();
     }
 }

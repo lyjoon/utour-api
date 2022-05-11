@@ -13,4 +13,6 @@ public interface InquiryMapper extends CommonMapper<Inquiry> {
     List<Inquiry> findPage(BoardQueryDto boardQueryDto);
 
     long count(BoardQueryDto boardQueryDto);
+
+    void updateStatus(Inquiry inquiry);
 }

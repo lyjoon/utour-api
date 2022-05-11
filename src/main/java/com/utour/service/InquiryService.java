@@ -38,6 +38,15 @@ public class InquiryService extends CommonService {
     }
 
 
+    public void updateStatus(InquiryDto inquiryDto){
+        Inquiry inquiry = Inquiry.builder()
+                .inquiryId(inquiryDto.getInquiryId())
+                .status(Optional.ofNullable(inquiryDto.getStatus()).orElse(Constants.InquiryStatus.WAIT.name()))
+                .build();
+        this.inquiryMapper.updateStatus(inquiry);
+    }
+
+
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void delete(Long inquiryId) {
         Inquiry inquiry = Inquiry.builder().inquiryId(inquiryId).build();

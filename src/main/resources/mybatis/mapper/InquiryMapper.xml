@@ -94,6 +94,12 @@
         , STATUS = VALUES(STATUS)
     </insert>
 
+    <update id="updateStatus">
+        UPDATE INQUIRY
+        SET STATUS = #{status}
+        WHERE INQUIRY_ID = #{inquiryId}
+    </update>
+
     <delete id="delete">
         DELETE FROM INQUIRY
         WHERE INQUIRY_ID = #{inquiryId}
