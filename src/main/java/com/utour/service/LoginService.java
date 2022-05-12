@@ -60,9 +60,9 @@ public class LoginService extends CommonService {
                 .compact();
     }
 
-    public Boolean isExpired(String authorizationHeader) {
+    public boolean isExpired(String authorizationHeader) {
         try {
-            if(!StringUtils.hasText(authorizationHeader)) return null;
+            if(!StringUtils.hasText(authorizationHeader)) return false;
             String token = authorizationHeader.substring("Bearer ".length());
             Claims claims = Jwts.parser()
                     .setSigningKey(this.key) // (3)
@@ -77,20 +77,4 @@ public class LoginService extends CommonService {
         }
     }
 
-    public Boolean isAdmin(String authorizationHeader) {
-        try {
-            if(!StringUtils.hasText(authorizationHeader)) return false;
-            String token = authorizationHeader.substring("Bearer ".length());
-            Claims claims = Jwts.parser()
-                    .setSigningKey(this.key) // (3)
-                    .parseClaimsJws(token) // (4)
-                    .getBody();
-
-            return !claims.isEmpty() && claims.get("isAdmin", Boolean.TYPE);
-
-        } catch (Throwable throwable) {
-            log.error("{}", ErrorUtils.throwableInfo(throwable));
-            return false;
-        }
-    }
 }

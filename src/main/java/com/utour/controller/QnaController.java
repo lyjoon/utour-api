@@ -46,7 +46,7 @@ public class QnaController extends CommonController {
     public ResultDto<QnaDto> get(
             @PathVariable Long qnaId,
             @RequestParam(required = false) String password,
-            @RequestHeader(value="Authorization") String authorization
+            @RequestHeader(value="Authorization", required = false) String authorization
             ) {
         return this.ok(this.qnaService.get(qnaId, password, authorization));
     }
@@ -63,7 +63,7 @@ public class QnaController extends CommonController {
     }
 
     @DeleteMapping("/{qnaId}")
-    public ResultDto<Void> delete(@PathVariable Long qnaId, @RequestParam(required = false) String password, @RequestHeader(value="Authorization") String authorization) {
+    public ResultDto<Void> delete(@PathVariable Long qnaId, @RequestParam(required = false) String password, @RequestHeader(value="Authorization", required = false) String authorization) {
         this.qnaService.delete(qnaId, password, authorization);
         return this.ok(Constants.SUCCESS);
     }
@@ -76,7 +76,7 @@ public class QnaController extends CommonController {
     }
 
     @DeleteMapping(value = "/{qnaId}/reply/{qnaReplyId}")
-    public ResultDto<Void> delete(@PathVariable Long qnaId, @PathVariable Long qnaReplyId, @RequestParam(required = false) String password, @RequestHeader(value="Authorization") String authorization) {
+    public ResultDto<Void> delete(@PathVariable Long qnaId, @PathVariable Long qnaReplyId, @RequestParam(required = false) String password, @RequestHeader(value="Authorization", required = false) String authorization) {
         QnaReplyDto qnaReplyDto = QnaReplyDto.builder()
                 .qnaId(qnaId)
                 .qnaReplyId(qnaReplyId)
