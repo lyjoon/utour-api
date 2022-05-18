@@ -11,12 +11,10 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class HomeCarousel extends CommonEntity {
+public class Commerce extends CommonEntity {
 
-    private Long homeCarouselId;
-    private String title;
-    private String imageSrc;
-    private String linkUrl;
+    private Long commerceId;
+    private Long productId;
     private Integer ordinalPosition;
     private Character useYn;
 }

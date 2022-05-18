@@ -2,10 +2,10 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.utour.mapper.HomePresentMapper">
+<mapper namespace="com.utour.mapper.CommerceMapper">
 
-    <resultMap id="resultMap" type="com.utour.entity.HomePresent" extends="common.base.resultMap">
-        <result javaType="java.lang.Long" property="homePresentId" column="HOME_PRESENT_ID" />
+    <resultMap id="resultMap" type="com.utour.entity.Commerce" extends="common.base.resultMap">
+        <result javaType="java.lang.Long" property="commerceId" column="COMMERCE_ID" />
         <result javaType="java.lang.Long" property="productId" column="PRODUCT_ID" />
         <result javaType="java.lang.Integer" property="ordinalPosition" column="ORDINAL_POSITION" />
         <result javaType="java.lang.Character" property="useYn" column="USE_YN" />
@@ -13,9 +13,9 @@
 
     <select id="exists" resultType="java.lang.Boolean">
         <include refid="common.base.existsPrefix" />
-        SELECT * FROM HOME_PRESENT
+        SELECT * FROM COMMERCE
         <where>
-            <if test="homePresentId != null">AND HOME_PRESENT_ID = #{homePresentId}</if>
+            <if test="commerceId != null">AND COMMERCE_ID = #{commerceId}</if>
             <if test="productId != null">AND PRODUCT_ID = #{productId}</if>
             <if test="useYn != null">AND USE_YN = #{useYn}</if>
         </where>
@@ -24,39 +24,39 @@
 
     <select id="findById" resultMap="resultMap">
         SELECT
-        HOME_PRESENT_ID
+          COMMERCE_ID
         , PRODUCT_ID
         , ORDINAL_POSITION
         , USE_YN
         <include refid="common.base.column" />
-        FROM HOME_PRESENT
-        WHERE HOME_PRESENT_ID = #{homePresentId}
+        FROM COMMERCE
+        WHERE COMMERCE_ID = #{commerceId}
     </select>
 
     <select id="findAll" resultMap="resultMap">
         SELECT
-        HOME_PRESENT_ID
+          COMMERCE_ID
         , PRODUCT_ID
         , ORDINAL_POSITION
         , USE_YN
         <include refid="common.base.column" />
-        FROM HOME_PRESENT
+        FROM COMMERCE
         <where>
-            <if test="homePresentId != null">AND HOME_PRESENT_ID = #{homePresentId}</if>
+            <if test="commerceId != null">AND COMMERCE_ID = #{commerceId}</if>
             <if test="productId != null">AND PRODUCT_ID = #{productId}</if>
             <if test="useYn != null">AND USE_YN = #{useYn}</if>
         </where>
-        ORDER BY ORDINAL_POSITION, HOME_PRESENT_ID DESC
+        ORDER BY ORDINAL_POSITION, COMMERCE_ID DESC
     </select>
 
     <insert id="save">
-        INSERT INTO HOME_PRESENT (
-        HOME_PRESENT_ID
+        INSERT INTO COMMERCE (
+          COMMERCE_ID
         , PRODUCT_ID
         , ORDINAL_POSITION
         , USE_YN
         ) VALUES (
-        #{homePresentId}
+          #{commerceId}
         , #{productId}
         , #{ordinalPosition}
         , #{useYn}
@@ -68,8 +68,8 @@
     </insert>
 
     <delete id="delete">
-        DELETE FROM HOME_PRESENT
-        WHERE HOME_PRESENT_ID = #{homePresentId}
+        DELETE FROM COMMERCE
+        WHERE COMMERCE_ID = #{commerceId}
     </delete>
 
 </mapper>

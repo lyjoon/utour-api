@@ -1,7 +1,6 @@
-package com.utour.dto.home;
+package com.utour.dto.display;
 
 import com.utour.dto.common.CommonDto;
-import com.utour.dto.product.ProductDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,9 +12,11 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 @NoArgsConstructor
-public class HomePresentDto extends ProductDto {
-    private Long homePresentId;
-    private Long productId;
+public class CarouselDto extends CommonDto {
+    private Long carouselId;
+    private String title;
+    private String imageSrc;
+    private String linkUrl;
     private Integer ordinalPosition;
     private Character useYn;
 }

@@ -3,11 +3,11 @@ package com.utour.service;
 import com.utour.common.CommonService;
 import com.utour.common.Constants;
 import com.utour.dto.PagingResultDto;
-import com.utour.dto.home.HomePresentDto;
+import com.utour.dto.display.CommerceDto;
 import com.utour.dto.product.*;
 import com.utour.dto.view.ViewComponentAccommodationDto;
 import com.utour.dto.view.ViewComponentDto;
-import com.utour.entity.HomePresent;
+import com.utour.entity.Commerce;
 import com.utour.entity.Product;
 import com.utour.entity.ProductImage;
 import com.utour.entity.ProductImageGroup;
@@ -30,7 +30,7 @@ public class ProductService extends CommonService {
     private final ProductImageGroupMapper productImageGroupMapper;
     private final ProductImageMapper productImageMapper;
 
-    private final HomePresentMapper homePresentMapper;
+    private final CommerceMapper commerceMapper;
 
     private final ViewComponentService viewComponentService;
 
@@ -143,11 +143,10 @@ public class ProductService extends CommonService {
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    protected void delete(HomePresentDto homePresentDto) {
-        Optional.ofNullable(this.homePresentMapper.findAll(HomePresent.builder().homePresentId(homePresentDto.getHomePresentId()).build()))
-                .ifPresent(list -> list.forEach(present -> {
-                    this.homePresentMapper.delete(present);
-                }));
+    protected void delete(CommerceDto commerceDto) {
+        Commerce commerce = Commerce.builder().commerceId(commerceDto.getCommerceId()).build();
+        Optional.ofNullable(this.commerceMapper.findAll(commerce))
+                .ifPresent(list -> list.forEach(present -> this.commerceMapper.delete(present)));
     }
 
     /**
@@ -167,7 +166,7 @@ public class ProductService extends CommonService {
         }
 
         // 하위 데이터 HOME_PRESENT 삭제
-        this.delete(HomePresentDto.builder().productId(product.getProductId()).build());
+        this.delete(CommerceDto.builder().productId(product.getProductId()).build());
 
         // 상품 이미지 삭제
         this.delete(ProductImageDto.builder().productId(product.getProductId()).build());

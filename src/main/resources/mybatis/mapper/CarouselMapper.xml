@@ -2,10 +2,10 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.utour.mapper.HomeCarouselMapper">
+<mapper namespace="com.utour.mapper.CarouselMapper">
 
-    <resultMap id="resultMap" type="com.utour.entity.HomeCarousel" extends="common.base.resultMap">
-        <result javaType="java.lang.Long" property="homeCarouselId" column="HOME_CAROUSEL_ID" />
+    <resultMap id="resultMap" type="com.utour.entity.Carousel" extends="common.base.resultMap">
+        <result javaType="java.lang.Long" property="carouselId" column="CAROUSEL_ID" />
         <result javaType="java.lang.String" property="title" column="TITLE" />
         <result javaType="java.lang.String" property="imageSrc" column="IMAGE_SRC" />
         <result javaType="java.lang.String" property="linkUrl" column="LINK_URL" />
@@ -15,9 +15,9 @@
 
     <select id="exists" resultType="java.lang.Boolean">
         <include refid="common.base.existsPrefix" />
-        SELECT * FROM HOME_CAROUSEL
+        SELECT * FROM CAROUSEL
         <where>
-            <if test="homeCarouselId != null">AND HOME_CAROUSEL_ID = #{homeCarouselId}</if>
+            <if test="carouselId != null">AND CAROUSEL_ID = #{carouselId}</if>
             <if test="useYn != null">AND USE_YN = #{useYn}</if>
         </where>
         <include refid="common.base.existsSuffix" />
@@ -25,44 +25,44 @@
 
     <select id="findById" resultMap="resultMap">
         SELECT
-          HOME_CAROUSEL_ID
+          CAROUSEL_ID
         , TITLE
         , IMAGE_SRC
         , LINK_URL
         , ORDINAL_POSITION
         , USE_YN
         <include refid="common.base.column" />
-        FROM HOME_CAROUSEL
-        WHERE HOME_CAROUSEL_ID = #{homeCarouselId}
+        FROM CAROUSEL
+        WHERE CAROUSEL_ID = #{carouselId}
     </select>
 
     <select id="findAll" resultMap="resultMap">
         SELECT
-          HOME_CAROUSEL_ID
+          CAROUSEL_ID
         , TITLE
         , IMAGE_SRC
         , LINK_URL
         , ORDINAL_POSITION
         , USE_YN
         <include refid="common.base.column" />
-        FROM HOME_CAROUSEL
+        FROM CAROUSEL
         <where>
-            <if test="homeCarouselId != null">AND HOME_CAROUSEL_ID = #{homeCarouselId}</if>
+            <if test="carouselId != null">AND CAROUSEL_ID = #{carouselId}</if>
             <if test="useYn != null">AND USE_YN = #{useYn}</if>
         </where>
-        ORDER BY ORDINAL_POSITION, HOME_CAROUSEL_ID DESC
+        ORDER BY ORDINAL_POSITION, CAROUSEL_ID DESC
     </select>
 
     <insert id="save">
-        INSERT INTO HOME_CAROUSEL(
-          HOME_CAROUSEL_ID
+        INSERT INTO CAROUSEL(
+          CAROUSEL_ID
         , TITLE
         , IMAGE_SRC
         , LINK_URL
         , ORDINAL_POSITION
         , USE_YN
         ) VALUES (
-          #{homeCarouselId}
+          #{carouselId}
         , #{title}
         , #{imageSrc}
         , #{linkUrl}
@@ -78,8 +78,8 @@
     </insert>
 
     <delete id="delete">
-        DELETE FROM HOME_CAROUSEL
-        WHERE HOME_CAROUSEL_ID = #{homeCarouselId}
+        DELETE FROM CAROUSEL
+        WHERE CAROUSEL_ID = #{carouselId}
     </delete>
 
 </mapper>
