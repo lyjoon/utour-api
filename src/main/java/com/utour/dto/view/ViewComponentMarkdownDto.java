@@ -6,16 +6,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
-
 @Setter
 @Getter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ViewComponentImageDto extends ViewComponentDto{
+public class ViewComponentMarkdownDto extends ViewComponentDto {
 
-    private String displayType;
+    private String content;
 
-    private List<ViewComponentImageSetDto> imagesList;
 }

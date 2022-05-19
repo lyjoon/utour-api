@@ -4,12 +4,15 @@ import com.utour.common.CommonService;
 import com.utour.common.Constants;
 import com.utour.dto.code.CodeDto;
 import com.utour.dto.code.CodeGroupDto;
+import com.utour.dto.code.NationAreaDto;
 import com.utour.dto.code.NationDto;
 import com.utour.entity.Code;
 import com.utour.entity.CodeGroup;
 import com.utour.entity.Nation;
+import com.utour.entity.NationArea;
 import com.utour.mapper.CodeMapper;
 import com.utour.mapper.CodeGroupMapper;
+import com.utour.mapper.NationAreaMapper;
 import com.utour.mapper.NationMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -26,6 +29,7 @@ public class CodeService extends CommonService {
     private final CodeMapper codeMapper;
     private final CodeGroupMapper codeGroupMapper;
     private final NationMapper nationMapper;
+    private final NationAreaMapper nationAreaMapper;
 
     @Cacheable(value = "code", key = "#groupCode")
     public CodeGroupDto getCodeGroup(String groupCode) {
@@ -38,7 +42,7 @@ public class CodeService extends CommonService {
                 .orElse(null);
     }
 
-    @Cacheable(value = "nation-list")
+    @Cacheable(value = "nationList")
     public List<NationDto> getNationList() {
         return this.nationMapper.findAll(Nation.builder().useYn(Constants.Y).build())
                 .stream()
@@ -48,8 +52,18 @@ public class CodeService extends CommonService {
 
     @Cacheable(value = "nation", key = "#nationCode")
     public NationDto getNation(String nationCode) {
-        return Optional.ofNullable(this.nationMapper.findById(Nation.builder().nationCode(nationCode).useYn(Constants.Y).build()))
-                .map(v -> this.convert(v, NationDto.class))
+        return Optional.ofNullable(this.nationMapper.findById(Nation.builder()
+                        .nationCode(nationCode)
+                        .useYn(Constants.Y)
+                        .build()))
+                .map(v -> {
+                    NationDto nationDto = this.convert(v, NationDto.class);
+                    nationDto.setNationAreaList(this.nationAreaMapper.findAll(NationArea.builder().nationCode(v.getNationCode()).useYn(Constants.Y).build())
+                            .stream()
+                            .map(v1 -> this.convert(v1, NationAreaDto.class))
+                            .collect(Collectors.toList()));
+                    return nationDto;
+                })
                 .orElse(null);
     }
 }

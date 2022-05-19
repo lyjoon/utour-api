@@ -8,10 +8,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ViewComponentImageSet extends Component {
+public class ViewComponentMarkdown extends Component {
 
-    private Integer viewComponentSeq;
-    private String imageSrc;
-    private String title;
-    private String description;
+    private String content;
+
 }

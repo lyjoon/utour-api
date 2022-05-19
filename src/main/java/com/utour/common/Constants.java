@@ -20,7 +20,6 @@ public interface Constants {
 
     enum ViewComponentType {
         TEXT,
-        IMAGE,
         ACCOMMODATION,
         NA
     }

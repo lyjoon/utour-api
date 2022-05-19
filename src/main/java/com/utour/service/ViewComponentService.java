@@ -19,9 +19,7 @@ import java.util.stream.Collectors;
 public class ViewComponentService extends CommonService {
 
     private final ViewComponentMapper viewComponentMapper;
-    private final ViewComponentTextMapper viewComponentTextMapper;
-    private final ViewComponentImageMapper viewComponentImageMapper;
-    private final ViewComponentImageSetMapper viewComponentImageSetMapper;
+    private final ViewComponentMarkdownMapper viewComponentMarkdownMapper;
     private final ViewComponentAccommodationMapper viewComponentAccommodationMapper;
     private final ViewComponentFacilityMapper viewComponentFacilityMapper;
 
@@ -65,9 +63,6 @@ public class ViewComponentService extends CommonService {
             case ACCOMMODATION:
                 t = this.getAccommodation(viewComponent);
                 break;
-            case IMAGE:
-                t = this.getImage(viewComponent);
-                break;
             default:
                 t = ViewComponentDto.builder()
                         .productId(viewComponent.getProductId())
@@ -86,11 +81,11 @@ public class ViewComponentService extends CommonService {
     }
 
 
-    private ViewComponentTextDto getText(ViewComponent viewComponent){
-        return Optional.ofNullable(this.viewComponentTextMapper.findById(ViewComponentText.builder()
+    private ViewComponentMarkdownDto getText(ViewComponent viewComponent){
+        return Optional.ofNullable(this.viewComponentMarkdownMapper.findById(ViewComponentMarkdown.builder()
                 .viewComponentId(viewComponent.getViewComponentId())
-                .build())).map(viewComponentText -> {
-            ViewComponentTextDto result = ViewComponentTextDto.builder()
+                .build())).map(viewComponentMarkdown -> {
+            ViewComponentMarkdownDto result = ViewComponentMarkdownDto.builder()
                     .viewComponentId(viewComponent.getViewComponentId())
                     .viewComponentType(viewComponent.getViewComponentType())
                     .productId(viewComponent.getProductId())
@@ -98,46 +93,12 @@ public class ViewComponentService extends CommonService {
                     .description(viewComponent.getDescription())
                     .ordinal(viewComponent.getOrdinal())
                     .useYn(viewComponent.getUseYn())
-                    .content(viewComponentText.getContent())
+                    .content(viewComponentMarkdown.getContent())
                     .build();
             return result;
         }).orElse(null);
     }
 
-    private ViewComponentImageDto getImage(ViewComponent viewComponent) {
-        return Optional.ofNullable(this.viewComponentImageMapper.findById(
-                        ViewComponentImage.builder()
-                                .viewComponentId(viewComponent.getViewComponentId())
-                                .build()))
-                .map(viewComponentImage -> {
-                    ViewComponentImageDto result = ViewComponentImageDto.builder()
-                            .viewComponentId(viewComponent.getViewComponentId())
-                            .viewComponentType(viewComponent.getViewComponentType())
-                            .productId(viewComponent.getProductId())
-                            .title(viewComponent.getTitle())
-                            .description(viewComponent.getDescription())
-                            .ordinal(viewComponent.getOrdinal())
-                            .useYn(viewComponent.getUseYn())
-                            .displayType(viewComponentImage.getDisplayType())
-                            .imagesList(this.viewComponentImageSetMapper.findAll(
-                                                    ViewComponentImageSet.builder()
-                                                            .viewComponentId(viewComponentImage.getViewComponentId())
-                                                            .build()
-                                            )
-                                            .stream()
-                                            .map(viewComponentImageSet -> ViewComponentImageSetDto.builder()
-                                                    .viewComponentId(viewComponentImageSet.getViewComponentId())
-                                                    .viewComponentSeq(viewComponentImageSet.getViewComponentSeq())
-                                                    .imageSrc(viewComponentImageSet.getImageSrc())
-                                                    .title(viewComponentImageSet.getTitle())
-                                                    .description(viewComponentImageSet.getDescription())
-                                                    .build())
-                                            .collect(Collectors.toList())
-                            )
-                            .build();
-                    return result;
-                }).orElse(null);
-    }
 
     private ViewComponentAccommodationDto getAccommodation(ViewComponent viewComponent) {
         return Optional.ofNullable(this.viewComponentAccommodationMapper.findById(
@@ -194,10 +155,8 @@ public class ViewComponentService extends CommonService {
 
         if(t instanceof ViewComponentAccommodationDto) {
             this.save((ViewComponentAccommodationDto) t);
-        } else if(t instanceof ViewComponentTextDto) {
-            this.save((ViewComponentTextDto) t);
-        } else if(t instanceof ViewComponentImageDto) {
-            this.save((ViewComponentImageDto) t);
+        } else if(t instanceof ViewComponentMarkdownDto) {
+            this.save((ViewComponentMarkdownDto) t);
         }
     }
 
@@ -215,38 +174,13 @@ public class ViewComponentService extends CommonService {
                 .ifPresent(list -> list.forEach(this::save));
     }
 
-    private void save(ViewComponentTextDto viewComponentTextDto) {
-        ViewComponentText viewComponentText = ViewComponentText.builder()
-                .viewComponentId(viewComponentTextDto.getViewComponentId())
-                .content(viewComponentTextDto.getContent())
+    private void save(ViewComponentMarkdownDto viewComponentMarkdownDto) {
+        ViewComponentMarkdown viewComponentMarkdown = ViewComponentMarkdown.builder()
+                .viewComponentId(viewComponentMarkdownDto.getViewComponentId())
+                .content(viewComponentMarkdownDto.getContent())
                 .build();
 
-        this.viewComponentTextMapper.save(viewComponentText);
-    }
-
-    private void save(ViewComponentImageDto viewComponentImageDto) {
-        ViewComponentImage viewComponentImage = ViewComponentImage.builder()
-                .viewComponentId(viewComponentImageDto.getViewComponentId())
-                .displayType(viewComponentImageDto.getDisplayType())
-                .build();
-        this.viewComponentImageMapper.save(viewComponentImage);
-
-        Optional.ofNullable(viewComponentImageDto.getImagesList())
-                .ifPresent(imageList -> {
-                    imageList.forEach(this::save);
-                });
-    }
-
-    private void save(ViewComponentImageSetDto viewComponentImageSetDto) {
-        ViewComponentImageSet viewComponentImageSet = ViewComponentImageSet.builder()
-                .viewComponentId(viewComponentImageSetDto.getViewComponentId())
-                .viewComponentSeq(viewComponentImageSetDto.getViewComponentSeq())
-                .description(viewComponentImageSetDto.getDescription())
-                .title(viewComponentImageSetDto.getTitle())
-                .imageSrc(viewComponentImageSetDto.getImageSrc())
-                .build();
-
-        this.viewComponentImageSetMapper.save(viewComponentImageSet);
+        this.viewComponentMarkdownMapper.save(viewComponentMarkdown);
     }
 
     private void save(ViewComponentFacilityDto viewComponentFacilityDto) {
@@ -271,22 +205,21 @@ public class ViewComponentService extends CommonService {
                 .build()))
                 .ifPresent(list -> {
                     for(ViewComponent viewComponent : list) {
-                        if(this.delete(ViewComponentTextDto.builder().viewComponentId(viewComponent.getViewComponentId()).build())) continue;
+                        if(this.delete(ViewComponentMarkdownDto.builder().viewComponentId(viewComponent.getViewComponentId()).build())) continue;
                         else if(this.delete(ViewComponentAccommodationDto.builder().viewComponentId(viewComponent.getViewComponentId()).build())) continue;
-                        else if(this.delete(ViewComponentImageDto.builder().viewComponentId(viewComponent.getViewComponentId()).build())) continue;
                     }
                 });
     }
 
-    private boolean delete(ViewComponentTextDto viewComponentTextDto) {
-        ViewComponentText viewComponentText = ViewComponentText.builder()
-                .viewComponentId(viewComponentTextDto.getViewComponentId())
+    private boolean delete(ViewComponentMarkdownDto viewComponentMarkdownDto) {
+        ViewComponentMarkdown viewComponentMarkdown = ViewComponentMarkdown.builder()
+                .viewComponentId(viewComponentMarkdownDto.getViewComponentId())
                 .build();
 
-        Boolean exists = this.viewComponentTextMapper.exists(viewComponentText);
+        Boolean exists = this.viewComponentMarkdownMapper.exists(viewComponentMarkdown);
         if(exists) {
-            this.viewComponentTextMapper.delete(viewComponentText);
-            this.delete(ViewComponentDto.builder().viewComponentId(viewComponentText.getViewComponentId()).build());
+            this.viewComponentMarkdownMapper.delete(viewComponentMarkdown);
+            this.delete(ViewComponentDto.builder().viewComponentId(viewComponentMarkdown.getViewComponentId()).build());
             return true;
         }
         return false;
@@ -307,19 +240,6 @@ public class ViewComponentService extends CommonService {
         return false;
     }
 
-    private boolean delete(ViewComponentImageDto viewComponentImageDto) {
-        ViewComponentImage viewComponentImage = ViewComponentImage.builder()
-                .viewComponentId(viewComponentImageDto.getViewComponentId())
-                .build();
-
-        if(this.viewComponentImageMapper.exists(viewComponentImage)) {
-            this.delete(ViewComponentImageSetDto.builder().viewComponentId(viewComponentImageDto.getViewComponentId()).build());
-            this.viewComponentImageMapper.delete(viewComponentImage);
-            this.delete(ViewComponentDto.builder().viewComponentId(viewComponentImage.getViewComponentId()).build());
-            return true;
-        }
-        return false;
-    }
 
     private void delete(ViewComponentDto viewComponentDto) {
         ViewComponent viewComponent = ViewComponent.builder()
@@ -330,16 +250,6 @@ public class ViewComponentService extends CommonService {
 
         if(this.viewComponentMapper.exists(viewComponent)) {
             this.viewComponentMapper.delete(viewComponent);
-        }
-    }
-
-    private void delete(ViewComponentImageSetDto viewComponentImageSetDto) {
-        ViewComponentImageSet viewComponentImageSet = ViewComponentImageSet.builder()
-                .viewComponentId(viewComponentImageSetDto.getViewComponentId())
-                .viewComponentSeq(viewComponentImageSetDto.getViewComponentSeq())
-                .build();
-        if(this.viewComponentImageSetMapper.exists(viewComponentImageSet)) {
-            this.viewComponentImageSetMapper.delete(viewComponentImageSet);
         }
     }
 

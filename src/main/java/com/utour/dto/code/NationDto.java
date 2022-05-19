@@ -2,6 +2,8 @@ package com.utour.dto.code;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -12,4 +14,6 @@ public class NationDto {
     private String nationCode;
     private String nationName;
     private Character useYn;
+
+    private List<NationAreaDto> nationAreaList;
 }

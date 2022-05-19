@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.utour.mapper.ViewComponentTextMapper">
+<mapper namespace="com.utour.mapper.ViewComponentMarkdownMapper">
 
-    <resultMap id="resultMap" type="com.utour.entity.ViewComponentText" extends="common.component.resultMap">
+    <resultMap id="resultMap" type="com.utour.entity.ViewComponentMarkdown" extends="common.component.resultMap">
         <result javaType="java.lang.String" property="content" column="CONTENT" />
     </resultMap>
 
@@ -12,36 +12,32 @@
         SELECT
           CONTENT
         <include refid="common.component.column" />
-        FROM VIEW_COMPONENT_TEXT T
-    </sql>
-
-    <sql id="where">
-        WHERE VIEW_COMPONENT_ID = #{viewComponentId}
+        FROM VIEW_COMPONENT_MARKDOWN T
     </sql>
 
     <select id="exists" resultType="java.lang.Boolean">
-        /* com.utour.mapper.ViewComponentTextMapper.exists */
+        /* com.utour.mapper.ViewComponentMarkdownMapper.exists */
         <include refid="common.base.existsPrefix" />
         <include refid="select" />
-        <include refid="where" />
+        WHERE VIEW_COMPONENT_ID = #{viewComponentId}
         <include refid="common.base.existsSuffix" />
     </select>
 
     <select id="findById" resultMap="resultMap">
-        /* com.utour.mapper.ViewComponentTextMapper.findById */
+        /* com.utour.mapper.ViewComponentMarkdownMapper.findById */
         <include refid="select" />
-        <include refid="where" />
+        WHERE VIEW_COMPONENT_ID = #{viewComponentId}
     </select>
 
     <select id="findAll" resultMap="resultMap">
-        /* com.utour.mapper.ViewComponentTextMapper.findAll */
+        /* com.utour.mapper.ViewComponentMarkdownMapper.findAll */
         <include refid="select" />
-        <include refid="where" />
+        WHERE VIEW_COMPONENT_ID = #{viewComponentId}
     </select>
 
     <insert id="save">
-        /* com.utour.mapper.ViewComponentTextMapper.save */
-        INSERT INTO VIEW_COMPONENT_TEXT (
+        /* com.utour.mapper.ViewComponentMarkdownMapper.save */
+        INSERT INTO VIEW_COMPONENT_MARKDOWN (
           CONTENT
           <include refid="common.component.column" />
         ) VALUES (
@@ -54,7 +50,8 @@
 
     <delete id="delete">
         /* com.utour.mapper.ViewComponentTextMapper.delete */
-        DELETE FROM VIEW_COMPONENT_TEXT WHERE VIEW_COMPONENT_ID = #{viewComponentId}
+        DELETE FROM VIEW_COMPONENT_MARKDOWN
+        WHERE VIEW_COMPONENT_ID = #{viewComponentId}
     </delete>
 
 </mapper>

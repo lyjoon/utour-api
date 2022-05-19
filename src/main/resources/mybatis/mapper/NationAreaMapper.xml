@@ -18,13 +18,14 @@
         , AREA_NAME
         , USE_YN
         <include refid="common.base.column" />
-        FROM AREA T
+        FROM NATION_AREA T
     </sql>
 
     <sql id="where">
         <where>
             <if test="nationCode != null">AND NATION_CODE = #{nationCode}</if>
             <if test="areaCode != null">AND AREA_CODE = #{areaCode}</if>
+            <if test="useYn != null">AND USE_YN = #{useYn}</if>
         </where>
     </sql>
 
@@ -47,7 +48,7 @@
     </select>
 
     <insert id="save">
-        INSERT INTO AREA (
+        INSERT INTO NATION_AREA (
           NATION_CODE
         , AREA_CODE
         , AREA_NAME
@@ -64,7 +65,7 @@
     </insert>
 
     <delete id="delete">
-        DELETE FROM AREA
+        DELETE FROM NATION_AREA
         WHERE NATION_CODE = #{nationCode}
           AND AREA_CODE = #{areaCode}
     </delete>
