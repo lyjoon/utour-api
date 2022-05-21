@@ -2,10 +2,8 @@ package com.utour.service;
 
 import com.utour.common.CommonService;
 import com.utour.common.Constants;
-import com.utour.dto.code.CodeDto;
-import com.utour.dto.code.CodeGroupDto;
-import com.utour.dto.code.NationAreaDto;
-import com.utour.dto.code.NationDto;
+import com.utour.dto.PagingQueryDto;
+import com.utour.dto.code.*;
 import com.utour.entity.Code;
 import com.utour.entity.CodeGroup;
 import com.utour.entity.Nation;
@@ -19,6 +17,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -59,6 +58,30 @@ public class CodeService extends CommonService {
                 .map(v -> {
                     NationDto nationDto = this.convert(v, NationDto.class);
                     nationDto.setNationAreaList(this.nationAreaMapper.findAll(NationArea.builder().nationCode(v.getNationCode()).useYn(Constants.Y).build())
+                            .stream()
+                            .map(v1 -> this.convert(v1, NationAreaDto.class))
+                            .collect(Collectors.toList()));
+                    return nationDto;
+                })
+                .orElse(null);
+    }
+
+
+    public List<NationDto> getNationList(NationQueryDto nationQueryDto) {
+        return this.nationMapper.findPage(nationQueryDto)
+                .stream()
+                .map(v -> this.convert(v, NationDto.class))
+                .collect(Collectors.toList());
+    }
+
+    public NationDto getNation(NationQueryDto nationQueryDto) {
+        return Optional.ofNullable(this.nationMapper.findById(Nation.builder()
+                        .nationCode(nationQueryDto.getNationCode())
+                        .useYn(Constants.Y)
+                        .build()))
+                .map(v -> {
+                    NationDto nationDto = this.convert(v, NationDto.class);
+                    nationDto.setNationAreaList(this.nationAreaMapper.findPage(nationQueryDto)
                             .stream()
                             .map(v1 -> this.convert(v1, NationAreaDto.class))
                             .collect(Collectors.toList()));

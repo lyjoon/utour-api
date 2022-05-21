@@ -47,6 +47,16 @@
         <include refid="where" />
     </select>
 
+    <select id="findPage" resultMap="resultMap">
+        <include refid="select" />
+        <where>
+            <if test="nationCode != null">AND NATION_CODE = #{nationCode}</if>
+            <if test="useYn != null">AND USE_YN = #{useYn}</if>
+            <if test="query != null">AND (AREA_CODE LIKE CONCAT(#{query}, '%') OR AREA_CODE LIKE CONCAT(#{query}, '%') )</if>
+        </where>
+        <include refid="common.base.pagination" />
+    </select>
+
     <insert id="save">
         INSERT INTO NATION_AREA (
           NATION_CODE
