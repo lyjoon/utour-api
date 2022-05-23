@@ -57,7 +57,7 @@ public class ViewComponentService extends CommonService {
         ViewComponentDto t;
 
         switch (viewComponentType) {
-            case TEXT:
+            case MARKDOWN:
                 t = this.getText(viewComponent);
                 break;
             case ACCOMMODATION:
