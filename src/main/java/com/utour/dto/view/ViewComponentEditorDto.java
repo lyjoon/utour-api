@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ViewComponentMarkdownDto extends ViewComponentDto {
+public class ViewComponentEditorDto extends ViewComponentDto {
 
     private String content;
 

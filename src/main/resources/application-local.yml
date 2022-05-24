@@ -28,3 +28,5 @@ app:
   file-upload-storage:
     root: ${user.home}/.upload
     notice: ${app.file-upload-storage.root}/notice
+    product: ${app.file-upload-storage.root}/product
+    temp: ${app.file-upload-storage.root}/temp

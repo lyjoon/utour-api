@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class ViewComponentService extends CommonService {
 
     private final ViewComponentMapper viewComponentMapper;
-    private final ViewComponentMarkdownMapper viewComponentMarkdownMapper;
+    private final ViewComponentMarkdownEditor viewComponentMarkdownEditor;
     private final ViewComponentAccommodationMapper viewComponentAccommodationMapper;
     private final ViewComponentFacilityMapper viewComponentFacilityMapper;
 
@@ -81,11 +81,11 @@ public class ViewComponentService extends CommonService {
     }
 
 
-    private ViewComponentMarkdownDto getText(ViewComponent viewComponent){
-        return Optional.ofNullable(this.viewComponentMarkdownMapper.findById(ViewComponentMarkdown.builder()
+    private ViewComponentEditorDto getText(ViewComponent viewComponent){
+        return Optional.ofNullable(this.viewComponentMarkdownEditor.findById(ViewComponentEditor.builder()
                 .viewComponentId(viewComponent.getViewComponentId())
-                .build())).map(viewComponentMarkdown -> {
-            ViewComponentMarkdownDto result = ViewComponentMarkdownDto.builder()
+                .build())).map(viewComponentEditor -> {
+            ViewComponentEditorDto result = ViewComponentEditorDto.builder()
                     .viewComponentId(viewComponent.getViewComponentId())
                     .viewComponentType(viewComponent.getViewComponentType())
                     .productId(viewComponent.getProductId())
@@ -93,7 +93,7 @@ public class ViewComponentService extends CommonService {
                     .description(viewComponent.getDescription())
                     .ordinal(viewComponent.getOrdinal())
                     .useYn(viewComponent.getUseYn())
-                    .content(viewComponentMarkdown.getContent())
+                    .content(viewComponentEditor.getContent())
                     .build();
             return result;
         }).orElse(null);
@@ -155,8 +155,8 @@ public class ViewComponentService extends CommonService {
 
         if(t instanceof ViewComponentAccommodationDto) {
             this.save((ViewComponentAccommodationDto) t);
-        } else if(t instanceof ViewComponentMarkdownDto) {
-            this.save((ViewComponentMarkdownDto) t);
+        } else if(t instanceof ViewComponentEditorDto) {
+            this.save((ViewComponentEditorDto) t);
         }
     }
 
@@ -174,13 +174,13 @@ public class ViewComponentService extends CommonService {
                 .ifPresent(list -> list.forEach(this::save));
     }
 
-    private void save(ViewComponentMarkdownDto viewComponentMarkdownDto) {
-        ViewComponentMarkdown viewComponentMarkdown = ViewComponentMarkdown.builder()
-                .viewComponentId(viewComponentMarkdownDto.getViewComponentId())
-                .content(viewComponentMarkdownDto.getContent())
+    private void save(ViewComponentEditorDto viewComponentEditorDto) {
+        ViewComponentEditor viewComponentEditor = ViewComponentEditor.builder()
+                .viewComponentId(viewComponentEditorDto.getViewComponentId())
+                .content(viewComponentEditorDto.getContent())
                 .build();
 
-        this.viewComponentMarkdownMapper.save(viewComponentMarkdown);
+        this.viewComponentMarkdownEditor.save(viewComponentEditor);
     }
 
     private void save(ViewComponentFacilityDto viewComponentFacilityDto) {
@@ -205,21 +205,21 @@ public class ViewComponentService extends CommonService {
                 .build()))
                 .ifPresent(list -> {
                     for(ViewComponent viewComponent : list) {
-                        if(this.delete(ViewComponentMarkdownDto.builder().viewComponentId(viewComponent.getViewComponentId()).build())) continue;
+                        if(this.delete(ViewComponentEditorDto.builder().viewComponentId(viewComponent.getViewComponentId()).build())) continue;
                         else if(this.delete(ViewComponentAccommodationDto.builder().viewComponentId(viewComponent.getViewComponentId()).build())) continue;
                     }
                 });
     }
 
-    private boolean delete(ViewComponentMarkdownDto viewComponentMarkdownDto) {
-        ViewComponentMarkdown viewComponentMarkdown = ViewComponentMarkdown.builder()
-                .viewComponentId(viewComponentMarkdownDto.getViewComponentId())
+    private boolean delete(ViewComponentEditorDto viewComponentEditorDto) {
+        ViewComponentEditor viewComponentEditor = ViewComponentEditor.builder()
+                .viewComponentId(viewComponentEditorDto.getViewComponentId())
                 .build();
 
-        Boolean exists = this.viewComponentMarkdownMapper.exists(viewComponentMarkdown);
+        Boolean exists = this.viewComponentMarkdownEditor.exists(viewComponentEditor);
         if(exists) {
-            this.viewComponentMarkdownMapper.delete(viewComponentMarkdown);
-            this.delete(ViewComponentDto.builder().viewComponentId(viewComponentMarkdown.getViewComponentId()).build());
+            this.viewComponentMarkdownEditor.delete(viewComponentEditor);
+            this.delete(ViewComponentDto.builder().viewComponentId(viewComponentEditor.getViewComponentId()).build());
             return true;
         }
         return false;

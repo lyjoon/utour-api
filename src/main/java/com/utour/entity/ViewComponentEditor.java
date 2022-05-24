@@ -8,7 +8,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ViewComponentMarkdown extends Component {
+public class ViewComponentEditor extends Component {
 
     private String content;
 
