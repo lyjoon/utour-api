@@ -19,7 +19,7 @@ public class ProductImageGroupDto extends CommonDto {
     private Long productImageGroupId;
     private Long productId;
     private String groupName;
-    private String useYn;
+    private Character useYn;
 
     private List<ProductImageDto> productImages;
 }

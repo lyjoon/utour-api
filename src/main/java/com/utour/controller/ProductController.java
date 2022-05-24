@@ -7,22 +7,29 @@ import com.utour.dto.PagingResultDto;
 import com.utour.dto.ResultDto;
 import com.utour.dto.product.ProductDto;
 import com.utour.dto.product.ProductQueryDto;
+import com.utour.dto.product.ProductStoreDto;
 import com.utour.dto.product.ProductViewDto;
 import com.utour.service.ProductService;
 import com.utour.validator.ValidatorMarkers;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/v1/product", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProductController extends CommonController {
+
+    public static final String PRODUCT_IMAGE_LINK_URL = "/v1/product/image/";
 
     private final ProductService productService;
 
@@ -66,18 +73,23 @@ public class ProductController extends CommonController {
                 .build());
     }
 
-    @Authorize
-    @PutMapping(value = "/create")
-    public ResultDto<Void> create(@Validated(ValidatorMarkers.Put.class) @Valid @RequestBody ProductDto productDto) {
-        this.productService.create(productDto);
-        return this.ok();
-    }
 
     @Authorize
-    @PutMapping
-    public ResultDto<Void> save(@Valid @Validated(value = ValidatorMarkers.Put.class) @RequestBody ProductViewDto productViewDto) {
-        this.productService.save(productViewDto);
-        return this.ok();
+    @PostMapping(value = "/save", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResultDto<Void>> save(
+            @RequestPart(value = "product") ProductStoreDto productStoreDto,
+            @RequestPart(required = false, value = "repImageFile") MultipartFile multipartFile,
+            @RequestPart(required = false, value = "productImageFiles") MultipartFile[] multipartFiles
+    ) {
+        // this.productService.save(productStoreDto);
+        this.log.info("product : {}", productStoreDto.toString());
+        this.log.info("rep-image-src : {}", Optional.ofNullable(multipartFile).map(m -> m.getName()).orElse(null));
+        this.log.info("product-image-list : {}", Optional.ofNullable(multipartFiles)
+                .map(list -> Arrays.stream(list).map(f -> f.getName()).collect(Collectors.joining(",")))
+                .orElse(null));
+
+        this.productService.save(productStoreDto, multipartFile, multipartFiles);
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(this.ok());
     }
 
     @Authorize

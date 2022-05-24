@@ -42,9 +42,6 @@ public class ImageController extends CommonController {
     @Value(value = "${app.file-upload-storage.content:}")
     private String contentPath;
 
-    @Value(value = "${server.servlet.context-path:/api}")
-    private String contextPath;
-
     @PostMapping(value = "/temp/upload")
     public ResultDto<ImageDto> tempUpload(@RequestParam(value = "file") MultipartFile file) throws IOException {
         String storeFileName = new StringBuilder(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE)).append("_")

@@ -13,6 +13,6 @@ public class ProductImageGroup extends CommonEntity {
     private Long productImageGroupId;
     private Long productId;
     private String groupName;
-    private String useYn;
+    private Character useYn;
 
 }

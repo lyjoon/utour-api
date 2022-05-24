@@ -17,7 +17,6 @@ import java.util.List;
 public class ProductViewDto extends ProductDto {
 
     private List<? extends ViewComponentDto> viewComponents;
-    private List<ProductImageDto> productImages;
     private List<ProductImageGroupDto> productImageGroups;
 
 }
