@@ -19,7 +19,7 @@ public interface Constants {
     }
 
     enum ViewComponentType {
-        MARKDOWN,
+        EDITOR,
         ACCOMMODATION,
         NA
     }

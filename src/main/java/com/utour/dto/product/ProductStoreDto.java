@@ -1,5 +1,6 @@
 package com.utour.dto.product;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.Map;
 @NoArgsConstructor
 public class ProductStoreDto {
 
+    @JsonProperty(value = "product")
     private ProductDto productDto;
     private List<ProductImageGroupDto> productImageGroupList;
     private Map<String, Map<String, Object>> viewComponents;

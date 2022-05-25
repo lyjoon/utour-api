@@ -12,4 +12,6 @@ public interface ProductMapper extends CommonMapper<Product> {
 
     List<Product> findPage(ProductQueryDto productPagingDto);
 
+    Long count(ProductQueryDto productPagingDto);
+
 }

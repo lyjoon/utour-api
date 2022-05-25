@@ -18,7 +18,11 @@ public class Product extends Content {
     private String nationCode;
     private String areaCode;
     private String repImageSrc;
+    private String repImagePath;
     private Character useYn;
+
+    private String nationName;
+    private String areaName;
 
     @Override
     public Long getId() {

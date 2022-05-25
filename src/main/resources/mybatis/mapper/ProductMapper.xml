@@ -8,12 +8,55 @@
         <result javaType="java.lang.Long" property="productId" column="PRODUCT_ID" />
         <result javaType="java.lang.String" property="productType" column="PRODUCT_TYPE" />
         <result javaType="java.lang.String" property="nationCode" column="NATION_CODE" />
+        <result javaType="java.lang.String" property="nationName" column="NATION_NAME" />
         <result javaType="java.lang.String" property="areaCode" column="AREA_CODE" />
+        <result javaType="java.lang.String" property="areaName" column="AREA_NAME" />
+        <result javaType="java.lang.String" property="content" column="CONTENT" />
         <result javaType="java.lang.String" property="repImageSrc" column="REP_IMAGE_SRC" />
+        <result javaType="java.lang.String" property="repImagePath" column="REP_IMAGE_PATH" />
         <result javaType="java.lang.Character" property="useYn" column="USE_YN" />
     </resultMap>
 
-    <sql id="select">
+    <sql id="where">
+        <where>
+            <if test="productId != null">AND T.PRODUCT_ID = #{productId}</if>
+            <if test="productType != null">AND T.PRODUCT_TYPE = #{productType}</if>
+            <if test="useYn != null">AND T.USE_YN = #{useYn}</if>
+            <if test="nationCode != null">AND T.NATION_CODE = #{nationCode}</if>
+            <if test="areaCode != null">AND T.AREA_CODE = #{areaCode}</if>
+        </where>
+    </sql>
+
+    <select id="exists" resultType="java.lang.Boolean">
+        /* com.utour.mapper.ProductMapper.exists */
+        <include refid="common.base.existsPrefix" />
+        SELECT * FROM PRODUCT T
+        WHERE PRODUCT_ID = #{productId}
+        <include refid="common.base.existsSuffix" />
+    </select>
+
+    <select id="findById" resultMap="resultMap">
+        /* com.utour.mapper.ProductMapper.findById */
+        SELECT
+           T.PRODUCT_ID
+         , T.PRODUCT_TYPE
+         , T.NATION_CODE
+         , T.AREA_CODE
+         , T.REP_IMAGE_SRC
+         , T.REP_IMAGE_PATH
+         , T.USE_YN
+         , T.CONTENT
+        <include refid="common.content.column" />
+         , N.NATION_NAME
+         , NA.AREA_NAME
+        FROM PRODUCT T
+        LEFT OUTER JOIN NATION N ON T.NATION_CODE = N.NATION_CODE
+        LEFT OUTER JOIN NATION_AREA NA ON T.NATION_CODE = NA.NATION_CODE AND T.AREA_CODE = NA.AREA_CODE
+        WHERE PRODUCT_ID = #{productId}
+    </select>
+
+    <select id="findAll" resultMap="resultMap">
+        /* com.utour.mapper.ProductMapper.findAll */
         SELECT
           PRODUCT_ID
         , PRODUCT_TYPE
@@ -23,48 +66,47 @@
         , USE_YN
         <include refid="common.content.column" />
         FROM PRODUCT T
-    </sql>
+        <include refid="where" />
+    </select>
 
-    <sql id="where">
+
+
+    <select id="count" resultType="java.lang.Long">
+        /* com.utour.mapper.ProductMapper.count */
+        SELECT COUNT(*) AS CNT
+        FROM PRODUCT T
         <where>
+            <if test="useYn != null">AND T.USE_YN = #{useYn}</if>
             <if test="productId != null">AND PRODUCT_ID = #{productId}</if>
             <if test="productType != null">AND PRODUCT_TYPE = #{productType}</if>
-            <if test="useYn != null">AND USE_YN = #{useYn}</if>
             <if test="nationCode != null">AND NATION_CODE = #{nationCode}</if>
             <if test="areaCode != null">AND AREA_CODE = #{areaCode}</if>
+            <if test="query != null and query != ''">AND (TITLE LIKE CONCAT(#{query}, '%') OR CONTENT LIKE CONCAT(#{query}, '%'))</if>
         </where>
-    </sql>
-
-    <select id="exists" resultType="java.lang.Boolean">
-        /* com.utour.mapper.ProductMapper.exists */
-        <include refid="common.base.existsPrefix" />
-        <include refid="select" />
-        WHERE PRODUCT_ID = #{productId}
-        <include refid="common.base.existsSuffix" />
-    </select>
-
-    <select id="findById" resultMap="resultMap">
-        /* com.utour.mapper.ProductMapper.findById */
-        <include refid="select" />
-        WHERE PRODUCT_ID = #{productId}
-    </select>
-
-    <select id="findAll" resultMap="resultMap">
-        /* com.utour.mapper.ProductMapper.findAll */
-        <include refid="select" />
-        <include refid="where" />
     </select>
 
     <select id="findPage" resultMap="resultMap">
         /* com.utour.mapper.ProductMapper.findPage */
-        <include refid="select" />
+        SELECT
+          T.PRODUCT_ID
+        , T.PRODUCT_TYPE
+        , T.NATION_CODE
+        , T.AREA_CODE
+        , T.REP_IMAGE_SRC
+        , T.USE_YN
+        <include refid="common.content.column" />
+        , N.NATION_NAME
+        , NA.AREA_NAME
+        FROM PRODUCT T
+        LEFT OUTER JOIN NATION N ON T.NATION_CODE = N.NATION_CODE
+        LEFT OUTER JOIN NATION_AREA NA ON T.NATION_CODE = NA.NATION_CODE AND T.AREA_CODE = NA.AREA_CODE
         <where>
-            <if test="useYn != null">AND USE_YN = #{useYn}</if>
+            <if test="useYn != null">AND T.USE_YN = #{useYn}</if>
             <if test="productId != null">AND PRODUCT_ID = #{productId}</if>
             <if test="productType != null">AND PRODUCT_TYPE = #{productType}</if>
             <if test="nationCode != null">AND NATION_CODE = #{nationCode}</if>
             <if test="areaCode != null">AND AREA_CODE = #{areaCode}</if>
-            <if test="query != null">AND (TITLE LIKE CONCAT(#{query}, '%') OR DESCRIPTION LIKE CONCAT(#{query}, '%'))</if>
+            <if test="query != null and query != ''">AND (TITLE LIKE CONCAT(#{query}, '%') OR CONTENT LIKE CONCAT(#{query}, '%'))</if>
         </where>
         ORDER BY PRODUCT_ID DESC
         <include refid="common.base.pagination" />
@@ -78,6 +120,8 @@
         , NATION_CODE
         , AREA_CODE
         , REP_IMAGE_SRC
+        , REP_IMAGE_PATH
+        , CONTENT
         , USE_YN
         <include refid="common.content.column" />
         ) VALUES (
@@ -86,19 +130,24 @@
         , #{nationCode}
         , #{areaCode}
         , #{repImageSrc}
+        , #{repImagePath}
+        , #{content}
         , #{useYn}
         <include refid="common.content.value" />
         )
         <include refid="common.content.duplicateUpdate" />
         <if test="repImageSrc != null">, REP_IMAGE_SRC = VALUES(REP_IMAGE_SRC)</if>
+        <if test="repImagePath != null">, REP_IMAGE_PATH = VALUES(REP_IMAGE_PATH)</if>
         <if test="nationCode != null">, NATION_CODE = VALUES(NATION_CODE)</if>
         <if test="areaCode != null">, AREA_CODE = VALUES(AREA_CODE)</if>
+        <if test="content != null">, CONTENT = VALUES(CONTENT)</if>
         <if test="useYn != null">, USE_YN = VALUES(USE_YN)</if>
     </insert>
 
     <delete id="delete">
         /* com.utour.mapper.ProductMapper.delete */
-        DELETE FROM PRODUCT WHERE PRODUCT_ID = #{productId}
+        DELETE FROM PRODUCT
+        WHERE PRODUCT_ID = #{productId}
     </delete>
 
 </mapper>

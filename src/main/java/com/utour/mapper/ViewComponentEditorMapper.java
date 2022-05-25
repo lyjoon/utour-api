@@ -5,5 +5,5 @@ import com.utour.entity.ViewComponentEditor;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface ViewComponentMarkdownEditor extends CommonMapper<ViewComponentEditor> {
+public interface ViewComponentEditorMapper extends CommonMapper<ViewComponentEditor> {
 }

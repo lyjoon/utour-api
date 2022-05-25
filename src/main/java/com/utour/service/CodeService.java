@@ -66,7 +66,6 @@ public class CodeService extends CommonService {
                 .orElse(null);
     }
 
-
     public List<NationDto> getNationList(NationQueryDto nationQueryDto) {
         return this.nationMapper.findPage(nationQueryDto)
                 .stream()

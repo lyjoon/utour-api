@@ -9,6 +9,7 @@
         <result javaType="java.lang.Long" property="productId" column="PRODUCT_ID" />
         <result javaType="java.lang.Long" property="productImageGroupId" column="PRODUCT_IMAGE_GROUP_ID" />
         <result javaType="java.lang.String" property="imageSrc" column="IMAGE_SRC" />
+        <result javaType="java.lang.String" property="imagePath" column="IMAGE_PATH" />
         <result javaType="java.lang.String" property="description" column="DESCRIPTION" />
     </resultMap>
 
@@ -18,6 +19,7 @@
         , PRODUCT_ID
         , PRODUCT_IMAGE_GROUP_ID
         , IMAGE_SRC
+        , IMAGE_PATH
         , DESCRIPTION
         <include refid="common.base.column" />
         FROM PRODUCT_IMAGE T
@@ -58,23 +60,36 @@
         , PRODUCT_ID
         , PRODUCT_IMAGE_GROUP_ID
         , IMAGE_SRC
+        , IMAGE_PATH
         , DESCRIPTION
         ) VALUES (
           #{productImageId }
         , #{productId }
         , #{productImageGroupId }
         , #{imageSrc }
+        , #{imagePath }
         , #{description }
         )
         <include refid="common.base.duplicateUpdate" />
         , PRODUCT_IMAGE_GROUP_ID = VALUES(PRODUCT_IMAGE_GROUP_ID)
         , IMAGE_SRC = VALUES(IMAGE_SRC)
+        , IMAGE_PATH = VALUES(IMAGE_PATH)
         , DESCRIPTION = VALUES(DESCRIPTION)
     </insert>
 
     <delete id="delete">
         /* com.utour.mapper.ProductImageMapper.delete */
-        DELETE FROM PRODUCT_IMAGE WHERE PRODUCT_IMAGE_ID = #{productImageId}
+        DELETE FROM PRODUCT_IMAGE
+        <where>
+            <choose>
+                <when test="productImageId != null">AND PRODUCT_IMAGE_ID = #{productImageId}</when>
+                <otherwise>
+                    AND PRODUCT_ID = #{productId }
+                    AND PRODUCT_IMAGE_GROUP_ID = #{productImageGroupId }
+                </otherwise>
+            </choose>
+        </where>
+
     </delete>
 
 </mapper>

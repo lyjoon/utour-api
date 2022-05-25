@@ -1,6 +1,7 @@
 package com.utour.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -47,21 +48,15 @@ public class FileUtils {
             throw new IOException("It's not a directory => '"+ dirPath +"'");
         }
 
-        Path toDir2 = toDir.resolve(localDate.format(DateTimeFormatter.ISO_LOCAL_TIME));
-        if(Files.isDirectory(toDir2)) {
-            Files.createDirectory(toDir2);
-        }
-
-        String originName = multipartFile.getOriginalFilename();
-        String fileName = new StringBuilder(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE))
+        String ext = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+        String fileName = new StringBuilder(localDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")))
                 .append("-")
                 .append(UUID.randomUUID())
-                .append("-")
-                .append(originName)
+                .append("." + ext)
                 .toString();
 
         //Path toPath = Paths.get(dirPath, fileName);
-        Path toPath = toDir2.resolve(fileName);
+        Path toPath = toDir.resolve(fileName);
         multipartFile.transferTo(toPath);
         return toPath;
     }

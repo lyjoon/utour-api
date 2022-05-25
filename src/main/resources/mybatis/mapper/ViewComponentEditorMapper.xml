@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.utour.mapper.ViewComponentMarkdownEditor">
+<mapper namespace="com.utour.mapper.ViewComponentEditorMapper">
 
     <resultMap id="resultMap" type="com.utour.entity.ViewComponentEditor" extends="common.component.resultMap">
         <result javaType="java.lang.String" property="content" column="CONTENT" />
@@ -16,7 +16,7 @@
     </sql>
 
     <select id="exists" resultType="java.lang.Boolean">
-        /* com.utour.mapper.ViewComponentMarkdownEditor.exists */
+        /* com.utour.mapper.ViewComponentEditorMapper.exists */
         <include refid="common.base.existsPrefix" />
         <include refid="select" />
         WHERE VIEW_COMPONENT_ID = #{viewComponentId}
@@ -24,19 +24,19 @@
     </select>
 
     <select id="findById" resultMap="resultMap">
-        /* com.utour.mapper.ViewComponentMarkdownEditor.findById */
+        /* com.utour.mapper.ViewComponentEditorMapper.findById */
         <include refid="select" />
         WHERE VIEW_COMPONENT_ID = #{viewComponentId}
     </select>
 
     <select id="findAll" resultMap="resultMap">
-        /* com.utour.mapper.ViewComponentMarkdownEditor.findAll */
+        /* com.utour.mapper.ViewComponentEditorMapper.findAll */
         <include refid="select" />
         WHERE VIEW_COMPONENT_ID = #{viewComponentId}
     </select>
 
     <insert id="save">
-        /* com.utour.mapper.ViewComponentMarkdownEditor.save */
+        /* com.utour.mapper.ViewComponentEditorMapper.save */
         INSERT INTO VIEW_COMPONENT_EDITOR (
           CONTENT
           <include refid="common.component.column" />

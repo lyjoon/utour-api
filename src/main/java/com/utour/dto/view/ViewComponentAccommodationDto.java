@@ -13,7 +13,7 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ViewComponentAccommodationDto extends ViewComponentDto{
+public class ViewComponentAccommodationDto extends ViewComponentDto {
 
     private String url;
     private String address;

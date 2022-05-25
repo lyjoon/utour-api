@@ -5,21 +5,17 @@ import com.utour.common.CommonController;
 import com.utour.common.Constants;
 import com.utour.dto.PagingResultDto;
 import com.utour.dto.ResultDto;
-import com.utour.dto.product.ProductDto;
 import com.utour.dto.product.ProductQueryDto;
 import com.utour.dto.product.ProductStoreDto;
-import com.utour.dto.product.ProductViewDto;
+import com.utour.service.LoginService;
 import com.utour.service.ProductService;
-import com.utour.validator.ValidatorMarkers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,35 +29,17 @@ public class ProductController extends CommonController {
 
     private final ProductService productService;
 
-    @GetMapping(value = "/list/{page}")
-    public PagingResultDto getList(
-            @PathVariable Integer page,
-            @RequestParam(required = false) String query,
-            @RequestParam(required = false) String productType
-    ) {
-        return this.productService.getList(ProductQueryDto.builder()
-                .page(page)
-                .query(query)
-                .productType(Arrays.stream(Constants.ProductType.values()).filter(type -> type.name().equals(productType)).findFirst()
-                        .map(Enum::name)
-                        .orElse(null))
-                .limit(Constants.DEFAULT_PAGING_COUNT)
-                .useYn(Constants.Y)
-                .build());
-    }
-
-    @Authorize
-    @GetMapping(value = "/list-all/{page}")
-    public PagingResultDto getList (
-            @PathVariable Integer page,
+    @GetMapping(value = "/list")
+    public PagingResultDto getPageList (
+            @RequestParam(required = false) Integer page,
             @RequestParam(required = false) String nationCode,
             @RequestParam(required = false) String areaCode,
             @RequestParam(required = false) String query,
-            @RequestParam(required = false) Character useYn,
-            @RequestParam(required = false) String productType
+            @RequestParam(required = false) String productType,
+            @RequestHeader(value="Authorization", required = false) String authorization
     ) {
-        return this.productService.getList(ProductQueryDto.builder()
-                .page(page)
+        return this.productService.getPageList(ProductQueryDto.builder()
+                .page(Optional.ofNullable(page).orElse(1))
                 .query(query)
                 .nationCode(nationCode)
                 .areaCode(areaCode)
@@ -69,14 +47,21 @@ public class ProductController extends CommonController {
                         .map(Enum::name)
                         .orElse(null))
                 .limit(Constants.DEFAULT_PAGING_COUNT)
-                .useYn(Optional.ofNullable(useYn).orElse(Constants.Y))
+                .useYn(this.useByToken(authorization))
                 .build());
+    }
+
+
+
+    @GetMapping(value = "{productId}")
+    public ResultDto<Void> get(@PathVariable Long productId) {
+        return this.ok();
     }
 
 
     @Authorize
     @PostMapping(value = "/save", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResultDto<Void>> save(
+    public ResponseEntity<ResultDto<Void>> save (
             @RequestPart(value = "product") ProductStoreDto productStoreDto,
             @RequestPart(required = false, value = "repImageFile") MultipartFile multipartFile,
             @RequestPart(required = false, value = "productImageFiles") MultipartFile[] multipartFiles
@@ -95,12 +80,7 @@ public class ProductController extends CommonController {
     @Authorize
     @DeleteMapping(value = "{productId}")
     public ResultDto<Void> delete(@PathVariable Long productId) {
-        this.productService.delete(ProductDto.builder().productId(productId).build());
+        this.productService.delete(productId);
         return this.ok();
-    }
-
-    @GetMapping(value = "{productId}")
-    public ResultDto<ProductViewDto> get(@PathVariable Long productId) {
-        return this.ok(this.productService.get(productId));
     }
 }

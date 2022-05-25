@@ -14,6 +14,7 @@ public class ProductImage extends CommonEntity {
     private Long productId;
     private Long productImageGroupId;
     private String imageSrc;
+    private String imagePath;
     private String title;
     private String description;
 }

@@ -16,7 +16,7 @@ public class TestViewComponentMapper extends TestLocalApplication {
         ViewComponent viewComponent = ViewComponent.builder()
                 .title("제목")
                 .useYn(Constants.Y)
-                .viewComponentType(Constants.ViewComponentType.MARKDOWN.name())
+                .viewComponentType(Constants.ViewComponentType.EDITOR.name())
                 .ordinal(1)
                 .description("메모")
                 .build();
@@ -29,5 +29,11 @@ public class TestViewComponentMapper extends TestLocalApplication {
     public void testExists(){
         boolean exists = this.viewComponentMapper.exists(ViewComponent.builder().viewComponentId(1L).build());
         log.info("{}", exists);
+    }
+
+    @Test
+    public void test01(){
+        Constants.ViewComponentType viewComponentType = Constants.ViewComponentType.valueOf("BA");
+        log.info("{}", viewComponentType);
     }
 }

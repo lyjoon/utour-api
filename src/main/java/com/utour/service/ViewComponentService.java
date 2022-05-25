@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class ViewComponentService extends CommonService {
 
     private final ViewComponentMapper viewComponentMapper;
-    private final ViewComponentMarkdownEditor viewComponentMarkdownEditor;
+    private final ViewComponentEditorMapper viewComponentEditorMapper;
     private final ViewComponentAccommodationMapper viewComponentAccommodationMapper;
     private final ViewComponentFacilityMapper viewComponentFacilityMapper;
 
@@ -57,7 +57,7 @@ public class ViewComponentService extends CommonService {
         ViewComponentDto t;
 
         switch (viewComponentType) {
-            case MARKDOWN:
+            case EDITOR:
                 t = this.getText(viewComponent);
                 break;
             case ACCOMMODATION:
@@ -82,7 +82,7 @@ public class ViewComponentService extends CommonService {
 
 
     private ViewComponentEditorDto getText(ViewComponent viewComponent){
-        return Optional.ofNullable(this.viewComponentMarkdownEditor.findById(ViewComponentEditor.builder()
+        return Optional.ofNullable(this.viewComponentEditorMapper.findById(ViewComponentEditor.builder()
                 .viewComponentId(viewComponent.getViewComponentId())
                 .build())).map(viewComponentEditor -> {
             ViewComponentEditorDto result = ViewComponentEditorDto.builder()
@@ -180,7 +180,7 @@ public class ViewComponentService extends CommonService {
                 .content(viewComponentEditorDto.getContent())
                 .build();
 
-        this.viewComponentMarkdownEditor.save(viewComponentEditor);
+        this.viewComponentEditorMapper.save(viewComponentEditor);
     }
 
     private void save(ViewComponentFacilityDto viewComponentFacilityDto) {
@@ -216,9 +216,9 @@ public class ViewComponentService extends CommonService {
                 .viewComponentId(viewComponentEditorDto.getViewComponentId())
                 .build();
 
-        Boolean exists = this.viewComponentMarkdownEditor.exists(viewComponentEditor);
+        Boolean exists = this.viewComponentEditorMapper.exists(viewComponentEditor);
         if(exists) {
-            this.viewComponentMarkdownEditor.delete(viewComponentEditor);
+            this.viewComponentEditorMapper.delete(viewComponentEditor);
             this.delete(ViewComponentDto.builder().viewComponentId(viewComponentEditor.getViewComponentId()).build());
             return true;
         }
