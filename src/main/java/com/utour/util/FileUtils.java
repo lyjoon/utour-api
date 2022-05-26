@@ -16,6 +16,14 @@ import java.util.UUID;
 @Slf4j
 public class FileUtils {
 
+    public static boolean delete(Path path, String fileName) throws IOException {
+        if(!Files.isDirectory(path)) {
+            throw new IOException("It's not a directory => '"+ path.toFile().getPath() +"'");
+        }
+        Path filePath = path.resolve(fileName);
+        return delete(filePath);
+    }
+
     public static boolean delete(Path path) throws IOException {
         if(Files.exists(path)) {
             Files.delete(path);

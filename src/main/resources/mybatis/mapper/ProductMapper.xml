@@ -11,7 +11,6 @@
         <result javaType="java.lang.String" property="nationName" column="NATION_NAME" />
         <result javaType="java.lang.String" property="areaCode" column="AREA_CODE" />
         <result javaType="java.lang.String" property="areaName" column="AREA_NAME" />
-        <result javaType="java.lang.String" property="content" column="CONTENT" />
         <result javaType="java.lang.String" property="repImageSrc" column="REP_IMAGE_SRC" />
         <result javaType="java.lang.String" property="repImagePath" column="REP_IMAGE_PATH" />
         <result javaType="java.lang.Character" property="useYn" column="USE_YN" />
@@ -45,7 +44,6 @@
          , T.REP_IMAGE_SRC
          , T.REP_IMAGE_PATH
          , T.USE_YN
-         , T.CONTENT
         <include refid="common.content.column" />
          , N.NATION_NAME
          , NA.AREA_NAME
@@ -121,7 +119,6 @@
         , AREA_CODE
         , REP_IMAGE_SRC
         , REP_IMAGE_PATH
-        , CONTENT
         , USE_YN
         <include refid="common.content.column" />
         ) VALUES (
@@ -131,7 +128,6 @@
         , #{areaCode}
         , #{repImageSrc}
         , #{repImagePath}
-        , #{content}
         , #{useYn}
         <include refid="common.content.value" />
         )

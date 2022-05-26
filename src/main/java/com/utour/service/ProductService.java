@@ -6,6 +6,7 @@ import com.utour.controller.ProductController;
 import com.utour.dto.PagingResultDto;
 import com.utour.dto.product.*;
 import com.utour.dto.view.ViewComponentAccommodationDto;
+import com.utour.dto.view.ViewComponentDto;
 import com.utour.dto.view.ViewComponentEditorDto;
 import com.utour.entity.*;
 import com.utour.exception.InternalException;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -54,6 +56,11 @@ public class ProductService extends CommonService {
     private final CodeService codeService;
 
 
+    /**
+     * 페이징 조회
+     * @param productPagingDto
+     * @return
+     */
     public PagingResultDto getPageList(ProductQueryDto productPagingDto) {
         List<ProductDto> result = this.productMapper.findPage(productPagingDto)
                 .stream()
@@ -78,13 +85,70 @@ public class ProductService extends CommonService {
     }
 
     /**
+     * 상품상세조회
+     * @param productId
+     * @return
+     */
+    public ProductViewDto get(Long productId) {
+        return Optional.ofNullable(this.productMapper.findById(Product.builder().productId(productId).build()))
+                .map(product -> this.convert(product, ProductDto.class))
+                .map(productDto -> {
+                    // 상품 이미지 조회하기
+                    List<ProductImageGroupDto> productImageGroupList =
+                            this.productImageGroupMapper.findAll(ProductImageGroup.builder().productId(productDto.getProductId()).build()).stream()
+                                    .map(productImageGroup -> {
+                                        ProductImageGroupDto productImageGroupDto = this.convert(productImageGroup, ProductImageGroupDto.class);
+
+                                        List<ProductImageDto> productImages = this.productImageMapper.findAll(ProductImage.builder()
+                                                        .productId(productImageGroupDto.getProductId())
+                                                        .productImageGroupId(productImageGroupDto.getProductImageGroupId())
+                                                        .build()
+                                                )
+                                                .stream()
+                                                .map(productImage -> this.convert(productImage, ProductImageDto.class))
+                                                .collect(Collectors.toList());
+                                        productImageGroupDto.setProductImages(productImages);
+                                        return productImageGroupDto;
+                                    })
+                                    .collect(Collectors.toList());
+
+                    // viewComponents 조회하기
+                    Map<Constants.ViewComponentType, ViewComponentDto> viewComponentMap = new HashMap<>();
+                    for(ViewComponent viewComponent : this.viewComponentMapper.findAll(ViewComponent.builder().productId(productId).build())) {
+                        Optional.ofNullable(Arrays.stream(Constants.ViewComponentType.values()).filter(v -> v.name().equals(viewComponent.getViewComponentType())).findFirst().orElse(null))
+                                .ifPresent(viewComponentType -> {
+                                    switch (viewComponentType) {
+                                        case EDITOR:
+                                            Optional.ofNullable(this.viewComponentEditorMapper.findById(ViewComponentEditor.builder()
+                                                    .viewComponentId(viewComponent.getViewComponentId())
+                                                    .build())).ifPresent(viewComponentEditor -> viewComponentMap.put(viewComponentType, this.convert(viewComponentEditor, ViewComponentEditorDto.class)));
+                                            break;
+                                        case ACCOMMODATION:
+                                            Optional.ofNullable(this.viewComponentAccommodationMapper.findById(
+                                                    ViewComponentAccommodation.builder().viewComponentId(viewComponent.getViewComponentId()).build()))
+                                                    .ifPresent(viewComponentAccommodation -> viewComponentMap.put(viewComponentType, this.convert(viewComponentAccommodation, ViewComponentAccommodationDto.class)));
+                                            break;
+                                    }
+                                });
+                    }
+
+                    return ProductViewDto.builder()
+                            .productDto(productDto)
+                            .productImageGroups(productImageGroupList)
+                            .viewComponents(viewComponentMap)
+                            .build();
+                })
+                .orElse(null);
+    }
+
+    /**
      * 여행상품 신규저장(insert)
      * @param productStoreDto
      * @param repProductImageFile
      * @param productImageFiles
      */
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public void save(ProductStoreDto productStoreDto, MultipartFile repProductImageFile, MultipartFile[] productImageFiles) throws InternalException {
+    public void insert(ProductStoreDto productStoreDto, MultipartFile repProductImageFile, MultipartFile[] productImageFiles) throws InternalException {
 
         ProductDto productDto = productStoreDto.getProductDto();
         LocalDate currentDate = LocalDate.now(); // 등록일자 : 오늘
@@ -237,6 +301,18 @@ public class ProductService extends CommonService {
 
 
     /**
+     * 상품정보 업데이트
+     * @param productStoreDto
+     * @param repProductImageFile
+     * @param productImageFiles
+     * @throws InternalException
+     */
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public void update(ProductStoreDto productStoreDto, MultipartFile repProductImageFile, MultipartFile[] productImageFiles) throws InternalException {
+
+    }
+
+    /**
      * 상품 삭제
      * @param productId 상품 ID
      */
@@ -244,10 +320,9 @@ public class ProductService extends CommonService {
     public void delete(Long productId) {
 
         // 등록된 상품이 유효한지 조회함
-        Product product = Product.builder().productId(productId).build();
-        boolean existsProduct = this.productMapper.exists(product);
+        Product product = this.productMapper.findById(Product.builder().productId(productId).build());
         valid : {
-            if(!existsProduct) break valid;
+            if(Objects.isNull(product)) break valid;
 
             // 등록된 커머스 조회함 -> 삭제
             Commerce commerce = Commerce.builder().productId(productId).build();
@@ -255,38 +330,64 @@ public class ProductService extends CommonService {
                 this.commerceMapper.delete(commerce);
             }
 
-        }
+            // 구성요소를 조회함 -> 삭제
+            Optional.ofNullable(this.viewComponentMapper.findAll(ViewComponent.builder().productId(productId).build()))
+                    .ifPresent(viewComponents -> {
+                        for(ViewComponent viewComponent : viewComponents) {
+                            Constants.ViewComponentType viewComponentType = Arrays.stream(Constants.ViewComponentType.values())
+                                    .filter(v -> v.name().equals(viewComponent.getViewComponentType()))
+                                    .findFirst().orElse(null);
 
-        // 구성요소를 조회함 -> 삭제
-        Optional.ofNullable(this.viewComponentMapper.findAll(ViewComponent.builder().productId(productId).build()))
-                .ifPresent(viewComponents -> {
-                    for(ViewComponent viewComponent : viewComponents) {
-                        Constants.ViewComponentType viewComponentType = Arrays.stream(Constants.ViewComponentType.values())
-                                .filter(v -> v.name().equals(viewComponent.getViewComponentType()))
-                                .findFirst().orElse(null);
-
-                        if(Objects.isNull(viewComponentType)) {
-                            this.viewComponentMapper.delete(viewComponent);
-                            continue;
-                        } else {
-                            switch (viewComponentType) {
-                                case EDITOR:
-                                    // TODO : 첨부된 이미지 파일 삭제처리
-                                    this.viewComponentEditorMapper.delete(ViewComponentEditor.builder().viewComponentId(viewComponent.getViewComponentId()).build());
-                                    break;
-                                case ACCOMMODATION:
-                                    this.viewComponentAccommodationMapper.delete(ViewComponentAccommodation.builder().viewComponentId(viewComponent.getViewComponentId()).build());
-                                    break;
+                            if(Objects.isNull(viewComponentType)) {
+                                this.viewComponentMapper.delete(viewComponent);
+                                continue;
+                            } else {
+                                switch (viewComponentType) {
+                                    case EDITOR:
+                                        // TODO : 첨부된 이미지 파일 삭제처리
+                                        this.viewComponentEditorMapper.delete(ViewComponentEditor.builder().viewComponentId(viewComponent.getViewComponentId()).build());
+                                        break;
+                                    case ACCOMMODATION:
+                                        this.viewComponentAccommodationMapper.delete(ViewComponentAccommodation.builder().viewComponentId(viewComponent.getViewComponentId()).build());
+                                        break;
+                                }
+                                this.viewComponentMapper.delete(viewComponent);
                             }
-                            this.viewComponentMapper.delete(viewComponent);
                         }
-                    }
-                });
+                    });
 
-        // 이미지 구성요소를 조회함 -> 삭제
+            // 이미지 구성요소를 조회함 -> 삭제
+            this.productImageGroupMapper.findAll(ProductImageGroup.builder().productId(productId).build())
+                    .forEach(productImageGroup -> {
+                        this.productImageMapper.findAll(ProductImage.builder()
+                                        .productId(productImageGroup.getProductId())
+                                        .productImageGroupId(productImageGroup.getProductImageGroupId())
+                                        .build())
+                                .forEach(productImage -> {
+                                    try {
+                                        FileUtils.delete(Paths.get(productImage.getImagePath()));
+                                    } catch (IOException e) {
+                                        log.error("{}", ErrorUtils.throwableInfo(e));
+                                    }
+                                    //상품 이미지 정보삭제
+                                    this.productImageMapper.delete(productImage);
+                                });
+                        // 상품 이미지 그룹삭제
+                        this.productImageGroupMapper.delete(productImageGroup);
+                    });
 
-        // 상품 최종삭제
-        this.productMapper.delete(product);
+            // 상품 대표이미지가 등록된 경우 -> 파일삭제
+            if(StringUtils.hasText(product.getRepImagePath())) {
+                try {
+                    FileUtils.delete(Paths.get(product.getRepImagePath()));
+                } catch (IOException e) {
+                    log.error("{}", ErrorUtils.throwableInfo(e));
+                }
+            }
+
+            // 상품 최종삭제
+            this.productMapper.delete(product);
+        }
     }
 
 }

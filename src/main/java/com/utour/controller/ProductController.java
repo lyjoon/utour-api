@@ -7,7 +7,7 @@ import com.utour.dto.PagingResultDto;
 import com.utour.dto.ResultDto;
 import com.utour.dto.product.ProductQueryDto;
 import com.utour.dto.product.ProductStoreDto;
-import com.utour.service.LoginService;
+import com.utour.dto.product.ProductViewDto;
 import com.utour.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -54,8 +54,8 @@ public class ProductController extends CommonController {
 
 
     @GetMapping(value = "{productId}")
-    public ResultDto<Void> get(@PathVariable Long productId) {
-        return this.ok();
+    public ResultDto<ProductViewDto> get(@PathVariable Long productId) {
+        return this.ok(this.productService.get(productId));
     }
 
 
@@ -73,7 +73,7 @@ public class ProductController extends CommonController {
                 .map(list -> Arrays.stream(list).map(f -> f.getName()).collect(Collectors.joining(",")))
                 .orElse(null));
 
-        this.productService.save(productStoreDto, multipartFile, multipartFiles);
+        this.productService.insert(productStoreDto, multipartFile, multipartFiles);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(this.ok());
     }
 

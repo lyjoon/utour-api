@@ -8,7 +8,7 @@
         <result javaType="java.lang.Long" property="productImageGroupId" column="PRODUCT_IMAGE_GROUP_ID" />
         <result javaType="java.lang.Long" property="productId" column="PRODUCT_ID" />
         <result javaType="java.lang.String" property="groupName" column="GROUP_NAME" />
-        <result javaType="java.lang.String" property="useYn" column="USE_YN" />
+        <result javaType="java.lang.Character" property="useYn" column="USE_YN" />
     </resultMap>
 
     <sql id="select">
