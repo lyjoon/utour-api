@@ -21,4 +21,5 @@ public class ProductImageDto extends CommonDto {
     private String description;
 
     private String originFileName;
+    private boolean deleteYn;
 }

@@ -22,4 +22,5 @@ public class ProductImageGroupDto extends CommonDto {
     private Character useYn;
 
     private List<ProductImageDto> productImages;
+    private boolean deleteYn;
 }

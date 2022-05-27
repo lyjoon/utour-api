@@ -10,13 +10,17 @@ import com.utour.dto.product.ProductStoreDto;
 import com.utour.dto.product.ProductViewDto;
 import com.utour.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -28,6 +32,10 @@ public class ProductController extends CommonController {
     public static final String PRODUCT_IMAGE_LINK_URL = "/v1/product/image/";
 
     private final ProductService productService;
+
+
+    @Value(value = "${app.file-upload-storage.product:}")
+    private Path productPath;
 
     @GetMapping(value = "/list")
     public PagingResultDto getPageList (
@@ -82,5 +90,12 @@ public class ProductController extends CommonController {
     public ResultDto<Void> delete(@PathVariable Long productId) {
         this.productService.delete(productId);
         return this.ok();
+    }
+
+    @GetMapping(value = {"/image/{productId}", "/image/{productId}/{productImageGroupId}/{productImageId}"} )
+    public ResponseEntity<?> getProductImage(@PathVariable Long productId, @PathVariable(required = false) Long productImageGroupId, @PathVariable(required = false) Long productImageId) throws IOException {
+        Path path = (Objects.isNull(productImageGroupId) || Objects.isNull(productImageId)) ?
+                this.productService.getImage(productId) : this.productService.getImage(productId, productImageGroupId, productImageId);
+        return this.getImageResponseEntity(path);
     }
 }

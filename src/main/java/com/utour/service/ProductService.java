@@ -167,7 +167,7 @@ public class ProductService extends CommonService {
             try {
                 Path repImagePath = FileUtils.uploadFile(productPath, currentDate, repProductImageFile);
                 java.io.File file = repImagePath.toFile();
-                productBuilder.repImageSrc(this.contextPath + ProductController.PRODUCT_IMAGE_LINK_URL + file.getName());
+                // productBuilder.repImageSrc(this.contextPath + ProductController.PRODUCT_IMAGE_LINK_URL);
                 productBuilder.repImagePath(file.getPath());
             } catch (IOException e) {
                 log.warn("{}", ErrorUtils.throwableInfo(e));
@@ -205,10 +205,15 @@ public class ProductService extends CommonService {
                                     // 매칭되는 파일확인 -> productPath 경로에 저장 후 데이터를 테이블에 저장.
                                     try {
                                         Path path = FileUtils.uploadFile(productPath, currentDate, multipartFile);
-                                        String imageSrc = this.contextPath + ProductController.PRODUCT_IMAGE_LINK_URL + path.toFile().getName();
+                                        /**
+                                        String imageSrc = new StringBuilder(this.contextPath + ProductController.PRODUCT_IMAGE_LINK_URL)
+                                                .append(product.getProductId())
+                                                .append("/" + productImageGroup.getProductImageGroupId() + "/")
+                                                .toString();
+                                         */
                                         ProductImage productImage = ProductImage.builder()
                                                 .productId(product.getProductId())
-                                                .imageSrc(imageSrc)
+                                                //.imageSrc(imageSrc)
                                                 .imagePath(path.toFile().getPath())
                                                 .productImageGroupId(productImageGroup.getProductImageGroupId())
                                                 .description(productImageDto.getOriginFileName())
@@ -308,8 +313,73 @@ public class ProductService extends CommonService {
      * @throws InternalException
      */
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public void update(ProductStoreDto productStoreDto, MultipartFile repProductImageFile, MultipartFile[] productImageFiles) throws InternalException {
+    public void update(ProductStoreDto productStoreDto, MultipartFile repProductImageFile, MultipartFile[] productImageFiles) throws InternalException, IOException {
+        ProductDto productDto = productStoreDto.getProductDto();
 
+        valid : {
+
+            // 상품을 조회함
+            Product findProduct = this.productMapper.findById(Product.builder()
+                    .productId(productDto.getProductId())
+                    .build());
+
+            if(Objects.isNull(findProduct)) break valid;
+
+            Product.ProductBuilder productBuilder = Product.builder()
+                    .productId(findProduct.getProductId())
+                    .areaCode(StringUtils.defaultString(productDto.getAreaCode(), findProduct.getAreaCode()))
+                    .nationCode(StringUtils.defaultString(productDto.getNationCode(), findProduct.getNationCode()))
+                    .content(StringUtils.defaultString(productDto.getContent(), findProduct.getContent()))
+                    .productType(StringUtils.defaultString(productDto.getProductType(), findProduct.getProductType()))
+                    .title(StringUtils.defaultString(productDto.getTitle(), findProduct.getTitle()))
+                    .useYn(Optional.ofNullable(productDto.getUseYn()).orElse(findProduct.getUseYn()));
+
+            // 첨부된 파일이 있는 경우 -> 기존 이미지 파일 삭제처리 이후 재등록함
+            if(repProductImageFile != null && !repProductImageFile.isEmpty()) {
+                Path path = StringUtils.hasText(findProduct.getRepImagePath()) ? Paths.get(findProduct.getRepImagePath()) : null;
+                if(path != null) {
+                    FileUtils.delete(path);
+                    Path uploadedFilePath = FileUtils.uploadFile(productPath, repProductImageFile);
+                    java.io.File file = uploadedFilePath.toFile();
+                    productBuilder.repImagePath(file.getPath());
+                }
+            }
+
+            Product product = productBuilder.build();
+
+            // 저장
+            this.productMapper.save(product);
+
+            // 이미지 그룹저장
+            Optional.ofNullable(productStoreDto.getProductImageGroupList()).ifPresent(productImageGroupList -> {
+                for (ProductImageGroupDto productImageGroupDto : productImageGroupList) {
+                    if(productImageGroupDto.isDeleteYn()) {
+                        // TODO : 상품이미지 파일 & 상품이미지 entity & 상품 이미지 그룹 entity 삭제
+                    } else {
+                        // 이미지 그룹정보 저장
+                        ProductImageGroup productImageGroup = ProductImageGroup.builder()
+                                .productId(product.getProductId())
+                                .groupName(productImageGroupDto.getGroupName())
+                                .productImageGroupId(productImageGroupDto.getProductImageGroupId())
+                                .useYn(Optional.ofNullable(productImageGroupDto.getUseYn()).orElse(Constants.Y))
+                                .build();
+
+                        this.productImageGroupMapper.save(productImageGroup);
+
+                        if(productImageGroupDto.getProductImages() != null && !productImageGroupDto.getProductImages().isEmpty()) {
+                            for(ProductImageDto productImageDto : productImageGroupDto.getProductImages()) {
+                                if(productImageDto.isDeleteYn()) {
+                                    // TODO : 상품이미지 파일 및 정보삭제
+                                } else {
+                                    // 업로드 된 파일이름과 매칭되는 경우에만 저장 -> (ex : 기존이미지 파일삭제)
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+        }
     }
 
     /**
@@ -390,4 +460,15 @@ public class ProductService extends CommonService {
         }
     }
 
+    public Path getImage(Long productId) {
+        return Optional.ofNullable(this.productMapper.findById(Product.builder().productId(productId).build()))
+                .map(product -> StringUtils.hasText(product.getRepImagePath()) ? Paths.get(product.getRepImagePath()) : null)
+                .orElse(null);
+    }
+
+    public Path getImage(Long productId, Long productImageGroupId, Long productImageId) {
+        return Optional.ofNullable(this.productImageMapper.findById(ProductImage.builder().productId(productId).productImageId(productImageId).productImageGroupId(productImageGroupId).build()))
+                .map(productImage -> StringUtils.hasText(productImage.getImagePath()) ? Paths.get(productImage.getImagePath()) : null)
+                .orElse(null);
+    }
 }
