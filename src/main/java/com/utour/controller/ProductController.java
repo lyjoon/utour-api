@@ -74,16 +74,22 @@ public class ProductController extends CommonController {
             @RequestPart(required = false, value = "repImageFile") MultipartFile multipartFile,
             @RequestPart(required = false, value = "productImageFiles") MultipartFile[] multipartFiles
     ) {
-        // this.productService.save(productStoreDto);
-        this.log.info("product : {}", productStoreDto.toString());
-        this.log.info("rep-image-src : {}", Optional.ofNullable(multipartFile).map(m -> m.getName()).orElse(null));
-        this.log.info("product-image-list : {}", Optional.ofNullable(multipartFiles)
-                .map(list -> Arrays.stream(list).map(f -> f.getName()).collect(Collectors.joining(",")))
-                .orElse(null));
-
         this.productService.insert(productStoreDto, multipartFile, multipartFiles);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(this.ok());
     }
+
+    @Authorize
+    @PostMapping(value = "/update", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResultDto<Void>> update (
+            @RequestPart(value = "product") ProductStoreDto productStoreDto,
+            @RequestPart(required = false, value = "repImageFile") MultipartFile multipartFile,
+            @RequestPart(required = false, value = "productImageFiles") MultipartFile[] multipartFiles
+    ) throws IOException {
+        this.productService.update(productStoreDto, multipartFile, multipartFiles);
+        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(this.ok());
+    }
+
+
 
     @Authorize
     @DeleteMapping(value = "{productId}")

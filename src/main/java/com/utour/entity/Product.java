@@ -17,6 +17,7 @@ public class Product extends Content {
     private String productType;
     private String nationCode;
     private String areaCode;
+    private String description;
     private String repImageSrc;
     private String repImagePath;
     private Character useYn;

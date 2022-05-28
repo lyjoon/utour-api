@@ -27,6 +27,9 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -205,18 +208,13 @@ public class ProductService extends CommonService {
                                     // 매칭되는 파일확인 -> productPath 경로에 저장 후 데이터를 테이블에 저장.
                                     try {
                                         Path path = FileUtils.uploadFile(productPath, currentDate, multipartFile);
-                                        /**
-                                        String imageSrc = new StringBuilder(this.contextPath + ProductController.PRODUCT_IMAGE_LINK_URL)
-                                                .append(product.getProductId())
-                                                .append("/" + productImageGroup.getProductImageGroupId() + "/")
-                                                .toString();
-                                         */
+
                                         ProductImage productImage = ProductImage.builder()
                                                 .productId(product.getProductId())
-                                                //.imageSrc(imageSrc)
                                                 .imagePath(path.toFile().getPath())
                                                 .productImageGroupId(productImageGroup.getProductImageGroupId())
-                                                .description(productImageDto.getOriginFileName())
+                                                .title(productImageDto.getTitle())
+                                                .description(productImageDto.getDescription())
                                                 .build();
 
                                         this.productImageMapper.save(productImage);
@@ -255,51 +253,9 @@ public class ProductService extends CommonService {
 
                 if (Objects.isNull(viewComponentType)) continue;
 
-                switch (viewComponentType) {
-                    case ACCOMMODATION :
-                        ViewComponentAccommodationDto viewComponentAccommodationDto = this.objectMapper.convertValue(entry.getValue(), ViewComponentAccommodationDto.class);
+                this.saveViewComponent(product.getProductId(), viewComponentType, entry.getValue(), atomicInteger.get());
 
-                        Optional.ofNullable(function.apply(() -> ViewComponent.builder()
-                                        .productId(product.getProductId())
-                                        .title(viewComponentAccommodationDto.getTitle())
-                                        .description(viewComponentAccommodationDto.getDescription())
-                                        .ordinal(atomicInteger.getAndIncrement())
-                                        .viewComponentType(viewComponentType.name())
-                                        .build()))
-                                .ifPresent(viewComponentId -> {
-                                    ViewComponentAccommodation viewComponentAccommodation = ViewComponentAccommodation.builder()
-                                            .viewComponentId(viewComponentId)
-                                            .address(viewComponentAccommodationDto.getAddress())
-                                            .contact(viewComponentAccommodationDto.getContact())
-                                            .fax(viewComponentAccommodationDto.getFax())
-                                            .url(viewComponentAccommodationDto.getUrl())
-                                            .build();
-                                    this.viewComponentAccommodationMapper.save(viewComponentAccommodation);
-                                });
-
-                        break;
-                    case EDITOR:
-                        ViewComponentEditorDto viewComponentEditorDto = this.objectMapper.convertValue(entry.getValue(), ViewComponentEditorDto.class);
-
-                        // TODO : 내용안에 첨부된 temp 경로 이미지파일 -> content 로 이관처리
-
-                        Optional.ofNullable(function.apply(() -> ViewComponent.builder()
-                                .productId(product.getProductId())
-                                .title(viewComponentEditorDto.getTitle())
-                                .description(viewComponentEditorDto.getDescription())
-                                .ordinal(atomicInteger.getAndIncrement())
-                                .viewComponentType(viewComponentType.name())
-                                .build()))
-                                .ifPresent(viewComponentId -> {
-                                    ViewComponentEditor viewComponentEditor = ViewComponentEditor.builder()
-                                            .viewComponentId(viewComponentId)
-                                            .content(viewComponentEditorDto.getContent())
-                                            .build();
-                                    this.viewComponentEditorMapper.save(viewComponentEditor);
-                                });
-
-                        break;
-                }
+                atomicInteger.incrementAndGet();
             }
         }
     }
@@ -350,36 +306,201 @@ public class ProductService extends CommonService {
             // 저장
             this.productMapper.save(product);
 
+            AtomicReference<ProductImageGroup> refProductImageGroup = new AtomicReference<>(null);
+            AtomicInteger atomicInteger = new AtomicInteger(0);
+            // 이미지 신규저장 function
+            Consumer<ProductImageDto> createProductImageConsumer = productImageDto -> {
+                Optional.ofNullable(productImageFiles).ifPresent(multipartFiles -> {
+                    String originFileName = productImageDto.getOriginFileName();
+                    for(MultipartFile multipartFile : multipartFiles) {
+                        if(originFileName.startsWith(atomicInteger.get() + "$") && originFileName.contains(multipartFile.getOriginalFilename())) {
+                            // 매칭되는 파일확인 -> productPath 경로에 저장 후 데이터를 테이블에 저장.
+                            try {
+                                Path path = FileUtils.uploadFile(productPath, multipartFile);
+                                ProductImage productImage = ProductImage.builder()
+                                        .productId(product.getProductId())
+                                        .imagePath(path.toFile().getPath())
+                                        .productImageGroupId(refProductImageGroup.get().getProductImageGroupId())
+                                        .title(productImageDto.getTitle())
+                                        .description(productImageDto.getDescription())
+                                        .build();
+
+                                this.productImageMapper.save(productImage);
+                            } catch (IOException ioException) {
+                                log.error("{}", ErrorUtils.throwableInfo(ioException));
+                            } finally {
+                                break;
+                            }
+                        }
+                    }
+                });
+            };
+
             // 이미지 그룹저장
             Optional.ofNullable(productStoreDto.getProductImageGroupList()).ifPresent(productImageGroupList -> {
                 for (ProductImageGroupDto productImageGroupDto : productImageGroupList) {
-                    if(productImageGroupDto.isDeleteYn()) {
-                        // TODO : 상품이미지 파일 & 상품이미지 entity & 상품 이미지 그룹 entity 삭제
+
+                    if(productImageGroupDto.getProductImageGroupId() != null) {
+                        ProductImageGroup _productImageGroup = ProductImageGroup.builder().productId(product.getProductId())
+                                .productImageGroupId(productImageGroupDto.getProductImageGroupId()).build();
+                        boolean existsProductImageGroup = this.productImageGroupMapper.exists(_productImageGroup);
+
+                        if(existsProductImageGroup) { // 기존데이터 존재유무
+                            if(productImageGroupDto.isDeleteYn()) { // 삭제 유무(true 일경우 해당데이터 + 하위데이터 삭제함., false 인 경우 insert or update)
+                                // 상품이미지 파일 & 상품이미지 entity & 상품 이미지 그룹 entity 삭제
+                                this.productImageMapper.findAll(ProductImage.builder().productId(_productImageGroup.getProductId()).productImageGroupId(_productImageGroup.getProductImageGroupId()).build())
+                                        .forEach(productImage -> {
+                                            if(StringUtils.hasText(productImage.getImagePath())) {
+                                                try {
+                                                    FileUtils.delete(Paths.get(productImage.getImagePath()));
+                                                } catch (IOException e) {
+                                                    log.error("{}", ErrorUtils.throwableInfo(e));
+                                                }
+                                            }
+                                            this.productImageMapper.delete(productImage);
+                                        });
+                                // 이미지 그룹정보 삭제
+                                this.productImageGroupMapper.delete(_productImageGroup);
+                                refProductImageGroup.set(null);
+                                continue;
+                            } else {
+                                // 이미지 그룹정보 업데이트 (productImageGroupId 가 지정됨)
+                                ProductImageGroup productImageGroup = ProductImageGroup.builder()
+                                        .productImageGroupId(productImageGroupDto.getProductImageGroupId())
+                                        .productId(product.getProductId())
+                                        .groupName(productImageGroupDto.getGroupName())
+                                        .useYn(Optional.ofNullable(productImageGroupDto.getUseYn()).orElse(Constants.Y))
+                                        .build();
+
+                                this.productImageGroupMapper.save(productImageGroup);
+                                refProductImageGroup.set(productImageGroup);
+                            }
+                        } else {
+                            // 이미지 그룹정보 신규저장 (productImageGroupId 가 지정되지 않음)
+                            ProductImageGroup productImageGroup = ProductImageGroup.builder()
+                                    //.productImageGroupId(productImageGroupDto.getProductImageGroupId())
+                                    .productId(product.getProductId())
+                                    .groupName(productImageGroupDto.getGroupName())
+                                    .useYn(Optional.ofNullable(productImageGroupDto.getUseYn()).orElse(Constants.Y))
+                                    .build();
+
+                            this.productImageGroupMapper.save(productImageGroup);
+                            refProductImageGroup.set(productImageGroup);
+                        }
                     } else {
-                        // 이미지 그룹정보 저장
+                        // 이미지 그룹정보 신규저장 (productImageGroupId 가 지정되지 않음)
                         ProductImageGroup productImageGroup = ProductImageGroup.builder()
+                                //.productImageGroupId(productImageGroupDto.getProductImageGroupId())
                                 .productId(product.getProductId())
                                 .groupName(productImageGroupDto.getGroupName())
-                                .productImageGroupId(productImageGroupDto.getProductImageGroupId())
                                 .useYn(Optional.ofNullable(productImageGroupDto.getUseYn()).orElse(Constants.Y))
                                 .build();
 
                         this.productImageGroupMapper.save(productImageGroup);
+                        refProductImageGroup.set(productImageGroup);
+                    }
 
-                        if(productImageGroupDto.getProductImages() != null && !productImageGroupDto.getProductImages().isEmpty()) {
-                            for(ProductImageDto productImageDto : productImageGroupDto.getProductImages()) {
-                                if(productImageDto.isDeleteYn()) {
-                                    // TODO : 상품이미지 파일 및 정보삭제
+                    // 이미지 정보 저장
+                    if(productImageGroupDto.getProductImages() != null && !productImageGroupDto.getProductImages().isEmpty()) {
+                        for(ProductImageDto productImageDto : productImageGroupDto.getProductImages()) {
+
+                            if(productImageDto.getProductImageId() != null && productImageDto.getProductImageGroupId() != null) {
+
+                                // 이전에 저장된 상품 이미지
+                                ProductImage productImage = this.productImageMapper.findById(ProductImage.builder()
+                                        .productImageId(productImageDto.getProductImageId())
+                                        .build());
+
+                                // 기존 데이터가 확인되는 경우
+                                if(productImage != null) {
+                                    if(productImageDto.isDeleteYn()) {
+                                        // 상품이미지 파일 및 정보삭제
+                                        if(StringUtils.hasText(productImage.getImagePath())) {
+                                            try {
+                                                FileUtils.delete(Paths.get(productImage.getImagePath()));
+                                            } catch (IOException e) {
+                                                log.error("{}", ErrorUtils.throwableInfo(e));
+                                            }
+                                        }
+                                        this.productImageMapper.delete(productImage);
+                                    } else {
+                                        // 이미지 정보 저장(update)
+                                        // multipartFile 파일이름과 originFileName 이 매칭되는 데이터의 경우 -> 1. 기존이미지 검색 후 삭제처리, 2. 업데이트(저장)
+                                        String originFileName = productImageDto.getOriginFileName();
+
+                                        ProductImage.ProductImageBuilder productImageBuilder = ProductImage.builder()
+                                                .productId(product.getProductId())
+                                                .productImageGroupId(refProductImageGroup.get().getProductImageGroupId())
+                                                .productImageId(productImage.getProductImageId())
+                                                .description(productImageDto.getDescription())
+                                                .title(productImageDto.getTitle())
+                                                ;
+
+                                        Arrays.stream(productImageFiles).filter(multipartFile -> multipartFile.getOriginalFilename().equals(originFileName))
+                                                .findFirst()
+                                                .ifPresent(multipartFile -> {
+                                                    try {
+                                                        Path uploadFilePath = FileUtils.uploadFile(this.productPath, multipartFile);
+                                                        productImageBuilder.imagePath(uploadFilePath.toFile().getPath());
+                                                    } catch (IOException e) {
+                                                        log.error("{}", ErrorUtils.throwableInfo(e));
+                                                    }
+                                                });
+
+                                        this.productImageMapper.save(productImageBuilder.build());
+                                    }
                                 } else {
-                                    // 업로드 된 파일이름과 매칭되는 경우에만 저장 -> (ex : 기존이미지 파일삭제)
+                                    // 이전에 저장된 데이터가 없는경우 -> 상품 이미지 신규저장
+                                    createProductImageConsumer.accept(productImageDto);
                                 }
+
+                            } else {
+                                // 상품 이미지 신규저장
+                                createProductImageConsumer.accept(productImageDto);
                             }
                         }
+                    }
+
+                } //for-each (product-image-group)
+            }); // optional (product-image-group)
+
+
+            AtomicInteger atomicInteger1 = new AtomicInteger(0);
+
+            //viewComponents 저장
+            Optional.ofNullable(productStoreDto.getViewComponents()).ifPresent(viewComponents -> {
+                Iterator<Map.Entry<String, Map<String, Object>>> iterator = viewComponents.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    atomicInteger1.incrementAndGet();
+                    Map.Entry<String, Map<String, Object>> entry = iterator.next();
+                    Long viewComponentId = Optional.ofNullable(entry.getValue().get("viewComponentId")).map(v -> (Long) v).orElse(null);
+                    Constants.ViewComponentType viewComponentType = Arrays.stream(Constants.ViewComponentType.values()).filter(v -> v.name().equals(entry.getKey())).findFirst().orElse(null);
+
+                    if(Objects.isNull(viewComponentType)) {
+                        continue;
+                    }
+
+                    if(viewComponentId != null) {
+                        boolean exists = this.viewComponentMapper.exists(ViewComponent.builder().viewComponentId(viewComponentId).build());
+                        if(exists) {
+                            // 업데이트
+                            this.saveViewComponent(product.getProductId(), viewComponentType, entry.getValue(), atomicInteger1.get());
+                        } else {
+                            // 신규저장
+                            if(entry.getValue().containsKey("viewComponentId")) {
+                                entry.getValue().remove("viewComponentId");
+                            }
+                            this.saveViewComponent(product.getProductId(), viewComponentType, entry.getValue(), atomicInteger1.get());
+                        }
+
+                    } else {
+                        // 신규저장
+                        this.saveViewComponent(product.getProductId(), viewComponentType, entry.getValue(), atomicInteger1.get());
                     }
                 }
             });
 
-        }
+        } // valid.
     }
 
     /**
@@ -470,5 +591,56 @@ public class ProductService extends CommonService {
         return Optional.ofNullable(this.productImageMapper.findById(ProductImage.builder().productId(productId).productImageId(productImageId).productImageGroupId(productImageGroupId).build()))
                 .map(productImage -> StringUtils.hasText(productImage.getImagePath()) ? Paths.get(productImage.getImagePath()) : null)
                 .orElse(null);
+    }
+
+    private void saveViewComponent(Long productId, Constants.ViewComponentType viewComponentType, Map<String, Object> values, int ordinalPosition) {
+        // viewComponent 저장 function
+        Function<ViewComponent, Long> saveViewComponent1 = viewComponent -> {
+            this.viewComponentMapper.save(viewComponent);
+            return viewComponent.getViewComponentId();
+        };
+
+        switch (viewComponentType) {
+            case ACCOMMODATION:
+                ViewComponentAccommodationDto viewComponentAccommodationDto = this.objectMapper.convertValue(values, ViewComponentAccommodationDto.class);
+                Optional.ofNullable(saveViewComponent1.apply(ViewComponent.builder()
+                        .viewComponentId(viewComponentAccommodationDto.getViewComponentId())
+                        .viewComponentType(viewComponentType.name())
+                        .productId(productId)
+                        .description(viewComponentAccommodationDto.getDescription())
+                        .title(viewComponentAccommodationDto.getTitle())
+                        .ordinal(Optional.ofNullable(viewComponentAccommodationDto.getOrdinal()).orElse(ordinalPosition))
+                        .useYn(Optional.ofNullable(viewComponentAccommodationDto.getUseYn()).orElse(Constants.Y))
+                        .build())).ifPresent(_viewComponentId -> {
+                    ViewComponentAccommodation viewComponentAccommodation = ViewComponentAccommodation.builder()
+                            .viewComponentId(_viewComponentId)
+                            .address(viewComponentAccommodationDto.getAddress())
+                            .contact(viewComponentAccommodationDto.getContact())
+                            .fax(viewComponentAccommodationDto.getFax())
+                            .url(viewComponentAccommodationDto.getUrl())
+                            .build();
+                    this.viewComponentAccommodationMapper.save(viewComponentAccommodation);
+                });
+                break;
+            case EDITOR:
+                ViewComponentEditorDto viewComponentEditorDto = this.objectMapper.convertValue(values, ViewComponentEditorDto.class);
+                // TODO : editor 내 첨부된 이미지 파일 이관
+
+                Optional.ofNullable(saveViewComponent1.apply(ViewComponent.builder()
+                                .productId(productId)
+                                .title(viewComponentEditorDto.getTitle())
+                                .description(viewComponentEditorDto.getDescription())
+                                .ordinal(ordinalPosition)
+                                .viewComponentType(viewComponentType.name())
+                                .build()))
+                        .ifPresent(_viewComponentId -> {
+                            ViewComponentEditor viewComponentEditor = ViewComponentEditor.builder()
+                                    .viewComponentId(_viewComponentId)
+                                    .content(viewComponentEditorDto.getContent())
+                                    .build();
+                            this.viewComponentEditorMapper.save(viewComponentEditor);
+                        });
+                break ;
+        };
     }
 }

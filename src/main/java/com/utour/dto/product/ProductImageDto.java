@@ -18,6 +18,7 @@ public class ProductImageDto extends CommonDto {
     private Long productId;
     private Long productImageGroupId;
     private String imageSrc;
+    private String title;
     private String description;
 
     private String originFileName;

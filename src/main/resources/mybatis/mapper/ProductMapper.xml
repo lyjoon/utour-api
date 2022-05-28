@@ -13,6 +13,7 @@
         <result javaType="java.lang.String" property="areaName" column="AREA_NAME" />
         <result javaType="java.lang.String" property="repImageSrc" column="REP_IMAGE_SRC" />
         <result javaType="java.lang.String" property="repImagePath" column="REP_IMAGE_PATH" />
+        <result javaType="java.lang.String" property="description" column="DESCRIPTION" />
         <result javaType="java.lang.Character" property="useYn" column="USE_YN" />
     </resultMap>
 
@@ -44,6 +45,7 @@
          , T.REP_IMAGE_SRC
          , T.REP_IMAGE_PATH
          , T.USE_YN
+         , T.DESCRIPTION
         <include refid="common.content.column" />
          , N.NATION_NAME
          , NA.AREA_NAME
@@ -62,6 +64,7 @@
         , AREA_CODE
         , REP_IMAGE_SRC
         , USE_YN
+        , DESCRIPTION
         <include refid="common.content.column" />
         FROM PRODUCT T
         <include refid="where" />
@@ -92,6 +95,7 @@
         , T.AREA_CODE
         , T.REP_IMAGE_SRC
         , T.USE_YN
+        , T.DESCRIPTION
         <include refid="common.content.column" />
         , N.NATION_NAME
         , NA.AREA_NAME
@@ -120,6 +124,7 @@
         , REP_IMAGE_SRC
         , REP_IMAGE_PATH
         , USE_YN
+        , DESCRIPTION
         <include refid="common.content.column" />
         ) VALUES (
           #{productId}
@@ -129,6 +134,7 @@
         , #{repImageSrc}
         , #{repImagePath}
         , #{useYn}
+        , #{description}
         <include refid="common.content.value" />
         )
         <include refid="common.content.duplicateUpdate" />
@@ -138,6 +144,7 @@
         <if test="areaCode != null">, AREA_CODE = VALUES(AREA_CODE)</if>
         <if test="content != null">, CONTENT = VALUES(CONTENT)</if>
         <if test="useYn != null">, USE_YN = VALUES(USE_YN)</if>
+        <if test="description != null">, DESCRIPTION = VALUES(DESCRIPTION)</if>
     </insert>
 
     <delete id="delete">

@@ -28,5 +28,6 @@ public class ProductDto extends CommonDto {
     private Character useYn;
     private String title;
     private String content;
+    private String description;
     private String writer;
 }
