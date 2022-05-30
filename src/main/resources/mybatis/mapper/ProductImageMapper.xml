@@ -10,6 +10,7 @@
         <result javaType="java.lang.Long" property="productImageGroupId" column="PRODUCT_IMAGE_GROUP_ID" />
         <result javaType="java.lang.String" property="imageSrc" column="IMAGE_SRC" />
         <result javaType="java.lang.String" property="imagePath" column="IMAGE_PATH" />
+        <result javaType="java.lang.String" property="title" column="TITLE" />
         <result javaType="java.lang.String" property="description" column="DESCRIPTION" />
     </resultMap>
 
@@ -20,6 +21,7 @@
         , PRODUCT_IMAGE_GROUP_ID
         , IMAGE_SRC
         , IMAGE_PATH
+        , TITLE
         , DESCRIPTION
         <include refid="common.base.column" />
         FROM PRODUCT_IMAGE T
@@ -61,6 +63,7 @@
         , PRODUCT_IMAGE_GROUP_ID
         , IMAGE_SRC
         , IMAGE_PATH
+        , TITLE
         , DESCRIPTION
         ) VALUES (
           #{productImageId }
@@ -68,13 +71,15 @@
         , #{productImageGroupId }
         , #{imageSrc }
         , #{imagePath }
+        , #{title }
         , #{description }
         )
         <include refid="common.base.duplicateUpdate" />
         , PRODUCT_IMAGE_GROUP_ID = VALUES(PRODUCT_IMAGE_GROUP_ID)
-        , IMAGE_SRC = VALUES(IMAGE_SRC)
-        , IMAGE_PATH = VALUES(IMAGE_PATH)
-        , DESCRIPTION = VALUES(DESCRIPTION)
+        <if test="imageSrc != null">, IMAGE_SRC = VALUES(IMAGE_SRC)</if>
+        <if test="imagePath  != null">, IMAGE_PATH = VALUES(IMAGE_PATH)</if>
+        <if test="title != null">, TITLE  = VALUES(TITLE)</if>
+        <if test="description   != null">, DESCRIPTION = VALUES(DESCRIPTION)</if>
     </insert>
 
     <delete id="delete">

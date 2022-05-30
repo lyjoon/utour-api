@@ -163,6 +163,7 @@ public class ProductService extends CommonService {
                 .content(productDto.getContent())
                 .productType(productDto.getProductType())
                 .title(productDto.getTitle())
+                .description(productDto.getDescription())
                 .useYn(Optional.ofNullable(productDto.getUseYn()).orElse(Constants.Y));
 
         // 대표 이미지가 있는 경우, content-path 에 저장시킨 뒤 product.rep_image_src 값을 외부에서 접근가능한 url 로 지정해준다.
@@ -307,13 +308,13 @@ public class ProductService extends CommonService {
             this.productMapper.save(product);
 
             AtomicReference<ProductImageGroup> refProductImageGroup = new AtomicReference<>(null);
-            AtomicInteger atomicInteger = new AtomicInteger(0);
+            AtomicInteger productImageGroupSeq = new AtomicInteger(0);
             // 이미지 신규저장 function
             Consumer<ProductImageDto> createProductImageConsumer = productImageDto -> {
                 Optional.ofNullable(productImageFiles).ifPresent(multipartFiles -> {
                     String originFileName = productImageDto.getOriginFileName();
                     for(MultipartFile multipartFile : multipartFiles) {
-                        if(originFileName.startsWith(atomicInteger.get() + "$") && originFileName.contains(multipartFile.getOriginalFilename())) {
+                        if(originFileName.startsWith(productImageGroupSeq.get() + "$") && originFileName.contains(multipartFile.getOriginalFilename())) {
                             // 매칭되는 파일확인 -> productPath 경로에 저장 후 데이터를 테이블에 저장.
                             try {
                                 Path path = FileUtils.uploadFile(productPath, multipartFile);
@@ -436,18 +437,20 @@ public class ProductService extends CommonService {
                                                 .title(productImageDto.getTitle())
                                                 ;
 
-                                        Arrays.stream(productImageFiles).filter(multipartFile -> multipartFile.getOriginalFilename().equals(originFileName))
-                                                .findFirst()
-                                                .ifPresent(multipartFile -> {
-                                                    try {
-                                                        Path uploadFilePath = FileUtils.uploadFile(this.productPath, multipartFile);
-                                                        productImageBuilder.imagePath(uploadFilePath.toFile().getPath());
-                                                    } catch (IOException e) {
-                                                        log.error("{}", ErrorUtils.throwableInfo(e));
-                                                    }
-                                                });
-
-                                        this.productImageMapper.save(productImageBuilder.build());
+                                        if(Objects.nonNull(productImageFiles)) {
+                                            Arrays.stream(productImageFiles).filter(multipartFile -> multipartFile.getOriginalFilename().equals(originFileName))
+                                                    .findFirst()
+                                                    .ifPresent(multipartFile -> {
+                                                        try {
+                                                            Path uploadFilePath = FileUtils.uploadFile(this.productPath, multipartFile);
+                                                            productImageBuilder.imagePath(uploadFilePath.toFile().getPath());
+                                                        } catch (IOException e) {
+                                                            log.error("{}", ErrorUtils.throwableInfo(e));
+                                                        }
+                                                    });
+                                        }
+                                        ProductImage saveProductImage = productImageBuilder.build();
+                                        this.productImageMapper.save(saveProductImage);
                                     }
                                 } else {
                                     // 이전에 저장된 데이터가 없는경우 -> 상품 이미지 신규저장
@@ -461,19 +464,25 @@ public class ProductService extends CommonService {
                         }
                     }
 
+                    productImageGroupSeq.incrementAndGet();
                 } //for-each (product-image-group)
             }); // optional (product-image-group)
 
 
-            AtomicInteger atomicInteger1 = new AtomicInteger(0);
+            AtomicInteger viewComponentSeq = new AtomicInteger(0);
 
             //viewComponents 저장
             Optional.ofNullable(productStoreDto.getViewComponents()).ifPresent(viewComponents -> {
                 Iterator<Map.Entry<String, Map<String, Object>>> iterator = viewComponents.entrySet().iterator();
                 while (iterator.hasNext()) {
-                    atomicInteger1.incrementAndGet();
+                    viewComponentSeq.incrementAndGet();
                     Map.Entry<String, Map<String, Object>> entry = iterator.next();
-                    Long viewComponentId = Optional.ofNullable(entry.getValue().get("viewComponentId")).map(v -> (Long) v).orElse(null);
+                    Long viewComponentId = Optional.ofNullable(entry.getValue().get("viewComponentId"))
+                            .map(v -> {
+                                if(v instanceof Integer) return ((Integer) v).longValue();
+                                else return (Long) v;
+                            })
+                            .orElse(null);
                     Constants.ViewComponentType viewComponentType = Arrays.stream(Constants.ViewComponentType.values()).filter(v -> v.name().equals(entry.getKey())).findFirst().orElse(null);
 
                     if(Objects.isNull(viewComponentType)) {
@@ -484,18 +493,18 @@ public class ProductService extends CommonService {
                         boolean exists = this.viewComponentMapper.exists(ViewComponent.builder().viewComponentId(viewComponentId).build());
                         if(exists) {
                             // 업데이트
-                            this.saveViewComponent(product.getProductId(), viewComponentType, entry.getValue(), atomicInteger1.get());
+                            this.saveViewComponent(product.getProductId(), viewComponentType, entry.getValue(), viewComponentSeq.get());
                         } else {
                             // 신규저장
                             if(entry.getValue().containsKey("viewComponentId")) {
                                 entry.getValue().remove("viewComponentId");
                             }
-                            this.saveViewComponent(product.getProductId(), viewComponentType, entry.getValue(), atomicInteger1.get());
+                            this.saveViewComponent(product.getProductId(), viewComponentType, entry.getValue(), viewComponentSeq.get());
                         }
 
                     } else {
                         // 신규저장
-                        this.saveViewComponent(product.getProductId(), viewComponentType, entry.getValue(), atomicInteger1.get());
+                        this.saveViewComponent(product.getProductId(), viewComponentType, entry.getValue(), viewComponentSeq.get());
                     }
                 }
             });
