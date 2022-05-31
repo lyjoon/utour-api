@@ -15,7 +15,7 @@ import lombok.experimental.SuperBuilder;
 public class CarouselDto extends CommonDto {
     private Long carouselId;
     private String title;
-    private String imageSrc;
+    private String imagePath;
     private String linkUrl;
     private Integer ordinalPosition;
     private Character useYn;

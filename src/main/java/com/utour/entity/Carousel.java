@@ -15,7 +15,7 @@ public class Carousel extends CommonEntity {
 
     private Long carouselId;
     private String title;
-    private String imageSrc;
+    private String imagePath;
     private String linkUrl;
     private Integer ordinalPosition;
     private Character useYn;

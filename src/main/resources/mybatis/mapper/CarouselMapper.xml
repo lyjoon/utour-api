@@ -7,7 +7,7 @@
     <resultMap id="resultMap" type="com.utour.entity.Carousel" extends="common.base.resultMap">
         <result javaType="java.lang.Long" property="carouselId" column="CAROUSEL_ID" />
         <result javaType="java.lang.String" property="title" column="TITLE" />
-        <result javaType="java.lang.String" property="imageSrc" column="IMAGE_SRC" />
+        <result javaType="java.lang.String" property="imagePath" column="IMAGE_PATH" />
         <result javaType="java.lang.String" property="linkUrl" column="LINK_URL" />
         <result javaType="java.lang.Integer" property="ordinalPosition" column="ORDINAL_POSITION" />
         <result javaType="java.lang.Character" property="useYn" column="USE_YN" />
@@ -27,7 +27,7 @@
         SELECT
           CAROUSEL_ID
         , TITLE
-        , IMAGE_SRC
+        , IMAGE_PATH
         , LINK_URL
         , ORDINAL_POSITION
         , USE_YN
@@ -40,7 +40,7 @@
         SELECT
           CAROUSEL_ID
         , TITLE
-        , IMAGE_SRC
+        , IMAGE_PATH
         , LINK_URL
         , ORDINAL_POSITION
         , USE_YN
@@ -57,21 +57,21 @@
         INSERT INTO CAROUSEL(
           CAROUSEL_ID
         , TITLE
-        , IMAGE_SRC
+        , IMAGE_PATH
         , LINK_URL
         , ORDINAL_POSITION
         , USE_YN
         ) VALUES (
           #{carouselId}
         , #{title}
-        , #{imageSrc}
+        , #{imagePath}
         , #{linkUrl}
         , #{ordinalPosition}
         , #{useYn}
         )
         <include refid="common.base.duplicateUpdate" />
         <if test="title != null">, TITLE = VALUES(TITLE)</if>
-        <if test="imageSrc != null">, IMAGE_SRC = VALUES(IMAGE_SRC)</if>
+        <if test="imagePath != null">, IMAGE_PATH = VALUES(IMAGE_PATH)</if>
         <if test="linkUrl != null">, LINK_URL = VALUES(LINK_URL)</if>
         <if test="ordinalPosition != null">, ORDINAL_POSITION = VALUES(ORDINAL_POSITION)</if>
         <if test="useYn != null">, USE_YN = VALUES(USE_YN)</if>

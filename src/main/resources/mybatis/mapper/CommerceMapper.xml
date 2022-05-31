@@ -47,6 +47,7 @@
             <if test="useYn != null">AND USE_YN = #{useYn}</if>
         </where>
         ORDER BY ORDINAL_POSITION, COMMERCE_ID DESC
+        LIMIT 1, 12
     </select>
 
     <insert id="save">

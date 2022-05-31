@@ -11,8 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -47,16 +49,15 @@ public class DisplayController extends CommonController {
     }
 
     @Authorize
-    @PutMapping(value = "/carousel")
-    public ResultDto<Void> save(
-            @Validated(value = ValidatorMarkers.Put.class) @Valid @RequestBody CarouselDto carouselDto) {
-        this.displayService.save(carouselDto);
+    @PostMapping(value = "/carousel", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResultDto<Void> save(@RequestPart(value = "carousel") CarouselDto carouselDto, @RequestPart(required = false, value = "repImageFile") MultipartFile multipartFile) throws IOException {
+        this.displayService.save(carouselDto, multipartFile);
         return this.ok();
     }
 
     @Authorize
     @DeleteMapping(value = "/carousel/{carouselId}")
-    public ResultDto<Void> deleteCarousel(@PathVariable Long carouselId){
+    public ResultDto<Void> deleteCarousel(@PathVariable Long carouselId) throws IOException {
         this.displayService.delete(CarouselDto.builder()
                 .carouselId(carouselId)
                 .build());

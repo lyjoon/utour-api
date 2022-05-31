@@ -10,11 +10,19 @@ import com.utour.exception.InternalException;
 import com.utour.mapper.CarouselMapper;
 import com.utour.mapper.CommerceMapper;
 import com.utour.mapper.ProductMapper;
+import com.utour.util.FileUtils;
+import com.utour.util.StringUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +32,9 @@ public class DisplayService extends CommonService {
     private final CommerceMapper commerceMapper;
     private final CarouselMapper carouselMapper;
     private final ProductMapper productMapper;
+
+    @Value(value = "${app.file-upload-storage.carousel:}")
+    private Path carouselPath;
 
     public List<CommerceDto> getList(CommerceDto commerceDto){
         Commerce commerce = Commerce.builder()
@@ -52,7 +63,7 @@ public class DisplayService extends CommonService {
 
     public List<CarouselDto> getList(CarouselDto carouselDto) {
         Carousel carousel = Carousel.builder()
-                .imageSrc(carouselDto.getImageSrc())
+                .imagePath(carouselDto.getImagePath())
                 .carouselId(carouselDto.getCarouselId())
                 .linkUrl(carouselDto.getLinkUrl())
                 .ordinalPosition(carouselDto.getOrdinalPosition())
@@ -65,17 +76,31 @@ public class DisplayService extends CommonService {
                 .collect(Collectors.toList());
     }
 
-    public void save(CarouselDto carouselDto) {
-        Carousel carousel = Carousel.builder()
-                .imageSrc(carouselDto.getImageSrc())
-                .carouselId(carouselDto.getCarouselId())
+    public void save(CarouselDto carouselDto, MultipartFile multipartFile) throws IOException {
+
+        Long carouselId = carouselDto.getCarouselId();
+        Carousel.CarouselBuilder carouselBuilder = Carousel.builder()
+                .carouselId(carouselId)
                 .linkUrl(carouselDto.getLinkUrl())
                 .ordinalPosition(carouselDto.getOrdinalPosition())
                 .useYn(carouselDto.getUseYn())
-                .title(carouselDto.getTitle())
-                .build();
+                .title(carouselDto.getTitle());
 
-        this.carouselMapper.save(carousel);
+        // 이미지 파일변경
+        if(multipartFile != null && !multipartFile.isEmpty()) {
+
+            if(carouselId != null) {
+                Carousel carousel = this.carouselMapper.findById(Carousel.builder().carouselId(carouselId).build());
+                if(carousel != null && StringUtils.hasText(carousel.getImagePath())) {
+                    FileUtils.delete(Paths.get(carousel.getImagePath()));
+                }
+            }
+
+            Optional.ofNullable(FileUtils.uploadFile(this.carouselPath, multipartFile))
+                    .ifPresent(path -> carouselBuilder.imagePath(path.toFile().getPath()));
+        }
+
+        this.carouselMapper.save(carouselBuilder.build());
     }
 
     public void save(CommerceDto commerceDto) {
@@ -90,11 +115,16 @@ public class DisplayService extends CommonService {
     }
 
     @Transactional
-    public void delete(CarouselDto carouselDto) {
+    public void delete(CarouselDto carouselDto) throws IOException {
         Carousel carousel = Carousel.builder()
                 .carouselId(carouselDto.getCarouselId())
                 .build();
-        if(this.carouselMapper.exists(carousel)) {
+
+        Carousel findCarousel = this.carouselMapper.findById(carousel);
+        if(findCarousel != null) {
+            if(StringUtils.hasText(findCarousel.getImagePath())) {
+                FileUtils.delete(Paths.get(findCarousel.getImagePath()));
+            }
             this.carouselMapper.delete(carousel);
         } else throw new InternalException(this.getMessage("error.service.data.not-exists"));
     }

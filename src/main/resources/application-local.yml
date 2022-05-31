@@ -30,3 +30,4 @@ app:
     notice: ${app.file-upload-storage.root}/notice
     product: ${app.file-upload-storage.root}/product
     temp: ${app.file-upload-storage.root}/temp
+    carousel: ${app.file-upload-storage.root}/carousel
