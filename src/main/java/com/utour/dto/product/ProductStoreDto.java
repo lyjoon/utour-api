@@ -20,5 +20,5 @@ public class ProductStoreDto {
     @JsonProperty(value = "product")
     private ProductDto productDto;
     private List<ProductImageGroupDto> productImageGroupList;
-    private Map<String, Map<String, Object>> viewComponents;
+    private List<Map<String, Object>> viewComponents;
 }

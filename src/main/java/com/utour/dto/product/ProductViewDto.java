@@ -22,5 +22,6 @@ public class ProductViewDto extends ProductDto {
     @JsonProperty(value = "product")
     private ProductDto productDto;
     private List<ProductImageGroupDto> productImageGroups;
-    private Map<Constants.ViewComponentType, ? extends ViewComponentDto> viewComponents;
+    //private Map<Constants.ViewComponentType, ? extends ViewComponentDto> viewComponents;
+    private List<? extends ViewComponentDto> viewComponents;
 }

@@ -116,7 +116,8 @@ public class ProductService extends CommonService {
                                     .collect(Collectors.toList());
 
                     // viewComponents 조회하기
-                    Map<Constants.ViewComponentType, ViewComponentDto> viewComponentMap = new HashMap<>();
+                    // Map<Constants.ViewComponentType, ViewComponentDto> viewComponentMap = new HashMap<>();
+                    List<ViewComponentDto> viewComponents = new ArrayList<>();
                     for(ViewComponent viewComponent : this.viewComponentMapper.findAll(ViewComponent.builder().productId(productId).build())) {
                         Optional.ofNullable(Arrays.stream(Constants.ViewComponentType.values()).filter(v -> v.name().equals(viewComponent.getViewComponentType())).findFirst().orElse(null))
                                 .ifPresent(viewComponentType -> {
@@ -124,12 +125,20 @@ public class ProductService extends CommonService {
                                         case EDITOR:
                                             Optional.ofNullable(this.viewComponentEditorMapper.findById(ViewComponentEditor.builder()
                                                     .viewComponentId(viewComponent.getViewComponentId())
-                                                    .build())).ifPresent(viewComponentEditor -> viewComponentMap.put(viewComponentType, this.convert(viewComponentEditor, ViewComponentEditorDto.class)));
+                                                    .build())).ifPresent(viewComponentEditor -> {
+                                                ViewComponentEditorDto viewComponentEditorDto = this.convert(viewComponentEditor, ViewComponentEditorDto.class);
+                                                viewComponentEditorDto.setViewComponentType(viewComponentType.name());
+                                                viewComponents.add(viewComponentEditorDto);
+                                            });
                                             break;
                                         case ACCOMMODATION:
                                             Optional.ofNullable(this.viewComponentAccommodationMapper.findById(
                                                     ViewComponentAccommodation.builder().viewComponentId(viewComponent.getViewComponentId()).build()))
-                                                    .ifPresent(viewComponentAccommodation -> viewComponentMap.put(viewComponentType, this.convert(viewComponentAccommodation, ViewComponentAccommodationDto.class)));
+                                                    .ifPresent(viewComponentAccommodation -> {
+                                                        ViewComponentAccommodationDto viewComponentAccommodationDto = this.convert(viewComponentAccommodation, ViewComponentAccommodationDto.class);
+                                                        viewComponentAccommodationDto.setViewComponentType(viewComponentType.name());
+                                                        viewComponents.add(viewComponentAccommodationDto);
+                                                    });
                                             break;
                                     }
                                 });
@@ -138,7 +147,7 @@ public class ProductService extends CommonService {
                     return ProductViewDto.builder()
                             .productDto(productDto)
                             .productImageGroups(productImageGroupList)
-                            .viewComponents(viewComponentMap)
+                            .viewComponents(viewComponents)
                             .build();
                 })
                 .orElse(null);
@@ -235,7 +244,7 @@ public class ProductService extends CommonService {
 
         // 화면구성요소 목록을 저장함.
         // editor 유형인 경우 tempPath 경로로 첨부된 이미지 파일이 있는 경우 => 이미지 파일 저장경로로 이관 뒤 경로를 수정(replace)해야함
-        if(!Optional.ofNullable(productStoreDto.getViewComponents()).map(Map::isEmpty).orElse(true)) {
+        if(!Optional.ofNullable(productStoreDto.getViewComponents()).map(List::isEmpty).orElse(true)) {
             Function<Supplier<ViewComponent>, Long> function = viewComponentSupplier -> {
                 ViewComponent viewComponent = viewComponentSupplier.get();
                 this.viewComponentMapper.save(viewComponent);
@@ -244,17 +253,16 @@ public class ProductService extends CommonService {
 
             AtomicInteger atomicInteger = new AtomicInteger(1);
 
-            Iterator<Map.Entry<String, Map<String, Object>>> iterator = productStoreDto.getViewComponents().entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<String, Map<String, Object>> entry = iterator.next();
+            // Iterator<Map.Entry<String, Map<String, Object>>> iterator = productStoreDto.getViewComponents().entrySet().iterator();
+            for(Map<String, Object> map : productStoreDto.getViewComponents()) {
+                Constants.ViewComponentType viewComponentType = Optional.ofNullable(map.get("viewComponentType")).map(v -> (String)v).map(string -> Arrays.stream(Constants.ViewComponentType.values())
+                        .filter(type -> type.name().equals(string)).findFirst().orElse(null)).orElse(null);
 
-                // 상호 정의된 Component 유형이 아닌경우 버림.
-                Constants.ViewComponentType viewComponentType = Arrays.stream(Constants.ViewComponentType.values())
-                        .filter(type -> type.name().equals(entry.getKey())).findFirst().orElse(null);
+                if (Objects.isNull(viewComponentType)) {
+                    continue;
+                }
 
-                if (Objects.isNull(viewComponentType)) continue;
-
-                this.saveViewComponent(product.getProductId(), viewComponentType, entry.getValue(), atomicInteger.get());
+                this.saveViewComponent(product.getProductId(), viewComponentType, map, atomicInteger.get());
 
                 atomicInteger.incrementAndGet();
             }
@@ -473,17 +481,23 @@ public class ProductService extends CommonService {
 
             //viewComponents 저장
             Optional.ofNullable(productStoreDto.getViewComponents()).ifPresent(viewComponents -> {
-                Iterator<Map.Entry<String, Map<String, Object>>> iterator = viewComponents.entrySet().iterator();
-                while (iterator.hasNext()) {
+
+                for(Map<String, Object> map : productStoreDto.getViewComponents()) {
+
+                    Constants.ViewComponentType viewComponentType = Optional.ofNullable(map.get("viewComponentType")).map(v -> (String) v)
+                            .map(string -> Arrays.stream(Constants.ViewComponentType.values()).filter(v -> v.name().equals(string)).findFirst().orElse(null)).orElse(null);
+                    if(Objects.isNull(viewComponentType)) {
+                        continue;
+                    }
+
                     viewComponentSeq.incrementAndGet();
-                    Map.Entry<String, Map<String, Object>> entry = iterator.next();
-                    Long viewComponentId = Optional.ofNullable(entry.getValue().get("viewComponentId"))
+
+                    Long viewComponentId = Optional.ofNullable(map.get("viewComponentId"))
                             .map(v -> {
                                 if(v instanceof Integer) return ((Integer) v).longValue();
                                 else return (Long) v;
                             })
                             .orElse(null);
-                    Constants.ViewComponentType viewComponentType = Arrays.stream(Constants.ViewComponentType.values()).filter(v -> v.name().equals(entry.getKey())).findFirst().orElse(null);
 
                     if(Objects.isNull(viewComponentType)) {
                         continue;
@@ -493,18 +507,18 @@ public class ProductService extends CommonService {
                         boolean exists = this.viewComponentMapper.exists(ViewComponent.builder().viewComponentId(viewComponentId).build());
                         if(exists) {
                             // 업데이트
-                            this.saveViewComponent(product.getProductId(), viewComponentType, entry.getValue(), viewComponentSeq.get());
+                            this.saveViewComponent(product.getProductId(), viewComponentType, map, viewComponentSeq.get());
                         } else {
                             // 신규저장
-                            if(entry.getValue().containsKey("viewComponentId")) {
-                                entry.getValue().remove("viewComponentId");
+                            if(map.containsKey("viewComponentId")) {
+                                map.remove("viewComponentId");
                             }
-                            this.saveViewComponent(product.getProductId(), viewComponentType, entry.getValue(), viewComponentSeq.get());
+                            this.saveViewComponent(product.getProductId(), viewComponentType, map, viewComponentSeq.get());
                         }
 
                     } else {
                         // 신규저장
-                        this.saveViewComponent(product.getProductId(), viewComponentType, entry.getValue(), viewComponentSeq.get());
+                        this.saveViewComponent(product.getProductId(), viewComponentType, map, viewComponentSeq.get());
                     }
                 }
             });
@@ -636,11 +650,13 @@ public class ProductService extends CommonService {
                 // TODO : editor 내 첨부된 이미지 파일 이관
 
                 Optional.ofNullable(saveViewComponent1.apply(ViewComponent.builder()
+                                .viewComponentId(viewComponentEditorDto.getViewComponentId())
+                                .viewComponentType(viewComponentType.name())
                                 .productId(productId)
                                 .title(viewComponentEditorDto.getTitle())
                                 .description(viewComponentEditorDto.getDescription())
                                 .ordinal(ordinalPosition)
-                                .viewComponentType(viewComponentType.name())
+                                .useYn(Optional.ofNullable(viewComponentEditorDto.getUseYn()).orElse(Constants.Y))
                                 .build()))
                         .ifPresent(_viewComponentId -> {
                             ViewComponentEditor viewComponentEditor = ViewComponentEditor.builder()
