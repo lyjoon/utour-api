@@ -58,7 +58,7 @@ public class FileUtils {
 
         String ext = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
         String fileName = new StringBuilder(localDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")))
-                .append("-")
+                .append("$")
                 .append(UUID.randomUUID())
                 .append("." + ext)
                 .toString();

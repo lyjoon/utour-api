@@ -20,10 +20,10 @@
     <sql id="where">
         <where>
             <if test="productId != null">AND T.PRODUCT_ID = #{productId}</if>
-            <if test="productType != null">AND T.PRODUCT_TYPE = #{productType}</if>
             <if test="useYn != null">AND T.USE_YN = #{useYn}</if>
-            <if test="nationCode != null">AND T.NATION_CODE = #{nationCode}</if>
-            <if test="areaCode != null">AND T.AREA_CODE = #{areaCode}</if>
+            <if test="productType != null and productType != ''">AND T.PRODUCT_TYPE = #{productType}</if>
+            <if test="nationCode != null and nationCode != ''">AND T.NATION_CODE = #{nationCode}</if>
+            <if test="areaCode != null and areaCode != ''">AND T.AREA_CODE = #{areaCode}</if>
         </where>
     </sql>
 

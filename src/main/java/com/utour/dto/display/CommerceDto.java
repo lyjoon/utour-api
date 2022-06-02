@@ -17,4 +17,5 @@ public class CommerceDto extends ProductDto {
     private Long productId;
     private Integer ordinalPosition;
     private Character useYn;
+
 }

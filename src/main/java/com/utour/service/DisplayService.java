@@ -1,6 +1,7 @@
 package com.utour.service;
 
 import com.utour.common.CommonService;
+import com.utour.common.Constants;
 import com.utour.dto.display.CarouselDto;
 import com.utour.dto.display.CommerceDto;
 import com.utour.entity.Carousel;
@@ -53,7 +54,7 @@ public class DisplayService extends CommonService {
                         result.setTitle(product.getTitle());
                         result.setNationCode(product.getNationCode());
                         result.setAreaCode(product.getAreaCode());
-                        result.setRepImageSrc(product.getRepImageSrc());
+                        result.setRepImageSrc(this.contextPath + "/v1/product/image/" + product.getId());
                         return result;
                     }
                     return null;
@@ -83,7 +84,7 @@ public class DisplayService extends CommonService {
                 .carouselId(carouselId)
                 .linkUrl(carouselDto.getLinkUrl())
                 .ordinalPosition(carouselDto.getOrdinalPosition())
-                .useYn(carouselDto.getUseYn())
+                .useYn(Optional.ofNullable(carouselDto.getUseYn()).orElse(Constants.Y))
                 .title(carouselDto.getTitle());
 
         // 이미지 파일변경
@@ -108,7 +109,7 @@ public class DisplayService extends CommonService {
                 .commerceId(commerceDto.getCommerceId())
                 .ordinalPosition(commerceDto.getOrdinalPosition())
                 .productId(commerceDto.getProductId())
-                .useYn(commerceDto.getUseYn())
+                .useYn(Optional.ofNullable(commerceDto.getUseYn()).orElse(Constants.Y))
                 .build();
 
         this.commerceMapper.save(commerce);
@@ -137,5 +138,10 @@ public class DisplayService extends CommonService {
         if (this.commerceMapper.exists(commerce)) {
             this.commerceMapper.delete(commerce);
         } else throw new InternalException(this.getMessage("error.service.data.not-exists"));
+    }
+
+    public CarouselDto get(CarouselDto carouselDto) {
+        return Optional.ofNullable(this.carouselMapper.findById(Carousel.builder().carouselId(carouselDto.getCarouselId()).build()))
+                .map(v -> this.convert(v, CarouselDto.class)).orElse(null);
     }
 }

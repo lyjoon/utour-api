@@ -4,6 +4,7 @@ import com.utour.common.CommonService;
 import com.utour.common.Constants;
 import com.utour.controller.ProductController;
 import com.utour.dto.PagingResultDto;
+import com.utour.dto.ResultDto;
 import com.utour.dto.product.*;
 import com.utour.dto.view.ViewComponentAccommodationDto;
 import com.utour.dto.view.ViewComponentDto;
@@ -667,5 +668,17 @@ public class ProductService extends CommonService {
                         });
                 break ;
         };
+    }
+
+    public List<ProductDto> findAll(ProductDto productDto) {
+        Product product = Product.builder()
+                .areaCode(productDto.getAreaCode())
+                .nationCode(productDto.getNationCode())
+                .build();
+
+        return this.productMapper.findAll(product)
+                .stream()
+                .map(v -> this.convert(v, ProductDto.class))
+                .collect(Collectors.toList());
     }
 }

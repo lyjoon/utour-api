@@ -3,9 +3,11 @@ package com.utour.common;
 import com.utour.dto.ResultDto;
 import com.utour.exception.ValidException;
 import com.utour.service.LoginService;
+import com.utour.util.ErrorUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
@@ -26,6 +28,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class CommonController extends CommonComponent {
 
@@ -101,36 +105,50 @@ public class CommonController extends CommonComponent {
 	 * @param filePath
 	 * @return
 	 */
-	protected ResponseEntity<?> getImageResponseEntity(Path filePath) throws IOException {
-		// 파일명 저장되었는지 검색(*파일이 존재하지 않은경우 null 을 반환함)
-		if(!Files.isRegularFile(filePath)) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.contentType(MediaType.APPLICATION_JSON)
-					.body("not found.");
-		}
+	protected ResponseEntity<?> getImageResponseEntity(Path filePath) {
 
-		// 파일이 검색된 영역임
-		// 파일명 확장자에 따른 mediaType 지정
-		String fileName = filePath.toFile().getName();
-		String fileExt = FilenameUtils.getExtension(fileName);
-		MediaType imageType = MediaType.parseMediaType("image/" + fileExt);
+		try {
+			Objects.requireNonNull(filePath);
+			if(!Files.isRegularFile(filePath)) {
+				throw new IOException();
+			}
 
-		//매칭되는 확장자가 없을 경우 에러를 반환함.
-		if(Objects.isNull(imageType)) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.contentType(MediaType.APPLICATION_JSON)
-					.body("no support file-type");
-		}
+			// 파일이 검색된 영역임
+			// 파일명 확장자에 따른 mediaType 지정
+			String fileName = filePath.toFile().getName();
+			String fileExt = FilenameUtils.getExtension(fileName);
+			MediaType imageType = MediaType.parseMediaType("image/" + fileExt);
 
-		try (InputStream inputStream = Files.newInputStream(filePath)){
+			try (InputStream inputStream = Files.newInputStream(filePath)){
+				final HttpHeaders headers = new HttpHeaders();
+				headers.setContentType(imageType);
+				return ResponseEntity
+						.status(HttpStatus.OK)
+						.headers(headers)
+						.body(IOUtils.toByteArray(inputStream));
+			} catch (IOException ioException) {
+				throw ioException;
+			}
+
+		} catch (Exception e) {
+
+			log.error("{}", ErrorUtils.throwableInfo(e));
+
+			ClassPathResource classPathResource = new ClassPathResource("/static/assets/images/no_image.jpg");
 			final HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(imageType);
-			return ResponseEntity
-					.status(HttpStatus.OK)
-					.headers(headers)
-					.body(IOUtils.toByteArray(inputStream));
-		} catch (IOException ioException) {
-			throw ioException;
+			headers.setContentType(MediaType.IMAGE_JPEG);
+			try (InputStream inputStream = classPathResource.getInputStream()){
+				return ResponseEntity
+						.status(HttpStatus.OK)
+						.headers(headers)
+						.body(IOUtils.toByteArray(inputStream));
+			} catch (IOException ioException) {
+				log.error("{}", ErrorUtils.throwableInfo(ioException));
+				return ResponseEntity
+						.status(HttpStatus.OK)
+						.headers(headers)
+						.body(0);
+			}
 		}
 	}
 }

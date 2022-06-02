@@ -29,6 +29,7 @@ public class RestErrorController extends CommonComponent implements ErrorControl
         Optional.ofNullable(request.getAttribute(EXCEPTION_ATTRIBUTE))
                 .map(v -> (Throwable) v)
                 .ifPresent(throwable -> {
+                    throwable.printStackTrace();
                     String errorLogMessage = ErrorUtils.throwableInfo(throwable);
                     log.error("{}", errorLogMessage);
                 });

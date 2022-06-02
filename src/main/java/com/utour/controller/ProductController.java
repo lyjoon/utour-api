@@ -5,6 +5,7 @@ import com.utour.common.CommonController;
 import com.utour.common.Constants;
 import com.utour.dto.PagingResultDto;
 import com.utour.dto.ResultDto;
+import com.utour.dto.product.ProductDto;
 import com.utour.dto.product.ProductQueryDto;
 import com.utour.dto.product.ProductStoreDto;
 import com.utour.dto.product.ProductViewDto;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -60,6 +62,17 @@ public class ProductController extends CommonController {
     }
 
 
+    @Authorize
+    @GetMapping(value = "/find-all")
+    public ResultDto<List<ProductDto>> findAll (@RequestParam String nationCode, @RequestParam(required = false) String areaCode) {
+        List<ProductDto> products = this.productService.findAll(ProductDto.builder()
+                        .areaCode(areaCode)
+                        .nationCode(nationCode)
+                .useYn(Constants.Y)
+                .build());
+
+        return this.ok(products);
+    }
 
     @GetMapping(value = "{productId}")
     public ResultDto<ProductViewDto> get(@PathVariable Long productId) {
@@ -99,7 +112,7 @@ public class ProductController extends CommonController {
     }
 
     @GetMapping(value = {"/image/{productId}", "/image/{productId}/{productImageGroupId}/{productImageId}"} )
-    public ResponseEntity<?> getProductImage(@PathVariable Long productId, @PathVariable(required = false) Long productImageGroupId, @PathVariable(required = false) Long productImageId) throws IOException {
+    public ResponseEntity<?> getProductImage(@PathVariable Long productId, @PathVariable(required = false) Long productImageGroupId, @PathVariable(required = false) Long productImageId) {
         Path path = (Objects.isNull(productImageGroupId) || Objects.isNull(productImageId)) ?
                 this.productService.getImage(productId) : this.productService.getImage(productId, productImageGroupId, productImageId);
         return this.getImageResponseEntity(path);

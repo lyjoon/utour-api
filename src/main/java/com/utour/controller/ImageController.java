@@ -35,12 +35,12 @@ public class ImageController extends CommonController {
 
 
     @GetMapping(value = "/temp/{name:.+}")
-    public ResponseEntity<?> getTempImage(@PathVariable(value = "name") String name) throws IOException {
+    public ResponseEntity<?> getTempImage(@PathVariable(value = "name") String name) {
         return this.getImageResponseEntity(this.tempPath.resolve(name));
     }
 
     @GetMapping(value = "/content/{name:.+}")
-    public ResponseEntity<?> getContentImage(@PathVariable(value = "name") String name) throws IOException {
+    public ResponseEntity<?> getContentImage(@PathVariable(value = "name") String name) {
         return this.getImageResponseEntity(this.contentPath.resolve(name));
     }
 }
