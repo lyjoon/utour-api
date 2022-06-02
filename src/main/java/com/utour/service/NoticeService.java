@@ -76,7 +76,7 @@ public class NoticeService extends CommonService {
                     Path path = Paths.get(noticeAttach1.getPath());
                     try {
                         FileUtils.delete(path);
-                    } catch (IOException e) {
+                    } catch (Throwable e) {
                         log.error("{}", ErrorUtils.throwableInfo(e));
                     } finally {
                         this.noticeAttachMapper.delete(noticeAttach);
@@ -115,11 +115,7 @@ public class NoticeService extends CommonService {
         if(!noticeAttachments.isEmpty()) {
             // 파일삭제
             for (NoticeAttach noticeAttachment : noticeAttachments) {
-                try {
-                    FileUtils.delete(Paths.get(noticeAttachment.getPath()));
-                } catch (IOException ioException) {
-                    throw new InternalException(ioException);
-                }
+                FileUtils.delete(Paths.get(noticeAttachment.getPath()));
                 this.noticeAttachMapper.delete(noticeAttachment);
             }
 

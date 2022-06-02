@@ -1,5 +1,6 @@
 package com.utour.util;
 
+import com.utour.exception.InternalException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -7,10 +8,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -24,12 +24,16 @@ public class FileUtils {
         return delete(filePath);
     }
 
-    public static boolean delete(Path path) throws IOException {
-        if(Files.exists(path)) {
-            Files.delete(path);
-            return true;
+    public static boolean delete(Path path) {
+        try {
+            if(Files.exists(path)) {
+                Files.delete(path);
+                return true;
+            } else
+                return false;
+        } catch (IOException ioException) {
+            throw new InternalException(ioException);
         }
-        return false;
     }
 
     /**
@@ -55,17 +59,52 @@ public class FileUtils {
         if(!Files.isDirectory(toDir)) {
             throw new IOException("It's not a directory => '"+ dirPath +"'");
         }
+        String baseDate = localDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        Path toDir2 = toDir.resolve(baseDate);
+        if(!Files.isDirectory(toDir2)) {
+            Files.createDirectory(toDir2);
+        }
 
         String ext = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
-        String fileName = new StringBuilder(localDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+        String fileName = new StringBuilder(baseDate)
                 .append("$")
                 .append(UUID.randomUUID())
                 .append("." + ext)
                 .toString();
 
         //Path toPath = Paths.get(dirPath, fileName);
-        Path toPath = toDir.resolve(fileName);
+        Path toPath = toDir2.resolve(fileName);
         multipartFile.transferTo(toPath);
         return toPath;
+    }
+
+    public static boolean moveTempFile(String fileName, Path tempDir, Path toDir) {
+        String baseDate = fileName.indexOf("$") > -1 ? fileName.substring(0, fileName.indexOf("$")) : null;
+        Path tempFilePath = Optional.ofNullable(baseDate).map(s -> tempDir.resolve(s).resolve(fileName)).orElse(tempDir.resolve(fileName));
+
+        if(!Files.isRegularFile(tempFilePath)) {
+            return false;
+        }
+
+        try {
+            Path toFilePath;
+            if(baseDate != null) {
+                Path path = toDir.resolve(baseDate);
+                if(!Files.isDirectory(path)) {
+                    Files.createDirectory(path);
+                }
+                toFilePath = path.resolve(fileName);
+            } else {
+                toFilePath = toDir.resolve(fileName);
+            }
+
+            //FileCopyUtils.copy(Files.newInputStream(tempFilePath), Files.newOutputStream(toFilePath));
+            Files.move(tempFilePath, toFilePath);
+
+            return true;
+        } catch (Exception exception) {
+            log.error("{}", ErrorUtils.throwableInfo(exception));
+            return false;
+        }
     }
 }

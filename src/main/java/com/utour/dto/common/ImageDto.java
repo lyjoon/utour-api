@@ -11,11 +11,11 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class ImageDto {
 
     private String src;
 
     private String alt;
 
+    private String fileName;
 }

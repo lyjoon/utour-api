@@ -2,9 +2,7 @@ package com.utour.service;
 
 import com.utour.common.CommonService;
 import com.utour.common.Constants;
-import com.utour.controller.ProductController;
 import com.utour.dto.PagingResultDto;
-import com.utour.dto.ResultDto;
 import com.utour.dto.product.*;
 import com.utour.dto.view.ViewComponentAccommodationDto;
 import com.utour.dto.view.ViewComponentDto;
@@ -29,7 +27,6 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -361,11 +358,7 @@ public class ProductService extends CommonService {
                                 this.productImageMapper.findAll(ProductImage.builder().productId(_productImageGroup.getProductId()).productImageGroupId(_productImageGroup.getProductImageGroupId()).build())
                                         .forEach(productImage -> {
                                             if(StringUtils.hasText(productImage.getImagePath())) {
-                                                try {
-                                                    FileUtils.delete(Paths.get(productImage.getImagePath()));
-                                                } catch (IOException e) {
-                                                    log.error("{}", ErrorUtils.throwableInfo(e));
-                                                }
+                                                FileUtils.delete(Paths.get(productImage.getImagePath()));
                                             }
                                             this.productImageMapper.delete(productImage);
                                         });
@@ -426,11 +419,7 @@ public class ProductService extends CommonService {
                                     if(productImageDto.isDeleteYn()) {
                                         // 상품이미지 파일 및 정보삭제
                                         if(StringUtils.hasText(productImage.getImagePath())) {
-                                            try {
-                                                FileUtils.delete(Paths.get(productImage.getImagePath()));
-                                            } catch (IOException e) {
-                                                log.error("{}", ErrorUtils.throwableInfo(e));
-                                            }
+                                            FileUtils.delete(Paths.get(productImage.getImagePath()));
                                         }
                                         this.productImageMapper.delete(productImage);
                                     } else {
@@ -554,19 +543,33 @@ public class ProductService extends CommonService {
                                     .findFirst().orElse(null);
 
                             if(Objects.isNull(viewComponentType)) {
-                                this.viewComponentMapper.delete(viewComponent);
+                                if(this.viewComponentMapper.exists(viewComponent)) {
+                                    this.viewComponentMapper.delete(viewComponent);
+                                }
                                 continue;
                             } else {
                                 switch (viewComponentType) {
                                     case EDITOR:
-                                        // TODO : 첨부된 이미지 파일 삭제처리
-                                        this.viewComponentEditorMapper.delete(ViewComponentEditor.builder().viewComponentId(viewComponent.getViewComponentId()).build());
+                                        ViewComponentEditor _viewComponentEditor = ViewComponentEditor.builder().viewComponentId(viewComponent.getViewComponentId()).build();
+                                        ViewComponentEditor viewComponentEditor = this.viewComponentEditorMapper.findById(_viewComponentEditor);
+                                        if(Objects.nonNull(viewComponentEditor)) {
+                                            StringUtils.findMarkdownImageFileName(viewComponentEditor.getContent()).forEach(fileName -> {
+                                                Path path = this.filePath(this.contentPath, fileName);
+                                                FileUtils.delete(path);
+                                            });
+                                            this.viewComponentEditorMapper.delete(_viewComponentEditor);
+                                        }
                                         break;
                                     case ACCOMMODATION:
-                                        this.viewComponentAccommodationMapper.delete(ViewComponentAccommodation.builder().viewComponentId(viewComponent.getViewComponentId()).build());
+                                        ViewComponentAccommodation _viewComponentAccommodation = ViewComponentAccommodation.builder().viewComponentId(viewComponent.getViewComponentId()).build();
+                                        if(this.viewComponentAccommodationMapper.exists(_viewComponentAccommodation)) {
+                                            this.viewComponentAccommodationMapper.delete(_viewComponentAccommodation);
+                                        }
                                         break;
                                 }
-                                this.viewComponentMapper.delete(viewComponent);
+                                if(this.viewComponentMapper.exists(viewComponent)) {
+                                    this.viewComponentMapper.delete(viewComponent);
+                                }
                             }
                         }
                     });
@@ -579,11 +582,7 @@ public class ProductService extends CommonService {
                                         .productImageGroupId(productImageGroup.getProductImageGroupId())
                                         .build())
                                 .forEach(productImage -> {
-                                    try {
-                                        FileUtils.delete(Paths.get(productImage.getImagePath()));
-                                    } catch (IOException e) {
-                                        log.error("{}", ErrorUtils.throwableInfo(e));
-                                    }
+                                    FileUtils.delete(Paths.get(productImage.getImagePath()));
                                     //상품 이미지 정보삭제
                                     this.productImageMapper.delete(productImage);
                                 });
@@ -593,11 +592,7 @@ public class ProductService extends CommonService {
 
             // 상품 대표이미지가 등록된 경우 -> 파일삭제
             if(StringUtils.hasText(product.getRepImagePath())) {
-                try {
-                    FileUtils.delete(Paths.get(product.getRepImagePath()));
-                } catch (IOException e) {
-                    log.error("{}", ErrorUtils.throwableInfo(e));
-                }
+                FileUtils.delete(Paths.get(product.getRepImagePath()));
             }
 
             // 상품 최종삭제
@@ -648,7 +643,16 @@ public class ProductService extends CommonService {
                 break;
             case EDITOR:
                 ViewComponentEditorDto viewComponentEditorDto = this.objectMapper.convertValue(values, ViewComponentEditorDto.class);
-                // TODO : editor 내 첨부된 이미지 파일 이관
+                // editor 내 첨부된 이미지 파일 이관
+                if(viewComponentEditorDto.getImageFiles() != null && !viewComponentEditorDto.getImageFiles().isEmpty()) {
+                    viewComponentEditorDto.getImageFiles().forEach(fileName -> {
+                        boolean success = FileUtils.moveTempFile(fileName, this.tempPath, this.contentPath);
+                        if(success) {
+                            viewComponentEditorDto.setContent(viewComponentEditorDto.getContent().replace("/v1/image/temp/" + fileName, "/v1/image/content/" + fileName));
+                        }
+                    });
+                }
+
 
                 Optional.ofNullable(saveViewComponent1.apply(ViewComponent.builder()
                                 .viewComponentId(viewComponentEditorDto.getViewComponentId())

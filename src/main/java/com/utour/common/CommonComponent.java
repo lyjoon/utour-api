@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.MessageSourceAccessor;
 
+import java.nio.file.Path;
+import java.util.Optional;
+
 public class CommonComponent {
 
     protected Logger log = LoggerFactory.getLogger(this.getClass());
@@ -52,5 +55,10 @@ public class CommonComponent {
 
     protected <T> T getBean(Class<T> type) {
         return this.applicationContext.getBean(type);
+    }
+
+    protected Path filePath(Path path, String fileName) {
+        return Optional.ofNullable(fileName.indexOf("$") > -1 ? fileName.substring(0, fileName.indexOf("$")) : null)
+                .map(baseDate -> path.resolve(baseDate).resolve(fileName)).orElse(path.resolve(fileName));
     }
 }

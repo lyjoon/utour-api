@@ -31,3 +31,4 @@ app:
     product: ${app.file-upload-storage.root}/product
     temp: ${app.file-upload-storage.root}/temp
     carousel: ${app.file-upload-storage.root}/carousel
+    content: ${app.file-upload-storage.root}/content

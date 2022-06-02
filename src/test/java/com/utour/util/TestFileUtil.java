@@ -21,11 +21,18 @@ public class TestFileUtil extends TestLocalApplication {
                 URLEncoder.encode(fileName, "UTF-8"));
 
     }
+
+    @Test
+    public void testFileName() throws UnsupportedEncodingException {
+        String fileName = "20220603-75882f9d-2089-49ef-ad91-395ab226ba48.jpg";
+        log.info("fileName : {}", fileName.indexOf("$") > -1 ? fileName.substring(0, fileName.indexOf("$")) : fileName);
+    }
+
+
     @Test
     public void testClassPathFile() throws UnsupportedEncodingException {
         ClassPathResource classPathResource = new ClassPathResource("/static/assets/images/no_image.jpg");
         Path path = Paths.get(classPathResource.getPath());
         log.info("file-path : {}", path.toFile().getAbsolutePath());
-
     }
 }

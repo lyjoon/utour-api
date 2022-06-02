@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/v1/image")
@@ -30,17 +31,19 @@ public class ImageController extends CommonController {
         return this.ok(ImageDto.builder()
                 .alt(multipartFile.getOriginalFilename())
                 .src(this.contextPath + "/v1/image/temp/" + filePath.toFile().getName())
+                .fileName(filePath.toFile().getName())
                 .build());
     }
 
 
     @GetMapping(value = "/temp/{name:.+}")
     public ResponseEntity<?> getTempImage(@PathVariable(value = "name") String name) {
-        return this.getImageResponseEntity(this.tempPath.resolve(name));
+        return this.getImageResponseEntity(this.filePath(this.tempPath, name));
     }
 
     @GetMapping(value = "/content/{name:.+}")
     public ResponseEntity<?> getContentImage(@PathVariable(value = "name") String name) {
-        return this.getImageResponseEntity(this.contentPath.resolve(name));
+        return this.getImageResponseEntity(this.filePath(this.contentPath, name));
     }
+
 }
