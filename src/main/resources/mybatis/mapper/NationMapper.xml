@@ -41,6 +41,7 @@
     <select id="findAll" resultMap="resultMap">
         <include refid="select" />
         <include refid="where" />
+        ORDER BY ORDINAL_POSITION, NATION_NAME
     </select>
 
     <select id="findPage" resultMap="resultMap">
@@ -49,6 +50,7 @@
             <if test="query != null">AND (NATION_CODE LIKE CONCAT(#{query}, '%') OR NATION_NAME LIKE CONCAT(#{query}, '%') )</if>
             <if test="useYn != null">AND USE_YN = #{useYn}</if>
         </where>
+        ORDER BY ORDINAL_POSITION, NATION_NAME
         <include refid="common.base.pagination" />
     </select>
 

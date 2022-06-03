@@ -1,7 +1,8 @@
 INSERT INTO CODE_GROUP (GROUP_CODE, GROUP_NAME, USE_YN)
 VALUES
     ('PRODUCT_TYPE', '상품유형', 'Y'),
-    ('INQUIRY_STATUS', '문의상태', 'Y')
+    ('INQUIRY_STATUS', '문의상태', 'Y'),
+    ('CONTINENTS', '7대주', 'Y')
 ;
 
 INSERT INTO CODE (GROUP_CODE, CODE, CODE_NAME, DESCRIPTION)
@@ -9,7 +10,12 @@ VALUES
     ('PRODUCT_TYPE', 'HOTEL', '호텔', NULL),
     ('PRODUCT_TYPE', 'SCUBA', '스쿠버', NULL),
     ('INQUIRY_STATUS', 'WAIT', '답변대기', NULL),
-    ('INQUIRY_STATUS', 'COMPLETE', '처리완료', NULL)
+    ('INQUIRY_STATUS', 'COMPLETE', '처리완료', NULL),
+    ('CONTINENTS', 'AS', '아시아', NULL),
+    ('CONTINENTS', 'EU', '유럽', NULL),
+    ('CONTINENTS', 'NA', '북아메리카', NULL),
+    ('CONTINENTS', 'SA', '남아메리카', NULL),
+    ('CONTINENTS', 'OC', '오세아니아', NULL)
 ;
 
 INSERT INTO NATION (NATION_NAME, NATION_CODE, USE_YN)
