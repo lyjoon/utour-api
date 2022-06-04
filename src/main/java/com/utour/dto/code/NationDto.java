@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class NationDto {
 
+    private String continentCode;
     private String nationCode;
     private String nationName;
     private Character useYn;

@@ -39,7 +39,8 @@ public class ProductController extends CommonController {
     @Value(value = "${app.file-upload-storage.product:}")
     private Path productPath;
 
-    @GetMapping(value = "/list")
+    @Authorize
+    @GetMapping(value = "/page/list")
     public PagingResultDto getPageList (
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) String nationCode,
@@ -63,8 +64,8 @@ public class ProductController extends CommonController {
 
 
     @Authorize
-    @GetMapping(value = "/find-all")
-    public ResultDto<List<ProductDto>> findAll (@RequestParam String nationCode, @RequestParam(required = false) String areaCode) {
+    @GetMapping(value = "/list")
+    public ResultDto<List<ProductDto>> getList (@RequestParam String nationCode, @RequestParam(required = false) String areaCode) {
         List<ProductDto> products = this.productService.findAll(ProductDto.builder()
                         .areaCode(areaCode)
                         .nationCode(nationCode)
@@ -73,6 +74,13 @@ public class ProductController extends CommonController {
 
         return this.ok(products);
     }
+
+    @PostMapping(value = "/list")
+    public PagingResultDto queryList(@RequestBody ProductQueryDto productQueryDto) {
+        return this.productService.getPageList(productQueryDto);
+    }
+
+
 
     @GetMapping(value = "{productId}")
     public ResultDto<ProductViewDto> get(@PathVariable Long productId) {

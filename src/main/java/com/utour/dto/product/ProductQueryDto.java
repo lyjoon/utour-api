@@ -16,6 +16,8 @@ public class ProductQueryDto extends PagingQueryDto {
 
     private String productType;
     private Long productId;
+    private String continentCode;
     private String nationCode;
     private String areaCode;
+
 }

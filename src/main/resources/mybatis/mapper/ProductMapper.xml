@@ -78,11 +78,11 @@
         FROM PRODUCT T
         <where>
             <if test="useYn != null">AND T.USE_YN = #{useYn}</if>
-            <if test="productId != null">AND PRODUCT_ID = #{productId}</if>
-            <if test="productType != null">AND PRODUCT_TYPE = #{productType}</if>
-            <if test="nationCode != null">AND NATION_CODE = #{nationCode}</if>
-            <if test="areaCode != null">AND AREA_CODE = #{areaCode}</if>
-            <if test="query != null and query != ''">AND (TITLE LIKE CONCAT(#{query}, '%') OR CONTENT LIKE CONCAT(#{query}, '%'))</if>
+            <if test="productId != null">AND T.PRODUCT_ID = #{productId}</if>
+            <if test="productType != null">AND T.PRODUCT_TYPE = #{productType}</if>
+            <if test="nationCode != null and nationCode != ''">AND T.NATION_CODE = #{nationCode}</if>
+            <if test="areaCode != null and areaCode != ''">AND T.AREA_CODE = #{areaCode}</if>
+            <if test="query != null and query != ''">AND (T.TITLE LIKE CONCAT(#{query}, '%') OR T.DESCRIPTION LIKE CONCAT(#{query}, '%'))</if>
         </where>
     </select>
 
@@ -104,11 +104,11 @@
         LEFT OUTER JOIN NATION_AREA NA ON T.NATION_CODE = NA.NATION_CODE AND T.AREA_CODE = NA.AREA_CODE
         <where>
             <if test="useYn != null">AND T.USE_YN = #{useYn}</if>
-            <if test="productId != null">AND PRODUCT_ID = #{productId}</if>
-            <if test="productType != null">AND PRODUCT_TYPE = #{productType}</if>
-            <if test="nationCode != null">AND NATION_CODE = #{nationCode}</if>
-            <if test="areaCode != null">AND AREA_CODE = #{areaCode}</if>
-            <if test="query != null and query != ''">AND (TITLE LIKE CONCAT(#{query}, '%') OR CONTENT LIKE CONCAT(#{query}, '%'))</if>
+            <if test="productId != null">AND T.PRODUCT_ID = #{productId}</if>
+            <if test="productType != null">AND T.PRODUCT_TYPE = #{productType}</if>
+            <if test="nationCode != null and nationCode != ''">AND T.NATION_CODE = #{nationCode}</if>
+            <if test="areaCode != null and areaCode != ''">AND T.AREA_CODE = #{areaCode}</if>
+            <if test="query != null and query != ''">AND (T.TITLE LIKE CONCAT(#{query}, '%') OR T.DESCRIPTION LIKE CONCAT(#{query}, '%'))</if>
         </where>
         ORDER BY PRODUCT_ID DESC
         <include refid="common.base.pagination" />

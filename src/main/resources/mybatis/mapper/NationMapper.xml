@@ -5,6 +5,7 @@
 <mapper namespace="com.utour.mapper.NationMapper">
 
     <resultMap id="resultMap" type="com.utour.entity.Nation" extends="common.base.resultMap">
+        <result javaType="java.lang.String" property="continentCode" column="CONTINENT_CODE" />
         <result javaType="java.lang.String" property="nationCode" column="NATION_CODE" />
         <result javaType="java.lang.String" property="nationName" column="NATION_NAME" />
         <result javaType="java.lang.Character" property="useYn" column="USE_YN" />
@@ -14,6 +15,7 @@
         SELECT
           NATION_CODE
         , NATION_NAME
+        , CONTINENT_CODE
         , USE_YN
         <include refid="common.base.column" />
         FROM NATION T
@@ -21,6 +23,7 @@
 
     <sql id="where">
         <where>
+            <if test="continentCode != null">AND CONTINENT_CODE = #{continentCode}</if>
             <if test="nationCode != null">AND NATION_CODE = #{nationCode}</if>
             <if test="useYn != null">AND USE_YN = #{useYn}</if>
         </where>
@@ -58,15 +61,18 @@
         INSERT INTO NATION (
           NATION_CODE
         , NATION_NAME
+        , CONTINENT_CODE
         , USE_YN
         ) VALUES (
           #{nationCode }
         , #{nationName }
+        , #{continentCode}
         , #{useYn }
         )
         <include refid="common.base.duplicateUpdate" />
         , NATION_NAME = VALUES(NATION_NAME)
         , USE_YN = VALUES(USE_YN)
+        , CONTINENT_CODE = VALUES(CONTINENT_CODE)
     </insert>
 
     <delete id="delete">

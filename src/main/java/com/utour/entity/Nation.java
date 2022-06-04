@@ -14,6 +14,7 @@ import lombok.experimental.SuperBuilder;
 public class Nation extends CommonEntity {
 
     private String nationCode;
+    private String continentCode;
     private String nationName;
     private Character useYn;
 }
