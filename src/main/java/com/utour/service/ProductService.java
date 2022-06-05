@@ -231,7 +231,7 @@ public class ProductService extends CommonService {
 
                                         this.productImageMapper.save(productImage);
                                     } catch (IOException ioException) {
-                                        log.error("{}", ErrorUtils.throwableInfo(ioException));
+                                        log.warn("{}", ErrorUtils.throwableInfo(ioException));
                                     } finally {
                                         break;
                                     }
@@ -333,7 +333,7 @@ public class ProductService extends CommonService {
 
                                 this.productImageMapper.save(productImage);
                             } catch (IOException ioException) {
-                                log.error("{}", ErrorUtils.throwableInfo(ioException));
+                                log.warn("{}", ErrorUtils.throwableInfo(ioException));
                             } finally {
                                 break;
                             }
@@ -442,7 +442,7 @@ public class ProductService extends CommonService {
                                                             Path uploadFilePath = FileUtils.uploadFile(this.productPath, multipartFile);
                                                             productImageBuilder.imagePath(uploadFilePath.toFile().getPath());
                                                         } catch (IOException e) {
-                                                            log.error("{}", ErrorUtils.throwableInfo(e));
+                                                            log.warn("{}", ErrorUtils.throwableInfo(e));
                                                         }
                                                     });
                                         }

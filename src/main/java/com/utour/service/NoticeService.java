@@ -99,7 +99,7 @@ public class NoticeService extends CommonService {
                             .build();
                     this.noticeAttachMapper.save(noticeAttach);
                 } catch (IOException ioException) {
-                    log.error("{}", ErrorUtils.throwableInfo(ioException));
+                    log.warn("{}", ErrorUtils.throwableInfo(ioException));
                 }
             }
         }

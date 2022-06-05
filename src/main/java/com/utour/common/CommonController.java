@@ -143,7 +143,7 @@ public class CommonController extends CommonComponent {
 						.headers(headers)
 						.body(IOUtils.toByteArray(inputStream));
 			} catch (IOException ioException) {
-				log.error("{}", ErrorUtils.throwableInfo(ioException));
+				log.warn("{}", ErrorUtils.throwableInfo(ioException));
 				return ResponseEntity
 						.status(HttpStatus.OK)
 						.headers(headers)
