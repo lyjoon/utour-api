@@ -126,6 +126,8 @@ public class ProductService extends CommonService {
                                                     .build())).ifPresent(viewComponentEditor -> {
                                                 ViewComponentEditorDto viewComponentEditorDto = this.convert(viewComponentEditor, ViewComponentEditorDto.class);
                                                 viewComponentEditorDto.setViewComponentType(viewComponentType.name());
+                                                viewComponentEditorDto.setTitle(viewComponent.getTitle());
+                                                viewComponentEditorDto.setDescription(viewComponent.getDescription());
                                                 viewComponents.add(viewComponentEditorDto);
                                             });
                                             break;
@@ -135,6 +137,8 @@ public class ProductService extends CommonService {
                                                     .ifPresent(viewComponentAccommodation -> {
                                                         ViewComponentAccommodationDto viewComponentAccommodationDto = this.convert(viewComponentAccommodation, ViewComponentAccommodationDto.class);
                                                         viewComponentAccommodationDto.setViewComponentType(viewComponentType.name());
+                                                        viewComponentAccommodationDto.setTitle(viewComponent.getTitle());
+                                                        viewComponentAccommodationDto.setDescription(viewComponent.getDescription());
                                                         viewComponents.add(viewComponentAccommodationDto);
                                                     });
                                             break;
@@ -243,11 +247,6 @@ public class ProductService extends CommonService {
         // 화면구성요소 목록을 저장함.
         // editor 유형인 경우 tempPath 경로로 첨부된 이미지 파일이 있는 경우 => 이미지 파일 저장경로로 이관 뒤 경로를 수정(replace)해야함
         if(!Optional.ofNullable(productStoreDto.getViewComponents()).map(List::isEmpty).orElse(true)) {
-            Function<Supplier<ViewComponent>, Long> function = viewComponentSupplier -> {
-                ViewComponent viewComponent = viewComponentSupplier.get();
-                this.viewComponentMapper.save(viewComponent);
-                return viewComponent.getViewComponentId();
-            };
 
             AtomicInteger atomicInteger = new AtomicInteger(1);
 
