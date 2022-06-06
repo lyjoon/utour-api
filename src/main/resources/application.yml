@@ -25,6 +25,7 @@ spring:
 jasypt:
   encryptor:
     bean: jasyptStringEncryptor
+    algorithm: PBEWithMD5AndDES
 
 app:
   login:
