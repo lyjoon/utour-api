@@ -8,9 +8,8 @@ spring:
     hikari:
       driver-class-name: org.mariadb.jdbc.Driver
       username: roywmc
-      password: dldydwns2..
+      password: ENC(/EUIneyBn71RjhnT5I+BN1KOPTcvDf5t)
       jdbc-url: jdbc:mariadb://localhost:3306/roywmc
-      #jdbc-url: jdbc:mariadb://localhost:3306/roywmc
 
 logging:
   file:
