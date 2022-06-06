@@ -14,8 +14,9 @@ spring:
 logging:
   file:
     path: /marebito6/logs
-  config: classpath:logback-${spring.profiles.active}.xml
+  config: classpath:logback-local.xml
 
+debug: true
 
 app:
   file-upload-storage:
