@@ -7,19 +7,19 @@ spring:
   datasource:
     hikari:
       driver-class-name: org.mariadb.jdbc.Driver
-      username: marebito7
-      password: ENC(YVtXsaFqMCPJUIfI7IWdJjw3vJsf3oKh)
-      url: jdbc:mariadb://localhost:3306/marebito7
+      username: marebito6
+      password: ENC(9IizH6fff/gXAx38j9hjO8Gl4bHnIEmZ)
+      url: jdbc:mariadb://localhost:3306/marebito6
 
 logging:
   file:
-    path: /marebito7/logs
+    path: /marebito6/logs
   config: classpath:logback-${spring.profiles.active}.xml
 
 
 app:
   file-upload-storage:
-    root: /marebito7/upload
+    root: /marebito6/upload
     notice: ${app.file-upload-storage.root}/notice
     product: ${app.file-upload-storage.root}/product
     temp: ${app.file-upload-storage.root}/temp
