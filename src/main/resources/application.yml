@@ -22,6 +22,13 @@ spring:
   cache:
     jcache:
       config: classpath:ehcache.xml
+  batch:
+    jdbc:
+      initialize-schema: never
+    job:
+      enabled: false
+  main:
+    allow-bean-definition-overriding: true
 jasypt:
   encryptor:
     bean: jasyptStringEncryptor
@@ -30,3 +37,6 @@ jasypt:
 app:
   login:
     secret-key: utour
+  delete-temp-file:
+    storage-period: 7
+    limit: 100
