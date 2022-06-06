@@ -37,14 +37,16 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}")
     implementation("org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-cache:${springBootVersion}")
-
-    implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.9'
-
-    // https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot-starter
-    implementation('com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4')
+    implementation("org.springframework.boot:spring-boot-starter-batch:${springBootVersion}")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}")
     implementation("org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}")
+
+    // model-mapper
+    implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.9'
+
+    // jasypt
+    implementation('com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4')
 
     //mybatis
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:${springMybatisVersion}")
