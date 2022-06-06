@@ -27,8 +27,8 @@ public class DeleteTempFileScheduler extends CommonComponent {
     /**
      * 매일 자정에 실행(cron = "0 0 0 * * ?")
      */
-    //@Scheduled(cron = "0 0 0 * * ?")
-    @Scheduled(initialDelay = 5000, fixedDelay = 10000)
+    @Scheduled(cron = "0 0 0 * * ?")
+    //@Scheduled(initialDelay = 5000, fixedDelay = 10000)
     public void dailyScheduler() {
         try {
             JobParameters jobParameters = new JobParametersBuilder()
