@@ -22,6 +22,7 @@
         </resources>
     </cache>
 
+    <!--
     <cache alias="nationList">
         <value-type>java.util.ArrayList</value-type>
         <expiry>
@@ -42,5 +43,6 @@
             <heap unit="entries">500</heap>
         </resources>
     </cache>
+    -->
 
 </config>

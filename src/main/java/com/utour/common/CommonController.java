@@ -66,6 +66,10 @@ public class CommonController extends CommonComponent {
 		return ResponseEntity.status(httpStatus).contentType(MediaType.APPLICATION_JSON).build();
 	}
 
+	protected <T>ResponseEntity<T> response(T data){
+		return ResponseEntity.ok(data);
+	}
+
 	protected ResponseEntity<ResultDto> response(HttpStatus httpStatus, String message){
 		return ResponseEntity.status(httpStatus).contentType(MediaType.APPLICATION_JSON).body(ResultDto.builder().message(message).build());
 	}

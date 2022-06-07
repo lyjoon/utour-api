@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.utour.mapper.AreaMapper">
+
+    <resultMap id="resultMap" type="com.utour.entity.Area" extends="common.base.resultMap">
+        <result javaType="java.lang.String" column="AREA_CODE" property="areaCode" />
+        <result javaType="java.lang.String" column="AREA_NAME" property="areaName" />
+        <result javaType="java.lang.String" column="ARRIVAL_CODE" property="arrivalCode" />
+        <result javaType="java.lang.String" column="NATION_CODE" property="nationCode" />
+        <result javaType="java.lang.Character" column="MENU_YN" property="menuYn" />
+        <result javaType="java.lang.Integer" column="ORDINAL_POSITION" property="ordinalPosition" />
+        <result javaType="java.lang.Character" column="USE_YN" property="useYn" />
+    </resultMap>
+
+    <sql id="select">
+        SELECT
+          AREA_CODE
+        , AREA_NAME
+        , ARRIVAL_CODE
+        , NATION_CODE
+        , MENU_YN
+        , ORDINAL_POSITION
+        , USE_YN
+        <include refid="common.base.column" />
+        FROM AREA T
+    </sql>
+
+    <sql id="where">
+        <where>
+            <if test="arrivalCode != null">AND ARRIVAL_CODE = #{arrivalCode}</if>
+            <if test="nationCode != null">AND NATION_CODE = #{nationCode}</if>
+            <if test="areaCode != null">AND AREA_CODE = #{areaCode}</if>
+            <if test="useYn != null">AND USE_YN = #{useYn}</if>
+        </where>
+    </sql>
+
+    <select id="exists" resultType="java.lang.Boolean">
+        <include refid="common.base.existsPrefix" />
+        <include refid="select" />
+        <include refid="where" />
+        <include refid="common.base.existsSuffix" />
+    </select>
+
+    <select id="findById" resultMap="resultMap">
+        <include refid="select" />
+        WHERE AREA_CODE = #{areaCode}
+    </select>
+
+    <select id="findAll" resultMap="resultMap">
+        <include refid="select" />
+        <include refid="where" />
+        ORDER BY ORDINAL_POSITION
+    </select>
+
+    <insert id="save">
+        INSERT INTO AREA (
+          AREA_CODE
+        , AREA_NAME
+        , ARRIVAL_CODE
+        , NATION_CODE
+        , MENU_YN
+        , ORDINAL_POSITION
+        , USE_YN
+        ) VALUES (
+          #{areaCode }
+        , #{areaName }
+        , #{arrivalCode }
+        , #{nationCode }
+        , #{menuYn }
+        , #{ordinalPosition }
+        , #{useYn }
+        )
+        <include refid="common.base.duplicateUpdate" />
+        <if test="useYn != null">, USE_YN = VALUES(USE_YN)</if>
+        <if test="menuYn != null">, MENU_YN = VALUES(MENU_YN)</if>
+        <if test="areaName != null and areaName != ''">, AREA_NAME = VALUES(AREA_NAME)</if>
+        <if test="ordinalPosition != null">, ORDINAL_POSITION = VALUES(ORDINAL_POSITION)</if>
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM AREA
+        WHERE AREA_CODE = #{areaCode}
+    </delete>
+
+</mapper>

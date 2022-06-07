@@ -7,18 +7,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-/**
- * @deprecated 미사용개체
- */
 @Getter
-@Deprecated
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class NationArea extends CommonEntity {
+public class Area extends CommonEntity {
 
-    private String nationCode;
     private String areaCode;
     private String areaName;
+    private String arrivalCode;
+    private String nationCode;
+    private Character menuYn;
+    private Integer ordinalPosition;
     private Character useYn;
 }

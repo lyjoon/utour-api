@@ -4,18 +4,13 @@ import com.utour.common.CommonService;
 import com.utour.common.Constants;
 import com.utour.dto.PagingQueryDto;
 import com.utour.dto.code.*;
-import com.utour.entity.Code;
-import com.utour.entity.CodeGroup;
-import com.utour.entity.Nation;
-import com.utour.entity.NationArea;
-import com.utour.mapper.CodeMapper;
-import com.utour.mapper.CodeGroupMapper;
-import com.utour.mapper.NationAreaMapper;
-import com.utour.mapper.NationMapper;
+import com.utour.entity.*;
+import com.utour.mapper.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,6 +25,10 @@ public class CodeService extends CommonService {
     private final NationMapper nationMapper;
     private final NationAreaMapper nationAreaMapper;
 
+    private final ArrivalMapper arrivalMapper;
+
+    private final AreaMapper areaMapper;
+
     @Cacheable(value = "code", key = "#groupCode")
     public CodeGroupDto getCodeGroup(String groupCode) {
         return Optional.ofNullable(this.codeGroupMapper.findById(CodeGroup.builder().groupCode(groupCode).build()))
@@ -41,7 +40,7 @@ public class CodeService extends CommonService {
                 .orElse(null);
     }
 
-    @Cacheable(value = "nationList")
+    //@Cacheable(value = "nationList")
     public List<NationDto> getNationList() {
         return this.nationMapper.findAll(Nation.builder().useYn(Constants.Y).build())
                 .stream()
@@ -49,7 +48,7 @@ public class CodeService extends CommonService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "nation", key = "#nationCode")
+    //@Cacheable(value = "nation", key = "#nationCode")
     public NationDto getNation(String nationCode) {
         return Optional.ofNullable(this.nationMapper.findById(Nation.builder()
                         .nationCode(nationCode)
@@ -87,5 +86,26 @@ public class CodeService extends CommonService {
                     return nationDto;
                 })
                 .orElse(null);
+    }
+
+    public List<ArrivalDto> getList(@NotNull ArrivalDto arrivalDto) {
+        return arrivalMapper.findAll(Arrival.builder()
+                        .useYn(Optional.ofNullable(arrivalDto.getUseYn()).orElse(Constants.Y))
+                        .arrivalCode(arrivalDto.getArrivalCode())
+                        .menuYn(arrivalDto.getMenuYn())
+                        .build()).stream()
+                .map(v -> this.convert(v, ArrivalDto.class))
+                .collect(Collectors.toList());
+    }
+
+    public List<AreaDto> getList(@NotNull AreaDto areaDto){
+        return this.areaMapper.findAll(Area.builder()
+                        .areaCode(areaDto.getAreaCode())
+                        .arrivalCode(areaDto.getArrivalCode())
+                        .nationCode(areaDto.getNationCode())
+                        .useYn(areaDto.getUseYn())
+                        .menuYn(areaDto.getMenuYn())
+                .build()).stream().map(v-> this.convert(v, AreaDto.class))
+                .collect(Collectors.toList());
     }
 }

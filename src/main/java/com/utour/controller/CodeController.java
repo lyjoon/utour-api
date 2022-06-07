@@ -1,15 +1,10 @@
 package com.utour.controller;
 
 import com.utour.common.CommonController;
-import com.utour.common.Constants;
-import com.utour.dto.PagingQueryDto;
-import com.utour.dto.ResultDto;
-import com.utour.dto.board.BoardQueryDto;
-import com.utour.dto.code.CodeGroupDto;
-import com.utour.dto.code.NationDto;
-import com.utour.dto.code.NationQueryDto;
+import com.utour.dto.code.*;
 import com.utour.service.CodeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,41 +16,19 @@ public class CodeController extends CommonController {
 
     private final CodeService codeService;
 
-    @GetMapping(value = "/nation/all")
-    public ResultDto<List<NationDto>> getNationList(){
-        return this.ok(this.codeService.getNationList());
+    @PostMapping(value = "/arrival-list")
+    public ResponseEntity<List<ArrivalDto>> getArrivalList(@RequestBody ArrivalDto arrivalDto) {
+        return this.response(this.codeService.getList(arrivalDto));
     }
 
-    @GetMapping(value = "/nation/list")
-    public ResultDto<List<NationDto>> getNationList(@RequestParam(required = false, value = "query") String query){
-        NationQueryDto nationQueryDto = NationQueryDto.builder()
-                .page(1)
-                .limit(10)
-                .useYn(Constants.Y)
-                .query(query)
-                .build();
-
-        return this.ok(this.codeService.getNationList(nationQueryDto));
-    }
-
-    @GetMapping(value = "/nation")
-    public ResultDto<NationDto> getNation(
-            @RequestParam(value = "nationCode") String nationCode,
-            @RequestParam(required = false, value = "query") String query) {
-        NationQueryDto nationQueryDto = NationQueryDto.builder()
-                .page(1)
-                .limit(10)
-                .useYn(Constants.Y)
-                .nationCode(nationCode)
-                .query(query)
-                .build();
-
-        return this.ok(this.codeService.getNation(nationQueryDto));
+    @PostMapping(value = "/area-list")
+    public ResponseEntity<List<AreaDto>> getAreaList(@RequestBody AreaDto areaDto) {
+        return this.response(this.codeService.getList(areaDto));
     }
 
     @GetMapping(value = "/common")
-    public ResultDto<CodeGroupDto> getCode(@RequestParam String groupCode) {
-        return this.ok(this.codeService.getCodeGroup(groupCode));
+    public ResponseEntity<CodeGroupDto> getCode(@RequestParam String groupCode) {
+        return this.response(this.codeService.getCodeGroup(groupCode));
     }
 
 }
