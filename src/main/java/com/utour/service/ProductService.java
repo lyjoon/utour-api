@@ -29,7 +29,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,7 +62,7 @@ public class ProductService extends CommonService {
      * @param productPagingDto
      * @return
      */
-    public PagingResultDto getPageList(ProductQueryDto productPagingDto) {
+    public PagingResultDto getList(ProductQueryDto productPagingDto) {
         List<ProductDto> result = this.productMapper.findPage(productPagingDto)
                 .stream()
                 .map(vo -> {
@@ -93,6 +92,20 @@ public class ProductService extends CommonService {
                 .count(count)
                 .result(result)
                 .build();
+    }
+
+
+
+    public List<ProductDto> getList(String arrivalCode, String areaCode) {
+        Product product = Product.builder()
+                .areaCode(arrivalCode)
+                .arrivalCode(arrivalCode)
+                .build();
+
+        return this.productMapper.findAll(product)
+                .stream()
+                .map(v -> this.convert(v, ProductDto.class))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -681,17 +694,5 @@ public class ProductService extends CommonService {
                         });
                 break ;
         };
-    }
-
-    public List<ProductDto> findAll(ProductDto productDto) {
-        Product product = Product.builder()
-                .areaCode(productDto.getAreaCode())
-                .arrivalCode(productDto.getArrivalCode())
-                .build();
-
-        return this.productMapper.findAll(product)
-                .stream()
-                .map(v -> this.convert(v, ProductDto.class))
-                .collect(Collectors.toList());
     }
 }

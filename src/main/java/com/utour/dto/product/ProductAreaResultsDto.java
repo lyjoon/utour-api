@@ -1,22 +1,20 @@
 package com.utour.dto.product;
 
-import com.utour.dto.PagingQueryDto;
+import com.utour.dto.code.AreaDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Getter
 @Setter
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductQueryDto extends PagingQueryDto {
+public class ProductAreaResultsDto extends AreaDto {
 
-    private String productType;
-    private Long productId;
-    private String arrivalCode;
-    private String areaCode;
-
+    private List<ProductDto> results;
 }

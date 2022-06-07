@@ -5,13 +5,9 @@ import com.utour.common.CommonController;
 import com.utour.common.Constants;
 import com.utour.dto.PagingResultDto;
 import com.utour.dto.ResultDto;
-import com.utour.dto.product.ProductDto;
-import com.utour.dto.product.ProductQueryDto;
-import com.utour.dto.product.ProductStoreDto;
-import com.utour.dto.product.ProductViewDto;
+import com.utour.dto.product.*;
 import com.utour.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,73 +16,39 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/v1/product", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProductController extends CommonController {
 
-    public static final String PRODUCT_IMAGE_LINK_URL = "/v1/product/image/";
-
     private final ProductService productService;
 
-
-    @Value(value = "${app.file-upload-storage.product:}")
-    private Path productPath;
-
     @Authorize
-    @GetMapping(value = "/page/list")
-    public PagingResultDto getPageList (
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) String nationCode,
-            @RequestParam(required = false) String areaCode,
-            @RequestParam(required = false) String query,
-            @RequestParam(required = false) String productType,
-            @RequestHeader(value="Authorization", required = false) String authorization
-    ) {
-        return this.productService.getPageList(ProductQueryDto.builder()
-                .page(Optional.ofNullable(page).orElse(1))
-                .query(query)
-                .nationCode(nationCode)
-                .areaCode(areaCode)
-                .productType(Arrays.stream(Constants.ProductType.values()).filter(type -> type.name().equals(productType)).findFirst()
-                        .map(Enum::name)
-                        .orElse(null))
-                .limit(Constants.DEFAULT_PAGING_COUNT)
-                .useYn(this.useByToken(authorization))
-                .build());
-    }
-
-
-    @Authorize
-    @GetMapping(value = "/list")
-    public ResultDto<List<ProductDto>> getList (@RequestParam String arrivalCode, @RequestParam(required = false) String areaCode) {
-        List<ProductDto> products = this.productService.findAll(ProductDto.builder()
-                        .arrivalCode(arrivalCode)
-                        .areaCode(areaCode)
-                .useYn(Constants.Y)
-                .build());
-
-        return this.ok(products);
-    }
-
     @PostMapping(value = "/list")
-    public PagingResultDto queryList(@RequestBody ProductQueryDto productQueryDto) {
-        return this.productService.getPageList(productQueryDto);
+    public PagingResultDto getList (@RequestBody ProductQueryDto productQueryDto) {
+
+        if(Objects.isNull(productQueryDto.getPage())) {
+            productQueryDto.setPage(1);
+        }
+        if(Objects.isNull(productQueryDto.getLimit())) {
+            productQueryDto.setLimit(Constants.DEFAULT_PAGING_COUNT);
+        }
+
+        return this.productService.getList(productQueryDto);
     }
-
-
+    @GetMapping(value = "/list")
+    public ResponseEntity<List<ProductAreaResultsDto>> getAreaResults (@RequestParam String arrivalCode, @RequestParam(required = false) String areaCode) {
+        List<ProductAreaResultsDto> results = this.productService.getList(arrivalCode, areaCode);
+        return ResponseEntity.ok(results);
+    }
 
     @GetMapping(value = "{productId}")
     public ResultDto<ProductViewDto> get(@PathVariable Long productId) {
         return this.ok(this.productService.get(productId));
     }
-
 
     @Authorize
     @PostMapping(value = "/save", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -120,7 +82,10 @@ public class ProductController extends CommonController {
     }
 
     @GetMapping(value = {"/image/{productId}", "/image/{productId}/{productImageGroupId}/{productImageId}"} )
-    public ResponseEntity<?> getProductImage(@PathVariable Long productId, @PathVariable(required = false) Long productImageGroupId, @PathVariable(required = false) Long productImageId) {
+    public ResponseEntity<?> getProductImage(
+            @PathVariable Long productId,
+            @PathVariable(required = false) Long productImageGroupId,
+            @PathVariable(required = false) Long productImageId) {
         Path path = (Objects.isNull(productImageGroupId) || Objects.isNull(productImageId)) ?
                 this.productService.getImage(productId) : this.productService.getImage(productId, productImageGroupId, productImageId);
         return this.getImageResponseEntity(path);
