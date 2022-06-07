@@ -7,13 +7,6 @@ spring:
       jdbc-url: jdbc:log4jdbc:mariadb://roywmc.cafe24.com:3306/roywmc
       maximum-pool-size: 10
       minimum-idle: 5
-  h2:
-    console:
-      enabled: true
-  sql:
-    init:
-      schema-locations: classpath:sql/schema.sql
-      data-locations: classpath:sql/data.sql
 
 debug: true
 

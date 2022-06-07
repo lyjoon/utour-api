@@ -54,7 +54,8 @@ public class ProductService extends CommonService {
     @Value(value = "${app.file-upload-storage.product:}")
     private Path productPath;
 
-    private final CodeService codeService;
+    private final ArrivalMapper arrivalMapper;
+    private final AreaMapper areaMapper;
 
 
     /**
@@ -67,8 +68,17 @@ public class ProductService extends CommonService {
                 .stream()
                 .map(vo -> {
                     ProductDto productDto = this.convert(vo, ProductDto.class);
-                    if(StringUtils.hasText(productDto.getNationCode())) {
-                        Optional.ofNullable(codeService.getNation(productDto.getNationCode())).ifPresent(nationDto -> productDto.setNationName(nationDto.getNationName()));
+
+                    if(StringUtils.hasText(productDto.getArrivalCode())) {
+                        Arrival arrival = arrivalMapper.findById(Arrival.builder().arrivalCode(productDto.getArrivalCode()).build());
+                        if(arrival != null) {
+                            productDto.setArrivalName(arrival.getArrivalName());
+                        }
+                    }
+
+                    if(StringUtils.hasText(productDto.getAreaCode())) {
+                        Optional.ofNullable(this.areaMapper.findById(Area.builder().areaCode(productDto.getAreaCode()).build()))
+                                .ifPresent(area -> productDto.setAreaName(area.getAreaName()));
                     }
 
                     return productDto;
@@ -170,7 +180,7 @@ public class ProductService extends CommonService {
         // 상품 기본개요를 저장한다.(productId 값을 반환받아야 함)
         Product.ProductBuilder productBuilder = Product.builder()
                 .areaCode(productDto.getAreaCode())
-                .nationCode(productDto.getNationCode())
+                .arrivalCode(productDto.getArrivalCode())
                 .content(productDto.getContent())
                 .productType(productDto.getProductType())
                 .title(productDto.getTitle())
@@ -290,7 +300,7 @@ public class ProductService extends CommonService {
             Product.ProductBuilder productBuilder = Product.builder()
                     .productId(findProduct.getProductId())
                     .areaCode(StringUtils.defaultString(productDto.getAreaCode(), findProduct.getAreaCode()))
-                    .nationCode(StringUtils.defaultString(productDto.getNationCode(), findProduct.getNationCode()))
+                    .arrivalCode(StringUtils.defaultString(productDto.getArrivalCode(), findProduct.getArrivalCode()))
                     .content(StringUtils.defaultString(productDto.getContent(), findProduct.getContent()))
                     .productType(StringUtils.defaultString(productDto.getProductType(), findProduct.getProductType()))
                     .title(StringUtils.defaultString(productDto.getTitle(), findProduct.getTitle()))
@@ -676,7 +686,7 @@ public class ProductService extends CommonService {
     public List<ProductDto> findAll(ProductDto productDto) {
         Product product = Product.builder()
                 .areaCode(productDto.getAreaCode())
-                .nationCode(productDto.getNationCode())
+                .arrivalCode(productDto.getArrivalCode())
                 .build();
 
         return this.productMapper.findAll(product)

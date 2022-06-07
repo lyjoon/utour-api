@@ -7,11 +7,8 @@
     <resultMap id="resultMap" type="com.utour.entity.Product" extends="common.content.resultMap">
         <result javaType="java.lang.Long" property="productId" column="PRODUCT_ID" />
         <result javaType="java.lang.String" property="productType" column="PRODUCT_TYPE" />
-        <result javaType="java.lang.String" property="nationCode" column="NATION_CODE" />
-        <result javaType="java.lang.String" property="nationName" column="NATION_NAME" />
+        <result javaType="java.lang.String" property="arrivalCode" column="ARRIVAL_CODE" />
         <result javaType="java.lang.String" property="areaCode" column="AREA_CODE" />
-        <result javaType="java.lang.String" property="areaName" column="AREA_NAME" />
-        <result javaType="java.lang.String" property="repImageSrc" column="REP_IMAGE_SRC" />
         <result javaType="java.lang.String" property="repImagePath" column="REP_IMAGE_PATH" />
         <result javaType="java.lang.String" property="description" column="DESCRIPTION" />
         <result javaType="java.lang.Character" property="useYn" column="USE_YN" />
@@ -22,7 +19,7 @@
             <if test="productId != null">AND T.PRODUCT_ID = #{productId}</if>
             <if test="useYn != null">AND T.USE_YN = #{useYn}</if>
             <if test="productType != null and productType != ''">AND T.PRODUCT_TYPE = #{productType}</if>
-            <if test="nationCode != null and nationCode != ''">AND T.NATION_CODE = #{nationCode}</if>
+            <if test="arrivalCode != null and arrivalCode != ''">AND T.ARRIVAL_CODE = #{arrivalCode}</if>
             <if test="areaCode != null and areaCode != ''">AND T.AREA_CODE = #{areaCode}</if>
         </where>
     </sql>
@@ -40,19 +37,14 @@
         SELECT
            T.PRODUCT_ID
          , T.PRODUCT_TYPE
-         , T.NATION_CODE
+         , T.ARRIVAL_CODE
          , T.AREA_CODE
-         , T.REP_IMAGE_SRC
          , T.REP_IMAGE_PATH
          , T.USE_YN
          , T.DESCRIPTION
         <include refid="common.content.column" />
-         , N.NATION_NAME
-         , NA.AREA_NAME
         FROM PRODUCT T
-        LEFT OUTER JOIN NATION N ON T.NATION_CODE = N.NATION_CODE
-        LEFT OUTER JOIN NATION_AREA NA ON T.NATION_CODE = NA.NATION_CODE AND T.AREA_CODE = NA.AREA_CODE
-        WHERE PRODUCT_ID = #{productId}
+        WHERE T.PRODUCT_ID = #{productId}
     </select>
 
     <select id="findAll" resultMap="resultMap">
@@ -60,9 +52,8 @@
         SELECT
           PRODUCT_ID
         , PRODUCT_TYPE
-        , NATION_CODE
+        , ARRIVAL_CODE
         , AREA_CODE
-        , REP_IMAGE_SRC
         , USE_YN
         , DESCRIPTION
         <include refid="common.content.column" />
@@ -75,15 +66,12 @@
         /* com.utour.mapper.ProductMapper.count */
         SELECT COUNT(*) AS CNT
         FROM PRODUCT T
-        LEFT OUTER JOIN NATION N ON T.NATION_CODE = N.NATION_CODE
-        LEFT OUTER JOIN NATION_AREA NA ON T.NATION_CODE = NA.NATION_CODE AND T.AREA_CODE = NA.AREA_CODE
         <where>
             <if test="useYn != null">AND T.USE_YN = #{useYn}</if>
             <if test="productId != null">AND T.PRODUCT_ID = #{productId}</if>
             <if test="productType != null">AND T.PRODUCT_TYPE = #{productType}</if>
-            <if test="nationCode != null and nationCode != ''">AND T.NATION_CODE = #{nationCode}</if>
+            <if test="arrivalCode != null and arrivalCode != ''">AND T.ARRIVAL_CODE = #{arrivalCode}</if>
             <if test="areaCode != null and areaCode != ''">AND T.AREA_CODE = #{areaCode}</if>
-            <if test="continentCode != null and continentCode != ''">AND N.CONTINENT_CODE = #{continentCode}</if>
             <if test="query != null and query != ''">AND (T.TITLE LIKE CONCAT(#{query}, '%') OR T.DESCRIPTION LIKE CONCAT(#{query}, '%'))</if>
         </where>
     </select>
@@ -93,24 +81,18 @@
         SELECT
           T.PRODUCT_ID
         , T.PRODUCT_TYPE
-        , T.NATION_CODE
+        , T.ARRIVAL_CODE
         , T.AREA_CODE
-        , T.REP_IMAGE_SRC
         , T.USE_YN
         , T.DESCRIPTION
         <include refid="common.content.column" />
-        , N.NATION_NAME
-        , NA.AREA_NAME
         FROM PRODUCT T
-        LEFT OUTER JOIN NATION N ON T.NATION_CODE = N.NATION_CODE
-        LEFT OUTER JOIN NATION_AREA NA ON T.NATION_CODE = NA.NATION_CODE AND T.AREA_CODE = NA.AREA_CODE
         <where>
             <if test="useYn != null">AND T.USE_YN = #{useYn}</if>
             <if test="productId != null">AND T.PRODUCT_ID = #{productId}</if>
             <if test="productType != null">AND T.PRODUCT_TYPE = #{productType}</if>
-            <if test="nationCode != null and nationCode != ''">AND T.NATION_CODE = #{nationCode}</if>
+            <if test="arrivalCode != null and arrivalCode != ''">AND T.ARRIVAL_CODE = #{arrivalCode}</if>
             <if test="areaCode != null and areaCode != ''">AND T.AREA_CODE = #{areaCode}</if>
-            <if test="continentCode != null and continentCode != ''">AND N.CONTINENT_CODE = #{continentCode}</if>
             <if test="query != null and query != ''">AND (T.TITLE LIKE CONCAT(#{query}, '%') OR T.DESCRIPTION LIKE CONCAT(#{query}, '%'))</if>
         </where>
         ORDER BY PRODUCT_ID DESC
@@ -122,9 +104,8 @@
         INSERT INTO PRODUCT (
           PRODUCT_ID
         , PRODUCT_TYPE
-        , NATION_CODE
+        , ARRIVAL_CODE
         , AREA_CODE
-        , REP_IMAGE_SRC
         , REP_IMAGE_PATH
         , USE_YN
         , DESCRIPTION
@@ -132,20 +113,18 @@
         ) VALUES (
           #{productId}
         , #{productType}
-        , #{nationCode}
+        , #{arrivalCode}
         , #{areaCode}
-        , #{repImageSrc}
         , #{repImagePath}
         , #{useYn}
         , #{description}
         <include refid="common.content.value" />
         )
         <include refid="common.content.duplicateUpdate" />
-        <if test="repImageSrc != null">, REP_IMAGE_SRC = VALUES(REP_IMAGE_SRC)</if>
-        <if test="repImagePath != null">, REP_IMAGE_PATH = VALUES(REP_IMAGE_PATH)</if>
-        <if test="nationCode != null">, NATION_CODE = VALUES(NATION_CODE)</if>
-        <if test="areaCode != null">, AREA_CODE = VALUES(AREA_CODE)</if>
-        <if test="content != null">, CONTENT = VALUES(CONTENT)</if>
+        <if test="repImagePath != null and repImagePath != ''">, REP_IMAGE_PATH = VALUES(REP_IMAGE_PATH)</if>
+        <if test="arrivalCode != null and arrivalCode != ''">, ARRIVAL_CODE = VALUES(ARRIVAL_CODE)</if>
+        <if test="areaCode != null and areaCode != ''">, AREA_CODE = VALUES(AREA_CODE)</if>
+        <if test="content != null and content != ''">, CONTENT = VALUES(CONTENT)</if>
         <if test="useYn != null">, USE_YN = VALUES(USE_YN)</if>
         <if test="description != null">, DESCRIPTION = VALUES(DESCRIPTION)</if>
     </insert>

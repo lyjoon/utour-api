@@ -15,15 +15,13 @@ public class Product extends Content {
 
     private Long productId;
     private String productType;
-    private String nationCode;
+    //private String nationCode;
+    private String arrivalCode;
     private String areaCode;
     private String description;
     private String repImageSrc;
     private String repImagePath;
     private Character useYn;
-
-    private String nationName;
-    private String areaName;
 
     @Override
     public Long getId() {

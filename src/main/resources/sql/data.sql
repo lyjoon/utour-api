@@ -18,6 +18,70 @@ VALUES
     ('CONTINENTS', 'OC', '오세아니아', NULL)
 ;
 
+INSERT INTO ARRIVAL (
+    ARRIVAL_CODE,
+    ARRIVAL_NAME,
+    MENU_YN,
+    ORDINAL_POSITION,
+    USE_YN)
+VALUES
+    ('CUN', '칸쿤', 'Y', 1, 'Y'),
+    ('HNL', '하와이', 'Y', 2, 'Y'),
+    ('EU', '유럽', 'Y', 3, 'Y'),
+    ('MLE', '몰디브', 'Y', 4, 'Y'),
+    ('DPS', '발리', 'Y', 5, 'Y'),
+    ('TH', '태국', 'Y', 6, 'Y'),
+    ('VN', '베트남', 'Y', 7, 'Y'),
+    ('MU', '모리셔스', 'Y', 8, 'Y'),
+    ('PH', '필리핀', 'Y', 9, 'Y'),
+    ('SPD', '남태평양', 'Y', 10, 'Y'),
+    ('SCUBA', '스킨수쿠버', 'Y', 11, 'Y')
+;
+
+INSERT INTO AREA (AREA_CODE, AREA_NAME, ARRIVAL_CODE, NATION_CODE, MENU_YN, ORDINAL_POSITION)
+VALUES
+    -- 칸쿤
+    ('HTL', '호텔존', 'CUN', 'MX', 'Y', 1),
+    ('RVM', '리비야마야', 'CUN', 'MX', 'Y', 2),
+    ('MUJ', '무헤레스', 'CUN', 'MX', 'Y', 3),
+    -- 하와이
+    ('OWH', '오아후', 'HNL', 'US', 'Y', 1),
+    ('MUI', '마후이', 'HNL', 'US', 'Y', 2),
+    ('BIG', '빅아일랜드', 'HNL', 'US', 'Y', 3),
+    -- 유럽
+    ('WST', '서유럽', 'EU', NULL, 'Y', 1),
+    ('EST', '동유럽', 'EU', NULL, 'Y', 2),
+    ('ESP', '스페인', 'EU', 'ES', 'Y', 3),
+    -- 몰디브
+    ('SPD', '스피드보트', 'MLE', 'MV', 'Y', 1),
+    ('FLY', '수상비행기', 'MLE', 'MV', 'Y', 2),
+    ('DOM', '국내선', 'MLE', 'MV', 'Y', 3),
+    -- 발리
+    ('DSP', '발리', 'DPS', 'ID', 'Y', 1),
+    ('LOM', '롬북', 'DPS', 'ID', 'Y', 2),
+    -- 태국
+    ('HKT', '푸켓', 'TH', 'TH', 'Y', 1),
+    ('USM', '코사무이', 'TH', 'TH', 'Y', 2),
+    ('KBV', '크라비', 'TH', 'TH', 'Y', 3),
+    ('PYX', '파타야', 'TH', 'TH', 'Y', 4),
+    ('KAO', '카오락', 'TH', 'TH', 'Y', 5),
+    ('BKK', '방콕', 'TH', 'TH', 'Y', 6),
+    -- 베트남
+    ('DAD', '다낭', 'VN', 'VN', 'Y', 1),
+    ('PQC', '푸꿕', 'VN', 'VN', 'Y', 2),
+    ('UIH', '퀴논', 'VN', 'VN', 'Y', 3),
+    -- 필리핀
+    ('PPS', '팔라완', 'PH', 'PH', 'Y', 1),
+    ('KLO', '보라카이', 'PH', 'PH', 'Y', 2),
+    ('CEB', '세부', 'PH', 'PH', 'Y', 3),
+    ('BOH', '보홀', 'PH', 'PH', 'Y', 3),
+    -- 남태평양
+    ('GUM', '괌', 'SPD', 'US', 'Y', 1),
+    ('SPN', '사이판', 'SPD', 'US', 'Y', 2),
+    -- 스킨수쿠버
+    ('MOA', '모알보알', 'SCUBA', 'PH', 'Y', 1)
+;
+
 INSERT INTO NATION (NATION_NAME, NATION_CODE, USE_YN, CONTINENT_CODE, ORDINAL_POSITION)
 VALUES
     ('가나','GH', 'N', null, 99999),

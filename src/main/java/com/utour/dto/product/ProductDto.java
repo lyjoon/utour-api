@@ -18,8 +18,8 @@ public class ProductDto extends CommonDto {
     @NotNull(groups = {ValidatorMarkers.Delete.class})
     private Long productId;
     private String productType;
-    private String nationCode;
-    private String nationName;
+    private String arrivalCode;
+    private String arrivalName;
     private String areaCode;
     private String areaName;
     private String repImageSrc;

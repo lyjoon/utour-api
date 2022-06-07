@@ -52,7 +52,7 @@ public class DisplayService extends CommonService {
                     if(product != null) {
                         result.setProductType(product.getProductType());
                         result.setTitle(product.getTitle());
-                        result.setNationCode(product.getNationCode());
+                        result.setArrivalCode(product.getArrivalCode());
                         result.setAreaCode(product.getAreaCode());
                         result.setRepImageSrc(this.contextPath + "/v1/product/image/" + product.getId());
                         return result;

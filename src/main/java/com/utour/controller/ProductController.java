@@ -65,10 +65,10 @@ public class ProductController extends CommonController {
 
     @Authorize
     @GetMapping(value = "/list")
-    public ResultDto<List<ProductDto>> getList (@RequestParam String nationCode, @RequestParam(required = false) String areaCode) {
+    public ResultDto<List<ProductDto>> getList (@RequestParam String arrivalCode, @RequestParam(required = false) String areaCode) {
         List<ProductDto> products = this.productService.findAll(ProductDto.builder()
+                        .arrivalCode(arrivalCode)
                         .areaCode(areaCode)
-                        .nationCode(nationCode)
                 .useYn(Constants.Y)
                 .build());
 
