@@ -1,6 +1,5 @@
 package com.utour.dto.product;
 
-import com.utour.dto.code.AreaDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,10 @@ import java.util.List;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductAreaResultsDto extends AreaDto {
+public class ProductAreaResultsDto {
 
+    private String arrivalCode;
+    private String areaCode;
+    private String areaName;
     private List<ProductDto> results;
 }

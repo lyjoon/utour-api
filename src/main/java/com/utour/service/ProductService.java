@@ -96,16 +96,44 @@ public class ProductService extends CommonService {
 
 
 
-    public List<ProductDto> getList(String arrivalCode, String areaCode) {
-        Product product = Product.builder()
-                .areaCode(arrivalCode)
-                .arrivalCode(arrivalCode)
-                .build();
+    public List<ProductAreaResultsDto> getList(String arrivalCode, String areaCode) {
+        List<ProductAreaResultsDto> results = new ArrayList<>();
 
-        return this.productMapper.findAll(product)
-                .stream()
-                .map(v -> this.convert(v, ProductDto.class))
-                .collect(Collectors.toList());
+        List<Area> areaList = this.areaMapper.findAll(Area.builder().areaCode(areaCode).arrivalCode(arrivalCode).useYn(Constants.Y).build());
+        if(areaList != null) {
+            areaList.stream()
+                    .forEach(v -> results.add(ProductAreaResultsDto.builder()
+                            .areaCode(v.getAreaCode())
+                            .areaName(v.getAreaName())
+                            .arrivalCode(v.getArrivalCode())
+                            .results(this.productMapper.findAll(Product.builder()
+                                    .useYn(Constants.Y)
+                                    .arrivalCode(v.getArrivalCode())
+                                    .areaCode(v.getAreaCode())
+                                    .build()).stream().map(item -> this.convert(item, ProductDto.class))
+                                    .collect(Collectors.toList()))
+                            .build()));
+        } else {
+            Arrival arrival = this.arrivalMapper.findById(Arrival.builder()
+                    .arrivalCode(arrivalCode)
+                    .useYn(Constants.Y)
+                    .build());
+            if(arrival != null) {
+                results.add(ProductAreaResultsDto.builder()
+                        .arrivalCode(arrival.getArrivalCode())
+                        .results(this.productMapper.findAll(Product.builder()
+                                        .useYn(Constants.Y)
+                                        .arrivalCode(arrival.getArrivalCode())
+                                        .build())
+                                .stream()
+                                .map(item -> this.convert(item, ProductDto.class))
+                                .collect(Collectors.toList()))
+                        .build()
+                );
+            }
+        }
+
+        return results;
     }
 
     /**

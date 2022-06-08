@@ -39,6 +39,7 @@ public class ProductController extends CommonController {
 
         return this.productService.getList(productQueryDto);
     }
+
     @GetMapping(value = "/list")
     public ResponseEntity<List<ProductAreaResultsDto>> getAreaResults (@RequestParam String arrivalCode, @RequestParam(required = false) String areaCode) {
         List<ProductAreaResultsDto> results = this.productService.getList(arrivalCode, areaCode);
