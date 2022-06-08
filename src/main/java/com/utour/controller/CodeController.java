@@ -17,7 +17,7 @@ public class CodeController extends CommonController {
 
     private final CodeService codeService;
 
-    @PostMapping(value = "/arrival-list", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/arrival-list")
     public ResponseEntity<List<ArrivalDto>> getArrivalList(@RequestBody ArrivalDto arrivalDto) {
         return this.response(this.codeService.getList(arrivalDto));
     }

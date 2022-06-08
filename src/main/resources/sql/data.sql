@@ -35,7 +35,7 @@ VALUES
     ('MU', '모리셔스', 'Y', 8, 'Y'),
     ('PH', '필리핀', 'Y', 9, 'Y'),
     ('SPD', '남태평양', 'Y', 10, 'Y'),
-    ('SCUBA', '스킨수쿠버', 'Y', 11, 'Y')
+    ('SCUBA', '스킨스쿠버', 'Y', 11, 'Y')
 ;
 
 INSERT INTO AREA (AREA_CODE, AREA_NAME, ARRIVAL_CODE, NATION_CODE, MENU_YN, ORDINAL_POSITION)
