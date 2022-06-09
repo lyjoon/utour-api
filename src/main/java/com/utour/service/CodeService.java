@@ -8,6 +8,7 @@ import com.utour.entity.*;
 import com.utour.mapper.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
@@ -107,5 +108,10 @@ public class CodeService extends CommonService {
                         .menuYn(areaDto.getMenuYn())
                 .build()).stream().map(v-> this.convert(v, AreaDto.class))
                 .collect(Collectors.toList());
+    }
+
+    public ArrivalDto get(ArrivalDto arrivalDto) {
+        return Optional.ofNullable(this.arrivalMapper.findById(Arrival.builder().arrivalCode(arrivalDto.getArrivalCode()).build()))
+                .map(v -> this.convert(v, ArrivalDto.class)).orElse(null);
     }
 }

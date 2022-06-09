@@ -32,4 +32,9 @@ public class CodeController extends CommonController {
         return this.response(this.codeService.getCodeGroup(groupCode));
     }
 
+    @PostMapping(value = "/arrival")
+    public ResponseEntity<ArrivalDto> getArrival(@RequestBody ArrivalDto arrivalDto) {
+        return this.response(this.codeService.get(arrivalDto));
+    }
+
 }

@@ -135,9 +135,13 @@ public class CommonController extends CommonComponent {
 			}
 
 		} catch (Exception e) {
-
-			log.error("{}", ErrorUtils.throwableInfo(e));
-
+			if(e instanceof NullPointerException) {
+				log.warn("'filePath' is null");
+			} else if(e instanceof IOException) {
+				log.warn("{}", e.getMessage());
+			} else {
+				log.error("{}", ErrorUtils.throwableInfo(e));
+			}
 			ClassPathResource classPathResource = new ClassPathResource("/static/assets/images/no_image.jpg");
 			final HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.IMAGE_JPEG);

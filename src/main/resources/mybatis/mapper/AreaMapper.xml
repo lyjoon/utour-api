@@ -30,8 +30,8 @@
     <sql id="where">
         <where>
             <if test="arrivalCode != null">AND ARRIVAL_CODE = #{arrivalCode}</if>
-            <if test="nationCode != null">AND NATION_CODE = #{nationCode}</if>
-            <if test="areaCode != null">AND AREA_CODE = #{areaCode}</if>
+            <if test="nationCode != null and nationCode != ''">AND NATION_CODE = #{nationCode}</if>
+            <if test="areaCode != null and areaCode != ''">AND AREA_CODE = #{areaCode}</if>
             <if test="useYn != null">AND USE_YN = #{useYn}</if>
         </where>
     </sql>
